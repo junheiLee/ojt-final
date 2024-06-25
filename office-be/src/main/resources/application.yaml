@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: office
+
+  messages:
+    basename: errors
+
+  servlet:
+    multipart:
+      maxFileSize: 30MB # ?? ??? ?? ??
+      maxRequestSize: 30MB
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/dbOjtProject
+    username: root
+    password: jhlee
+
+mybatis:
+  type-aliases-package: com.ojt_final.office.domain
+
