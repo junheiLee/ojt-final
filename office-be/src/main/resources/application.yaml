@@ -19,4 +19,8 @@ spring:
 
 mybatis:
   type-aliases-package: com.ojt_final.office.domain
+  mapper-locations: classpath:mapper/**/*.xml
 
+logging:
+  level:
+    root: info

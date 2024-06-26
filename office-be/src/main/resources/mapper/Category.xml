@@ -3,7 +3,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.CategoryDao">
 
-    <insert id="insertAll" parameterType="Category">
+    <insert id="saveAll" parameterType="Category">
         INSERT INTO tCategory (
         nCategoryCode,
         sCategoryName)
@@ -14,11 +14,18 @@
             #{Category.name}
             )
         </foreach>
+        ON DUPLICATE KEY UPDATE
+        sCategoryName = VALUES(sCategoryName)
     </insert>
 
     <select id="selectAll" resultType="Category">
-        SELECT nCategoryCode as code,
-               sCategoryName as name
+        SELECT nCategoryCode AS code,
+               sCategoryName AS name
+        FROM tCategory
+    </select>
+
+    <select id="countAll">
+        SELECT COUNT(nCategoryCode)
         FROM tCategory
     </select>
 </mapper>

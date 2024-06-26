@@ -13,3 +13,10 @@ spring:
 mybatis:
   type-aliases-package: com.ojt_final.office.domain
   mapper-locations: classpath:mapper/**/*.xml
+
+logging:
+  level:
+    com:
+      ojt_final:
+        office:
+          dao: trace

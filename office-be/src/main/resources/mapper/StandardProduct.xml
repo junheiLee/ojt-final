@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ojt_final.office.dao.StandardProductDao">
+
+    <insert id="saveAll" parameterType="StandardProduct">
+        INSERT INTO tStandardProduct (
+                    nProductCode,
+                    nCategoryCode,
+                    sProductName,
+                    sBundleCondition,
+                    sDescription,
+                    nLowestPrice,
+                    nAveragePrice,
+                    nPartnerCount
+        )
+        VALUES
+            <foreach collection="list" item="StandardProduct" separator="," >
+                (
+                #{StandardProduct.code},
+                #{StandardProduct.categoryCode},
+                #{StandardProduct.name},
+                #{StandardProduct.bundleCondition},
+                #{StandardProduct.description},
+                #{StandardProduct.lowestPrice},
+                #{StandardProduct.averagePrice},
+                #{StandardProduct.partnerCount}
+                )
+            </foreach>
+        ON DUPLICATE KEY UPDATE
+                sProductName = VALUES(sProductName),
+                nCategoryCode = VALUES(nCategoryCode),
+                sDescription = VALUES(sDescription ),
+                dtManufactureDate = VALUES(dtManufactureDate)
+    </insert>
+
+    <select id="countAll">
+        SELECT COUNT(nProductCode)
+        FROM tStandardProduct
+    </select>
+</mapper>

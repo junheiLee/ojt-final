@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ojt_final.office.dao.PartnerProductDao">
+
+    <insert id="saveAll" parameterType="PartnerProduct">
+        INSERT INTO tPartnerProduct (
+                        sPartnerProductCode,
+                        sPartnerCode,
+                        nCategoryCode,
+                        sPartnerProductName,
+                        nPcPrice,
+                        nMobilePrice,
+                        sUrl,
+                        sImageUrl,
+                        dtCreatedAt
+                        )
+        VALUES
+            <foreach collection="list" item="PartnerProduct" separator="," >
+                (
+                 #{PartnerProduct.code},
+                 #{PartnerProduct.partnerCode},
+                 #{PartnerProduct.categoryCode},
+                 #{PartnerProduct.name},
+                 #{PartnerProduct.pcPrice},
+                 #{PartnerProduct.mobilePrice},
+                 #{PartnerProduct.url},
+                 #{PartnerProduct.imageUrl},
+                 #{PartnerProduct.createdAt}
+                )
+            </foreach>
+        ON DUPLICATE KEY UPDATE
+                sPartnerProductName = VALUES(sPartnerProductName),
+                nCategoryCode = VALUES(nCategoryCode),
+                nPcPrice = VALUES(nPcPrice),
+                nMobilePrice = VALUES(nMobilePrice),
+                sImageUrl = VALUES(sImageUrl)
+    </insert>
+
+    <select id="countAll">
+        SELECT COUNT(sPartnerProductCode)
+        FROM tPartnerProduct
+    </select>
+
+</mapper>
