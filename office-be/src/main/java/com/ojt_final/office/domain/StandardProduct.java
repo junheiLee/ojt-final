@@ -7,7 +7,8 @@ import org.apache.poi.ss.usermodel.Row;
 
 
 @Getter
-@EqualsAndHashCode @ToString
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 public class StandardProduct implements Uploadable {
 

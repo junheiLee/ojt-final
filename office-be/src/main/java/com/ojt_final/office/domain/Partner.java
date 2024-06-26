@@ -3,7 +3,8 @@ package com.ojt_final.office.domain;
 import lombok.*;
 
 @Getter
-@EqualsAndHashCode @ToString
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 public class Partner {
 

@@ -5,14 +5,15 @@ import lombok.*;
 import org.apache.poi.ss.usermodel.Row;
 
 @Getter
-@EqualsAndHashCode @ToString
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 public class Category implements Uploadable {
 
-    @ExcelColumn(upload ="대분류코드")
+    @ExcelColumn(upload = "대분류코드")
     private int code;
 
-    @ExcelColumn(upload ="대분류명")
+    @ExcelColumn(upload = "대분류명")
     private String name;
 
     @Builder

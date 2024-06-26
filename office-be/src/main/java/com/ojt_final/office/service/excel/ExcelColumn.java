@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface ExcelColumn {
 
     String upload() default "";
+
     String download() default "";
 }

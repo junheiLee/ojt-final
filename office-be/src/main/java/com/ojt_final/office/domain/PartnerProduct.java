@@ -7,7 +7,8 @@ import org.apache.poi.ss.usermodel.Row;
 import java.sql.Date;
 
 @Getter
-@EqualsAndHashCode @ToString
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 public class PartnerProduct implements Uploadable {
 
