@@ -30,7 +30,7 @@ public class StandardProductService extends ExcelHandler {
     private final StandardProductDao standardProductDao;
 
     @Override
-    public UploadExcelResponse<Object> saveExcelData(MultipartFile excelFile) throws IOException {
+    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
         validExtension(excelFile); // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
         List<StandardProduct> standardProducts

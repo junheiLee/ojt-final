@@ -34,7 +34,7 @@ public class CategoryService extends ExcelHandler {
      * @return 해당 정보 저장 성공 개수, 실패 개수 및 결과 코드를 담은 객체
      */
     @Override
-    public UploadExcelResponse<Object> saveExcelData(MultipartFile excelFile) throws IOException {
+    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
         validExtension(excelFile); // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
         List<Category> categories = excelConverter.parse(excelFile.getInputStream(), Category.class);

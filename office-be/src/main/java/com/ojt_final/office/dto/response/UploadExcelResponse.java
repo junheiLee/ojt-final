@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class UploadExcelResponse<E> extends BaseResponse {
+public class UploadExcelResponse extends BaseResponse {
 
     private final int insertCount;
     private final int updateCount;

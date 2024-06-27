@@ -17,7 +17,7 @@ public abstract class ExcelHandler {
      * @param excelFile 상품 정보가 담겨있는 엑셀 파일
      * @return 해당 정보 기반 생성, 수정, 유지, 실패 개수 및 결과 코드를 담은 객체
      */
-    protected abstract UploadExcelResponse<Object> saveExcelData(MultipartFile excelFile) throws IOException;
+    protected abstract UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException;
 
 
     protected void validExtension(MultipartFile excelFile) {

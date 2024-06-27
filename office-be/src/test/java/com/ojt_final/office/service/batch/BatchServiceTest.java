@@ -2,7 +2,6 @@ package com.ojt_final.office.service.batch;
 
 import com.ojt_final.office.dao.CategoryDao;
 import com.ojt_final.office.dao.PartnerProductDao;
-import com.ojt_final.office.dao.PartnerProductDaoTest;
 import com.ojt_final.office.domain.Category;
 import com.ojt_final.office.domain.PartnerProduct;
 import org.junit.jupiter.api.DisplayName;
@@ -10,18 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
