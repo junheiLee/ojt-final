@@ -20,7 +20,7 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
-    public UploadExcelResponse<Object> uploadExcel(@RequestParam MultipartFile excelFile) throws IOException {
+    public UploadExcelResponse<Object> uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
         return categoryService.saveExcelData(excelFile);
     }

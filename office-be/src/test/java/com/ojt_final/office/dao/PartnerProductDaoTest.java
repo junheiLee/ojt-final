@@ -18,7 +18,7 @@ public class PartnerProductDaoTest {
     @Autowired
     PartnerProductDao partnerProductDao;
 
-    @DisplayName("INSERT 중 중복 발생 시, UPDATE Test")
+    @DisplayName("INSERT ON DUPLICATE KEY UPDATE 중 중복 발생 시, UPDATE Test")
     @Test
     void saveAllTest() {
         final int insertValue = 1;
@@ -41,15 +41,15 @@ public class PartnerProductDaoTest {
 
         PartnerProduct insert
                 = PartnerProduct.builder()
-                .code("insert").partnerCode("TP40F").categoryCode(1)
+                .code("insert").partnerCode("1").categoryCode(1)
                 .name("INSERT").url("test").imageUrl("test").build();
         PartnerProduct insertTemp
                 = PartnerProduct.builder()
-                .code("update").partnerCode("TP40F").categoryCode(1)
+                .code("update").partnerCode("1").categoryCode(1)
                 .name("INSERT").url("test").imageUrl("test").build();
         PartnerProduct update
                 = PartnerProduct.builder()
-                .code("update").partnerCode("TP40F").categoryCode(1)
+                .code("update").partnerCode("1").categoryCode(1)
                 .name("UPDATE").url("test").imageUrl("test").build();
 
         return List.of(insert, insertTemp, update);

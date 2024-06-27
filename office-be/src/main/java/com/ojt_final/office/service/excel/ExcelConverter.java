@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,9 +23,19 @@ import static com.ojt_final.office.service.excel.ExcelConst.*;
 
 
 @Slf4j
-@Component
 public class ExcelConverter {
 
+    public static final ExcelConverter INSTANCE = new ExcelConverter();
+
+    private static boolean created;
+
+    private ExcelConverter() {
+        // 리플렉션으로 생성자 호출하는 경우 방지
+        if (created) {
+            throw new UnsupportedOperationException("can't be created by constructor.");
+        }
+        created = true;
+    }
 
     /**
      * 해당 파일이 Excel 확장자(.xlsx, .xls)인지 확인
@@ -48,8 +57,8 @@ public class ExcelConverter {
      * @param <T>          엑셀 파일을 읽어 db에 저장할 수 있는 객체
      * @return 객체 리스트
      */
-    public <T extends Uploadable> List<T> parseExcel(InputStream inputStream,
-                                                     Class<T> targetDomain) throws IOException {
+    public <T extends Uploadable> List<T> parse(InputStream inputStream,
+                                                Class<T> targetDomain) throws IOException {
 
         Workbook wb = WorkbookFactory.create(inputStream);
         Sheet sheet = wb.getSheetAt(START_INDEX); // sheet 한 개
@@ -110,7 +119,7 @@ public class ExcelConverter {
      * @param targetDomain 객체 타입
      * @return 엑셀 파일을 byte[]로 반환
      */
-    public <T> byte[] createExcel(List<T> items, Class<T> targetDomain) {
+    public <T> byte[] create(List<T> items, Class<T> targetDomain) {
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(targetDomain.getName());

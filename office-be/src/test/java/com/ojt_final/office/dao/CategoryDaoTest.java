@@ -67,9 +67,9 @@ public class CategoryDaoTest {
     void saveAllDuplicateTest() {
 
         //given
-        Category category1 = Category.builder().code(1).name("주방가전").build();
-        Category category2 = Category.builder().code(118).name("계절가전").build();
-        Category category3 = Category.builder().code(860).name("디지털 완제품").build();
+        Category category1 = Category.builder().code(1).name("Category1").build();
+        Category category2 = Category.builder().code(2).name("Category2").build();
+        Category category3 = Category.builder().code(3).name("Category3").build();
 
         List<Category> categories = List.of(category1, category2, category3);
 

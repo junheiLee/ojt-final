@@ -4,9 +4,8 @@ import com.ojt_final.office.dao.CategoryDao;
 import com.ojt_final.office.domain.Category;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
-import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
+import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.batch.BatchService;
-import com.ojt_final.office.service.excel.ExcelConverter;
 import com.ojt_final.office.service.excel.ExcelHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @Service
 public class CategoryService extends ExcelHandler {
 
-    private final ExcelConverter excelConverter;
     private final BatchService batchService;
     private final CategoryDao categoryDao;
 
@@ -35,20 +33,21 @@ public class CategoryService extends ExcelHandler {
      * @param excelFile 카테고리 정보가 담겨있는 엑셀 파일, 헤더: [대분류코드, 대분류명]
      * @return 해당 정보 저장 성공 개수, 실패 개수 및 결과 코드를 담은 객체
      */
+    @Override
     public UploadExcelResponse<Object> saveExcelData(MultipartFile excelFile) throws IOException {
 
-        // 파일이 Excel 확장자(.xlsx, .xls) 확인
-        if (!excelConverter.supports(excelFile.getOriginalFilename())) {
-            throw new UnSupportedFileException(ResultCode.NOT_EXCEL_FILE);
-        }
+        validExtension(excelFile); // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
+        List<Category> categories = excelConverter.parse(excelFile.getInputStream(), Category.class);
 
-        List<Category> categories = excelConverter.parseExcel(excelFile.getInputStream(), Category.class);
+        int previousCount = categoryDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        BatchResult batchResult
+                = batchService.save(BATCH_SIZE, categories, categoryDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, categoryDao.countAll());
 
-        int previousCount = categoryDao.countAll();
-        int affectedRow = batchService.save(categories, categoryDao::saveAll, BATCH_SIZE);
-
-        // 각각 생성, 수정, 유지 Row 개수를 계산해 Dto에 담아 반환
-        return calUploadExcelResponse(categories.size(), previousCount, affectedRow);
+        return UploadExcelResponse.builder()
+                .code(ResultCode.UPLOAD_RESULT)
+                .batchResult(batchResult)
+                .build();
     }
 
 }

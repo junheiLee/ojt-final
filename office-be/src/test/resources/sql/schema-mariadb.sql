@@ -1,3 +1,14 @@
+SET foreign_key_checks=0;
+
+drop table tcategory;
+drop table tLink;
+drop table tPartner;
+drop table tPartnerProduct;
+drop table tStandardProduct;
+drop table tStatistic;
+
+SET foreign_key_checks = 1;
+
 -- 협력사
 CREATE TABLE tPartner (
                           sPartnerCode VARCHAR(50) NOT NULL,

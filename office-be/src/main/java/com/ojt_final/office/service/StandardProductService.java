@@ -5,9 +5,8 @@ import com.ojt_final.office.dao.StandardProductDao;
 import com.ojt_final.office.domain.StandardProduct;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
-import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
+import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.batch.BatchService;
-import com.ojt_final.office.service.excel.ExcelConverter;
 import com.ojt_final.office.service.excel.ExcelHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,25 +27,24 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 public class StandardProductService extends ExcelHandler {
 
     private final BatchService batchService;
-    private final ExcelConverter excelConverter;
     private final StandardProductDao standardProductDao;
 
     @Override
     public UploadExcelResponse<Object> saveExcelData(MultipartFile excelFile) throws IOException {
 
-        // 파일이 Excel 확장자(.xlsx, .xls) 확인
-        if (!excelConverter.supports(excelFile.getOriginalFilename())) {
-            throw new UnSupportedFileException(ResultCode.NOT_EXCEL_FILE);
-        }
-
+        validExtension(excelFile); // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
         List<StandardProduct> standardProducts
-                = excelConverter.parseExcel(excelFile.getInputStream(), StandardProduct.class);
+                = excelConverter.parse(excelFile.getInputStream(), StandardProduct.class);
 
         int previousCount = standardProductDao.countAll();
-        int affectedRow = batchService.save(standardProducts, standardProductDao::saveAll, BATCH_SIZE);
+        BatchResult batchResult
+                = batchService.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
 
-        // 각각 생성, 수정, 유지 Row 개수를 계산해 Dto에 담아 반환
-        return calUploadExcelResponse(standardProducts.size(), previousCount, affectedRow);
+        return UploadExcelResponse.builder()
+                .code(ResultCode.UPLOAD_RESULT)
+                .batchResult(batchResult)
+                .build();
     }
 
 
