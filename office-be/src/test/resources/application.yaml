@@ -3,6 +3,12 @@ spring:
     active: test
   application:
     name: office
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      schema-locations: classpath:sql/schema-mariadb.sql
+      data-locations: classpath:sql/data-mariadb.sql
 
 
   datasource:
