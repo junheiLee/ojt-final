@@ -4,8 +4,8 @@ import com.ojt_final.office.dao.PartnerProductDao;
 import com.ojt_final.office.domain.PartnerProduct;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
-import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.batch.BatchProcessor;
+import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.excel.ExcelHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,5 +45,17 @@ public class PartnerProductService extends ExcelHandler {
                 .build();
     }
 
+    /**
+     * 파트너 상품 코드에 해당하는 모든 링크 여부 변경
+     * TODO: 배치 필요 여부 고민하기
+     *
+     * @param isLinked 연결 여부
+     * @param codes    대상 파트너 상품 코드 리스트
+     * @return 변경된 데이터 수
+     */
+    public int updateAllIsLinked(boolean isLinked, List<String> codes) {
+
+        return partnerProductDao.updateAllIsLinked(isLinked, codes);
+    }
 
 }

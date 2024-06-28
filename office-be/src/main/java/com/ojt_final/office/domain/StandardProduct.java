@@ -33,8 +33,8 @@ public class StandardProduct implements Uploadable {
 
     private String sImageUrl;
 
-    private int lowestPrice;
-    private int averagePrice;
+    private int minPrice;
+    private int avgPrice;
     private int partnerCount;
 
     @Builder
@@ -42,7 +42,7 @@ public class StandardProduct implements Uploadable {
                            int code, String name,
                            String bundleCondition, String description,
                            String sOrigin, String sOriginUrl, String sImageUrl,
-                           int lowestPrice, int averagePrice,
+                           int minPrice, int avgPrice,
                            int partnerCount) {
 
         this.categoryCode = categoryCode;
@@ -57,8 +57,8 @@ public class StandardProduct implements Uploadable {
         this.sOriginUrl = sOriginUrl;
         this.sImageUrl = sImageUrl;
 
-        this.lowestPrice = lowestPrice;
-        this.averagePrice = averagePrice;
+        this.minPrice = minPrice;
+        this.avgPrice = avgPrice;
         this.partnerCount = partnerCount;
     }
 

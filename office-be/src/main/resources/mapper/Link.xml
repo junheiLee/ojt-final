@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ojt_final.office.dao.LinkDao">
+
+    <insert id="saveAll" parameterType="Link">
+        INSERT INTO tLink (
+                            sPartnerProductCode,
+                            nProductCode
+        )
+        VALUES
+            <foreach collection="list" item="Link" separator=",">
+                (
+                 #{Link.partnerProductCode},
+                 #{Link.standardProductCode}
+                )
+            </foreach>
+        ON DUPLICATE KEY UPDATE
+                         nProductCode = VALUES(nProductCode)
+    </insert>
+</mapper>

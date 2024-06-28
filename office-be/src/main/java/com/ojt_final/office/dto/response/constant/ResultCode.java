@@ -17,6 +17,7 @@ public enum ResultCode {
 
     // 예외: 공통
     NO_FILE("파일이 존재하지 않습니다.."),
+    FAILED("임시"),
     SPRING_EXCEPTION("SPRING 예외 발생");
 
     private final String message;

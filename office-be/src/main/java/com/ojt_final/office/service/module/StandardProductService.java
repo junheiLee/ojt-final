@@ -5,8 +5,8 @@ import com.ojt_final.office.dao.StandardProductDao;
 import com.ojt_final.office.domain.StandardProduct;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
-import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.batch.BatchProcessor;
+import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.excel.ExcelHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,5 +47,10 @@ public class StandardProductService extends ExcelHandler {
                 .build();
     }
 
+    public int updateLinkedChange() {
 
+        //TODO: 변경할 기준 상품 추적해서 WHERE IN 절 추가하기
+
+        return standardProductDao.updateLinkedChange();
+    }
 }

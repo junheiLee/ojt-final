@@ -43,4 +43,13 @@
         FROM tPartnerProduct
     </select>
 
+    <update id="updateAllIsLinked">
+        UPDATE tPartnerProduct
+        SET bIsLinked = #{isLinked}
+        WHERE sPartnerProductCode IN (
+            <foreach collection="codes" item="code" separator=", ">
+                #{code}
+            </foreach>
+        )
+    </update>
 </mapper>

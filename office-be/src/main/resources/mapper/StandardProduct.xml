@@ -11,8 +11,8 @@
                     sProductName,
                     sBundleCondition,
                     sDescription,
-                    nLowestPrice,
-                    nAveragePrice,
+                    nMinPrice,
+                    nAvgPrice,
                     nPartnerCount
         )
         VALUES
@@ -23,8 +23,8 @@
                 #{StandardProduct.name},
                 #{StandardProduct.bundleCondition},
                 #{StandardProduct.description},
-                #{StandardProduct.lowestPrice},
-                #{StandardProduct.averagePrice},
+                #{StandardProduct.minPrice},
+                #{StandardProduct.avgPrice},
                 #{StandardProduct.partnerCount}
                 )
             </foreach>
@@ -39,4 +39,27 @@
         SELECT COUNT(nProductCode)
         FROM tStandardProduct
     </select>
+
+    <update id="updateLinkedChange">
+        UPDATE tStandardProduct SP
+        INNER JOIN (
+            SELECT
+                L.nProductCode,
+                MIN(PP.nPcPrice) AS minPcPrice,
+                MIN(PP.nMobilePrice) AS minMobilePrice,
+                LEAST(MIN(PP.nPcPrice), MIN(PP.nMobilePrice)) AS minPrice,
+                AVG(PP.nPcPrice + PP.nMobilePrice)/2 AS avgPrice,
+                COUNT(DISTINCT PP.sPartnerCode) AS partnerCount
+            FROM tLink L
+            INNER JOIN tPartnerProduct PP
+                    ON (L.sPartnerProductCode = PP.sPartnerProductCode)
+            GROUP BY L.nProductCode
+            ) CAL
+        ON (SP.nProductCode = CAL.nProductCode)
+        SET SP.nMinPcPrice = CAL.minPcPrice,
+            SP.nMinMobilePrice = CAL.minMobilePrice,
+            SP.nMinPrice = CAL.minPrice,
+            SP.nAvgPrice = CAL.avgPrice,
+            sp.nPartnerCount = CAL.partnerCount
+    </update>
 </mapper>
