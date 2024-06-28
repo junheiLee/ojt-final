@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-public class BatchService {
+public class BatchProcessor {
 
     /**
      * 설정한 개수만큼 한 번에 DB에 접근해 저장,

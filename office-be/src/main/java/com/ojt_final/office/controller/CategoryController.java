@@ -1,7 +1,7 @@
 package com.ojt_final.office.controller;
 
 import com.ojt_final.office.dto.response.UploadExcelResponse;
-import com.ojt_final.office.service.CategoryService;
+import com.ojt_final.office.service.module.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

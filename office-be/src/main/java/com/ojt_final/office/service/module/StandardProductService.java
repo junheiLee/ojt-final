@@ -1,4 +1,4 @@
-package com.ojt_final.office.service;
+package com.ojt_final.office.service.module;
 
 
 import com.ojt_final.office.dao.StandardProductDao;
@@ -6,7 +6,7 @@ import com.ojt_final.office.domain.StandardProduct;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchResult;
-import com.ojt_final.office.service.batch.BatchService;
+import com.ojt_final.office.service.batch.BatchProcessor;
 import com.ojt_final.office.service.excel.ExcelHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @Service
 public class StandardProductService extends ExcelHandler {
 
-    private final BatchService batchService;
+    private final BatchProcessor batchProcessor;
     private final StandardProductDao standardProductDao;
 
     @Override
@@ -38,7 +38,7 @@ public class StandardProductService extends ExcelHandler {
 
         int previousCount = standardProductDao.countAll();
         BatchResult batchResult
-                = batchService.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
+                = batchProcessor.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
                 .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
 
         return UploadExcelResponse.builder()

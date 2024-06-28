@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-public class BatchServiceTest {
+public class BatchProcessorTest {
 
     @Autowired
     CategoryDao categoryDao;
@@ -31,7 +31,7 @@ public class BatchServiceTest {
     PartnerProductDao partnerProductDao;
 
     @Autowired
-    BatchService batchService;
+    BatchProcessor batchProcessor;
 
     @DisplayName("BatchService 정상 동작 확인")
     @Test
@@ -45,7 +45,7 @@ public class BatchServiceTest {
         List<Category> categories = List.of(category1, category2, category3, category4);
 
         //when
-        BatchResult batchResult = batchService.save(3, categories, categoryDao::saveAll);
+        BatchResult batchResult = batchProcessor.save(3, categories, categoryDao::saveAll);
 
         //then
         assertThat(batchResult.getAffectedRow()).isEqualTo(categories.size());
@@ -60,7 +60,7 @@ public class BatchServiceTest {
 
         //when
         BatchResult batchResult
-                = batchService.save(10, products, partnerProductDao::saveAll)
+                = batchProcessor.save(10, products, partnerProductDao::saveAll)
                 .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
         System.out.println(batchResult.toString());
 

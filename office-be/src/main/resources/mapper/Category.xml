@@ -5,17 +5,17 @@
 
     <insert id="saveAll" parameterType="Category">
         INSERT INTO tCategory (
-        nCategoryCode,
-        sCategoryName)
+                                nCategoryCode,
+                                sCategoryName)
         VALUES
-        <foreach collection="list" item="Category" separator=",">
-            (
-            #{Category.code},
-            #{Category.name}
-            )
-        </foreach>
+            <foreach collection="list" item="Category" separator=",">
+                (
+                #{Category.code},
+                #{Category.name}
+                )
+            </foreach>
         ON DUPLICATE KEY UPDATE
-        sCategoryName = VALUES(sCategoryName)
+                         sCategoryName = VALUES(sCategoryName)
     </insert>
 
     <select id="selectAll" resultType="Category">
