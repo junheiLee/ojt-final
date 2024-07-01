@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -25,6 +27,15 @@ public class LinkChangeService {
         int isLinkedRow = partnerProductService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
         int changedStandard = standardProductService.updateLinkedChange();
         log.info("create link={}, updateIsLinked={}, updateStandard={}", row, isLinkedRow, changedStandard);
+        return null;
+    }
+
+    @Transactional
+    public BaseResponse delete(List<String> deleteProductCodes) {
+        int deletedRow = linkService.delete(deleteProductCodes);
+        int isLinkedRow = partnerProductService.updateAllIsLinked(false, deleteProductCodes);
+        int changedStandard = standardProductService.updateLinkedChange();
+        log.info("create link={}, updateIsLinked={}, updateStandard={}", deletedRow, isLinkedRow, changedStandard);
         return null;
     }
 }

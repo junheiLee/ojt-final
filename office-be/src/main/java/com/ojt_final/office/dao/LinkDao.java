@@ -11,4 +11,6 @@ import java.util.List;
 public interface LinkDao {
 
     int saveAll(List<Link> links);
+
+    int deleteAll(List<String> deleteProductCodes);
 }

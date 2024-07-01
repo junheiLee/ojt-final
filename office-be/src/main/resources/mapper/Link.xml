@@ -18,4 +18,14 @@
         ON DUPLICATE KEY UPDATE
                          nProductCode = VALUES(nProductCode)
     </insert>
+
+    <delete id="deleteAll">
+        DELETE FROM tLink
+        WHERE
+            sPartnerProductCode IN (
+                <foreach collection="list" item="code" separator=",">
+                    #{code}
+                </foreach>
+            )
+    </delete>
 </mapper>

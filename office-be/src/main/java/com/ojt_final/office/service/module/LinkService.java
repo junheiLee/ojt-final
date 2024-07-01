@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -19,6 +21,12 @@ public class LinkService {
     public int create(CreateLinkRequest createLinkRequest) {
 
         return linkDao.saveAll(createLinkRequest.toEntities());
+    }
+
+    @Transactional
+    public int delete(List<String> deleteProductCodes) {
+
+        return linkDao.deleteAll(deleteProductCodes);
     }
 
 }
