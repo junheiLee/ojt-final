@@ -1,6 +1,7 @@
 package com.ojt_final.office.controller;
 
 import com.ojt_final.office.dto.response.UploadExcelResponse;
+import com.ojt_final.office.service.ExcelUploadService;
 import com.ojt_final.office.service.module.PartnerProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +17,14 @@ import java.io.IOException;
 @RestController
 public class PartnerProductController {
 
+    private final ExcelUploadService excelUploadService;
     private final PartnerProductService partnerProductService;
 
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
-        return partnerProductService.saveExcelData(excelFile);
+        return excelUploadService.saveExcelData(excelFile, partnerProductService.getTarget());
     }
 
 }
