@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
@@ -21,18 +23,16 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class StandardProductService implements UploadableService<StandardProduct> {
+public class StandardProductService extends AbstractUploadableService<StandardProduct> {
 
     private final BatchProcessor batchProcessor;
     private final StandardProductDao standardProductDao;
 
     @Override
-    public UploadExcelResponse saveAll(List<StandardProduct> standardProducts) {
+    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
-        int previousCount = standardProductDao.countAll();
-        BatchResult batchResult
-                = batchProcessor.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
+        List<StandardProduct> standardProducts = parse(excelFile);
+        BatchResult batchResult = saveAll(standardProducts);
 
         return UploadExcelResponse.builder()
                 .code(ResultCode.UPLOAD_RESULT)
@@ -41,8 +41,15 @@ public class StandardProductService implements UploadableService<StandardProduct
     }
 
     @Override
-    public Class<StandardProduct> getTarget() {
+    public Class<StandardProduct> getTargetDomain() {
         return StandardProduct.class;
+    }
+
+    private BatchResult saveAll(List<StandardProduct> standardProducts) {
+
+        int previousCount = standardProductDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        return batchProcessor.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
     }
 
     public int updateLinkedChange() {

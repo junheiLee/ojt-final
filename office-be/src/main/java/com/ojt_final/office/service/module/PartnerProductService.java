@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
@@ -19,18 +21,16 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class PartnerProductService implements UploadableService<PartnerProduct> {
+public class PartnerProductService extends AbstractUploadableService<PartnerProduct> {
 
     private final BatchProcessor batchProcessor;
     private final PartnerProductDao partnerProductDao;
 
     @Override
-    public UploadExcelResponse saveAll(List<PartnerProduct> partnerProducts) {
+    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
-        int previousCount = partnerProductDao.countAll();
-        BatchResult batchResult
-                = batchProcessor.save(BATCH_SIZE, partnerProducts, partnerProductDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
+        List<PartnerProduct> partnerProducts = parse(excelFile);
+        BatchResult batchResult = saveAll(partnerProducts);
 
         return UploadExcelResponse.builder()
                 .code(ResultCode.UPLOAD_RESULT)
@@ -39,8 +39,15 @@ public class PartnerProductService implements UploadableService<PartnerProduct> 
     }
 
     @Override
-    public Class<PartnerProduct> getTarget() {
+    public Class<PartnerProduct> getTargetDomain() {
         return PartnerProduct.class;
+    }
+
+    private BatchResult saveAll(List<PartnerProduct> partnerProducts) {
+
+        int previousCount = partnerProductDao.countAll();
+        return batchProcessor.save(BATCH_SIZE, partnerProducts, partnerProductDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
     }
 
     /**
