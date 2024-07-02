@@ -52,8 +52,8 @@ public class StandardProductService extends AbstractUploadableService<StandardPr
                 .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
     }
 
-    public int updateLinkedChange(List<Integer> standardProductCodes) {
+    public int integrateChange(List<Integer> standardProductCodes) {
 
-        return standardProductDao.updateLinkedChange(standardProductCodes);
+        return standardProductDao.integrateChange(standardProductCodes);
     }
 }

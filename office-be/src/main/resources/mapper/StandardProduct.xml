@@ -40,7 +40,7 @@
         FROM tStandardProduct
     </select>
 
-    <update id="updateLinkedChange">
+    <update id="integrateChange">
         UPDATE tStandardProduct SP
         INNER JOIN (
             SELECT
@@ -62,13 +62,13 @@
             SP.nAvgPrice = CAL.avgPrice,
             sp.nPartnerCount = CAL.partnerCount
         <where>
-            <if test="standardProductCodes.size() != 0">
+            <if test="list != null and list.size() != 0">
                 SP.nProductCode IN (
                 <foreach collection="list" item="code" separator=", ">
                     #{code}
                 </foreach>
+                )
             </if>
         </where>
-        )
     </update>
 </mapper>

@@ -1,7 +1,7 @@
 package com.ojt_final.office.dao;
 
 import com.ojt_final.office.domain.PartnerProduct;
-import com.ojt_final.office.dto.request.Condition;
+import com.ojt_final.office.dto.request.search.Condition;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;

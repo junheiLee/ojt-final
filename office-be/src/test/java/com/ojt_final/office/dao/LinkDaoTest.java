@@ -21,7 +21,7 @@ public class LinkDaoTest {
 
     @BeforeEach
     void save() {
-        List<Link> links =  List.of(
+        List<Link> links = List.of(
                 Link.builder().partnerProductCode("4").standardProductCode(4).build(),
                 Link.builder().partnerProductCode("5").standardProductCode(5).build());
 
@@ -30,9 +30,9 @@ public class LinkDaoTest {
 
     @DisplayName("저장, 파트너상품코드로 중복 없는 기준상품 코드 반환 Test")
     @Test
-    void saveAndFindAllStandardCodes(){
+    void saveAndFindAllStandardCodes() {
         //given
-        List<Link> links =  List.of(
+        List<Link> links = List.of(
                 Link.builder().partnerProductCode("1").standardProductCode(1).build(),  // 3개
                 Link.builder().partnerProductCode("2").standardProductCode(1).build(),  // 1개 (기준상품 중복)
                 Link.builder().partnerProductCode("3").standardProductCode(2).build()); // 1개

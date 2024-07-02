@@ -23,21 +23,23 @@ public class LinkChangeService {
 
     @Transactional
     public BaseResponse create(CreateLinkRequest createLinkRequest) {
-        int row = linkService.create(createLinkRequest);
-        int isLinkedRow = partnerProductService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
+        int createdLinkCount = linkService.create(createLinkRequest);
+
+        int linkedPartnerProductCount
+                = partnerProductService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
+
         List<Integer> linkedChangeCodes = List.of(createLinkRequest.getStandardProductCode());
-        int changedStandard = standardProductService.updateLinkedChange(linkedChangeCodes);
-        log.info("create link={}, updateIsLinked={}, updateStandard={}", row, isLinkedRow, changedStandard);
+        int changedStandardProductCount = standardProductService.integrateChange(linkedChangeCodes);
         return null;
     }
 
     @Transactional
     public BaseResponse delete(List<String> deleteProductCodes) {
         List<Integer> linkedDeleteStandardCodes = linkService.findAllByProductCodes(deleteProductCodes);
-        int deletedRow = linkService.delete(deleteProductCodes);
-        int isLinkedRow = partnerProductService.updateAllIsLinked(false, deleteProductCodes);
-        int changedStandard = standardProductService.updateLinkedChange(linkedDeleteStandardCodes);
-        log.info("create link={}, updateIsLinked={}, updateStandard={}", deletedRow, isLinkedRow, changedStandard);
+        int deletedLinkCount = linkService.delete(deleteProductCodes);
+
+        int unLinkedPartnerProductCount = partnerProductService.updateAllIsLinked(false, deleteProductCodes);
+        int changedStandardProductCount = standardProductService.integrateChange(linkedDeleteStandardCodes);
         return null;
     }
 }

@@ -142,6 +142,7 @@ public class BatchProcessorTest {
     }
 
     private static PartnerProduct buildProductForTest(String code, String partnerCode, int categoryCode, String name) {
+        // select 단일 생성 후, 각 가격 바꿔주기 (pcPrice, mobilePrice)
         return PartnerProduct.builder()
                 .code(code).partnerCode(partnerCode).categoryCode(categoryCode).name(name)
                 .pcPrice(0).mobilePrice(0).url("https://test").imageUrl("https://image.test")
