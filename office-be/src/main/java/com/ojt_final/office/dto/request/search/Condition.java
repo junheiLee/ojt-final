@@ -1,4 +1,4 @@
-package com.ojt_final.office.dto.request;
+package com.ojt_final.office.dto.request.search;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,6 @@ public class Condition {
     private int page;
     private int limit;
     private int offset;
-
     private Integer categoryCode;
 
     public Condition setPageInfo(int limit, int offset) {
