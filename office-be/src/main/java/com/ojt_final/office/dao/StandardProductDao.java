@@ -14,5 +14,5 @@ public interface StandardProductDao {
 
     int countAll();
 
-    int updateLinkedChange();
+    int updateLinkedChange(List<Integer> standardProductCodes);
 }

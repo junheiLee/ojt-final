@@ -61,5 +61,14 @@
             SP.nMinPrice = CAL.minPrice,
             SP.nAvgPrice = CAL.avgPrice,
             sp.nPartnerCount = CAL.partnerCount
+        <where>
+            <if test="standardProductCodes.size() != 0">
+                SP.nProductCode IN (
+                <foreach collection="list" item="code" separator=", ">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+        )
     </update>
 </mapper>

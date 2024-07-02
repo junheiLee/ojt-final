@@ -52,10 +52,8 @@ public class StandardProductService extends AbstractUploadableService<StandardPr
                 .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
     }
 
-    public int updateLinkedChange() {
+    public int updateLinkedChange(List<Integer> standardProductCodes) {
 
-        //TODO: 변경할 기준 상품 추적해서 WHERE IN 절 추가하기
-
-        return standardProductDao.updateLinkedChange();
+        return standardProductDao.updateLinkedChange(standardProductCodes);
     }
 }

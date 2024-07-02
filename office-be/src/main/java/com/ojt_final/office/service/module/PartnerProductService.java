@@ -45,7 +45,7 @@ public class PartnerProductService extends AbstractUploadableService<PartnerProd
 
     private BatchResult saveAll(List<PartnerProduct> partnerProducts) {
 
-        int previousCount = partnerProductDao.countAll();
+        int previousCount = partnerProductDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor.save(BATCH_SIZE, partnerProducts, partnerProductDao::saveAll)
                 .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
     }

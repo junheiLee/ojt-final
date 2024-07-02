@@ -23,10 +23,15 @@ public class LinkService {
         return linkDao.saveAll(createLinkRequest.toEntities());
     }
 
-    @Transactional
-    public int delete(List<String> deleteProductCodes) {
+    public List<Integer> findAllByProductCodes(List<String> partnerProductCodes) {
 
-        return linkDao.deleteAll(deleteProductCodes);
+        return linkDao.findAllByPartnerProductCodes(partnerProductCodes);
+    }
+
+    @Transactional
+    public int delete(List<String> partnerProductCodes) {
+
+        return linkDao.deleteAll(partnerProductCodes);
     }
 
 }

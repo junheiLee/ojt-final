@@ -19,6 +19,16 @@
                          nProductCode = VALUES(nProductCode)
     </insert>
 
+    <select id="findAllByPartnerProductCodes" parameterType="String" resultType="int">
+        SELECT DISTINCT nProductCode
+        FROM tLink
+        WHERE sPartnerProductCode in (
+            <foreach collection="list" item="partnerProductCode" separator=", ">
+                #{partnerProductCode}
+            </foreach>
+        )
+    </select>
+
     <delete id="deleteAll">
         DELETE FROM tLink
         WHERE

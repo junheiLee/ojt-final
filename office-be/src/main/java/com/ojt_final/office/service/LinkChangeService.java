@@ -25,16 +25,18 @@ public class LinkChangeService {
     public BaseResponse create(CreateLinkRequest createLinkRequest) {
         int row = linkService.create(createLinkRequest);
         int isLinkedRow = partnerProductService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
-        int changedStandard = standardProductService.updateLinkedChange();
+        List<Integer> linkedChangeCodes = List.of(createLinkRequest.getStandardProductCode());
+        int changedStandard = standardProductService.updateLinkedChange(linkedChangeCodes);
         log.info("create link={}, updateIsLinked={}, updateStandard={}", row, isLinkedRow, changedStandard);
         return null;
     }
 
     @Transactional
     public BaseResponse delete(List<String> deleteProductCodes) {
+        List<Integer> linkedDeleteStandardCodes = linkService.findAllByProductCodes(deleteProductCodes);
         int deletedRow = linkService.delete(deleteProductCodes);
         int isLinkedRow = partnerProductService.updateAllIsLinked(false, deleteProductCodes);
-        int changedStandard = standardProductService.updateLinkedChange();
+        int changedStandard = standardProductService.updateLinkedChange(linkedDeleteStandardCodes);
         log.info("create link={}, updateIsLinked={}, updateStandard={}", deletedRow, isLinkedRow, changedStandard);
         return null;
     }
