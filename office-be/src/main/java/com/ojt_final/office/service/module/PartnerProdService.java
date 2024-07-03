@@ -1,7 +1,7 @@
 package com.ojt_final.office.service.module;
 
-import com.ojt_final.office.dao.PartnerProductDao;
-import com.ojt_final.office.domain.PartnerProduct;
+import com.ojt_final.office.dao.PartnerProdDao;
+import com.ojt_final.office.domain.PartnerProd;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -21,16 +21,16 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class PartnerProductService extends AbstractUploadableService<PartnerProduct> {
+public class PartnerProdService extends AbstractUploadableService<PartnerProd> {
 
     private final BatchProcessor batchProcessor;
-    private final PartnerProductDao partnerProductDao;
+    private final PartnerProdDao partnerProdDao;
 
     @Override
     public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
-        List<PartnerProduct> partnerProducts = parse(excelFile);
-        BatchResult batchResult = saveAll(partnerProducts);
+        List<PartnerProd> partnerProds = parse(excelFile);
+        BatchResult batchResult = saveAll(partnerProds);
 
         return UploadExcelResponse.builder()
                 .code(ResultCode.UPLOAD_RESULT)
@@ -39,15 +39,15 @@ public class PartnerProductService extends AbstractUploadableService<PartnerProd
     }
 
     @Override
-    public Class<PartnerProduct> getTargetDomain() {
-        return PartnerProduct.class;
+    public Class<PartnerProd> getTargetDomain() {
+        return PartnerProd.class;
     }
 
-    private BatchResult saveAll(List<PartnerProduct> partnerProducts) {
+    private BatchResult saveAll(List<PartnerProd> partnerProds) {
 
-        int previousCount = partnerProductDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
-        return batchProcessor.save(BATCH_SIZE, partnerProducts, partnerProductDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
+        int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        return batchProcessor.save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
     }
 
     /**
@@ -60,7 +60,7 @@ public class PartnerProductService extends AbstractUploadableService<PartnerProd
      */
     public int updateAllIsLinked(boolean isLinked, List<String> codes) {
 
-        return partnerProductDao.updateAllIsLinked(isLinked, codes);
+        return partnerProdDao.updateAllIsLinked(isLinked, codes);
     }
 
 }

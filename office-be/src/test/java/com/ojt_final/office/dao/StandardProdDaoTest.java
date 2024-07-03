@@ -14,16 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-public class StandardProductDaoTest {
+public class StandardProdDaoTest {
 
     @Autowired
-    StandardProductDao standardProductDao;
+    StandardProdDao standardProdDao;
 
     @Autowired
     LinkDao linkDao;
 
     @Autowired
-    PartnerProductDao partnerProductDao;
+    PartnerProdDao partnerProdDao;
 
     @DisplayName("타겟 기준 상품 코드가 있는 경우, where in 절 사용 Test")
     @Test
@@ -33,11 +33,11 @@ public class StandardProductDaoTest {
                 Link.builder().partnerProductCode("1").standardProductCode(1).build(),
                 Link.builder().partnerProductCode("2").standardProductCode(2).build());
         linkDao.saveAll(links);
-        partnerProductDao.updateAllIsLinked(true, links.stream().map(Link::getPartnerProductCode).toList());
+        partnerProdDao.updateAllIsLinked(true, links.stream().map(Link::getPartnerProductCode).toList());
         List<Integer> standardProductCodes = List.of(1, 2);
 
         //when
-        int affectedRow = standardProductDao.integrateChange(standardProductCodes);
+        int affectedRow = standardProdDao.integrateChange(standardProductCodes);
 
         //then
         assertThat(affectedRow).isEqualTo(2);
@@ -55,7 +55,7 @@ public class StandardProductDaoTest {
         List<Integer> emptyList = Collections.emptyList();
 
         //when
-        int affectedRow = standardProductDao.integrateChange(emptyList);
+        int affectedRow = standardProdDao.integrateChange(emptyList);
 
         //then
         assertThat(affectedRow).isEqualTo(links.size());

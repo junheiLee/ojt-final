@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-public enum StandardSortCondition {
+public enum StandardProdSortCond {
 
     PRODUCT_NAME("sProductName", "ASC"),
     PRODUCT_NAME_REVERSE("sProductName", "DESC"),
@@ -31,21 +31,21 @@ public enum StandardSortCondition {
     private final String columnName;
     private final String inOrder;
 
-    StandardSortCondition(String columnName, String inOrder) {
+    StandardProdSortCond(String columnName, String inOrder) {
         this.columnName = columnName;
         this.inOrder = inOrder;
     }
 
-    public static List<StandardSortCondition> fromParams(List<String> sortParams) {
+    public static List<StandardProdSortCond> fromParams(List<String> sortParams) {
 
         Set<String> existingColumnNames = new HashSet<>();
         return sortParams.stream()
-                .map(StandardSortCondition::getByName)
+                .map(StandardProdSortCond::getByName)
                 .filter(sort -> existingColumnNames.add(sort.getColumnName()))
                 .collect(Collectors.toList());
     }
 
-    private static StandardSortCondition getByName(String param) {
+    private static StandardProdSortCond getByName(String param) {
 
         return Arrays.stream(values())
                 .filter(e -> e.name().equals(param))

@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Row;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class StandardProduct implements Uploadable {
+public class StandardProd implements Uploadable {
 
     @ExcelColumn(upload = "대분류코드")
     private int categoryCode;
@@ -38,12 +38,12 @@ public class StandardProduct implements Uploadable {
     private int partnerCount;
 
     @Builder
-    public StandardProduct(int categoryCode, String categoryName,
-                           int code, String name,
-                           String bundleCondition, String description,
-                           String sOrigin, String sOriginUrl, String sImageUrl,
-                           int minPrice, int avgPrice,
-                           int partnerCount) {
+    public StandardProd(int categoryCode, String categoryName,
+                        int code, String name,
+                        String bundleCondition, String description,
+                        String sOrigin, String sOriginUrl, String sImageUrl,
+                        int minPrice, int avgPrice,
+                        int partnerCount) {
 
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;

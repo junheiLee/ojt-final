@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 import static com.ojt_final.office.global.constant.CommonConst.OUTPUT_LIST_LIMIT_SIZE;
 
 @Slf4j
@@ -13,14 +15,15 @@ import static com.ojt_final.office.global.constant.CommonConst.OUTPUT_LIST_LIMIT
 @Getter
 @Setter
 @NoArgsConstructor
-public class Condition {
+public class Cond {
 
     private int page;
     private int limit;
     private int offset;
     private Integer categoryCode;
+    private List<String> sorts;
 
-    public Condition setPageInfo(int limit, int offset) {
+    public Cond setPageInfo(int limit, int offset) {
 
         this.limit = limit;
         this.offset = offset;

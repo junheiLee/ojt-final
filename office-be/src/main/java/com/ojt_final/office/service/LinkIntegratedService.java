@@ -3,8 +3,8 @@ package com.ojt_final.office.service;
 import com.ojt_final.office.dto.request.CreateLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.service.module.LinkService;
-import com.ojt_final.office.service.module.PartnerProductService;
-import com.ojt_final.office.service.module.StandardProductService;
+import com.ojt_final.office.service.module.PartnerProdService;
+import com.ojt_final.office.service.module.StandardProdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,18 +18,18 @@ import java.util.List;
 public class LinkIntegratedService {
 
     private final LinkService linkService;
-    private final StandardProductService standardProductService;
-    private final PartnerProductService partnerProductService;
+    private final StandardProdService standardProdService;
+    private final PartnerProdService partnerProdService;
 
     @Transactional
     public BaseResponse create(CreateLinkRequest createLinkRequest) {
         int createdLinkCount = linkService.create(createLinkRequest);
 
         int linkedPartnerProductCount
-                = partnerProductService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
+                = partnerProdService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
 
         List<Integer> linkedChangeCodes = List.of(createLinkRequest.getStandardProductCode());
-        int changedStandardProductCount = standardProductService.integrateChange(linkedChangeCodes);
+        int changedStandardProductCount = standardProdService.integrateChange(linkedChangeCodes);
         return null;
     }
 
@@ -38,8 +38,8 @@ public class LinkIntegratedService {
         List<Integer> linkedDeleteStandardCodes = linkService.findAllByProductCodes(deleteProductCodes);
         int deletedLinkCount = linkService.delete(deleteProductCodes);
 
-        int unLinkedPartnerProductCount = partnerProductService.updateAllIsLinked(false, deleteProductCodes);
-        int changedStandardProductCount = standardProductService.integrateChange(linkedDeleteStandardCodes);
+        int unLinkedPartnerProductCount = partnerProdService.updateAllIsLinked(false, deleteProductCodes);
+        int changedStandardProductCount = standardProdService.integrateChange(linkedDeleteStandardCodes);
         return null;
     }
 }

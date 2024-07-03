@@ -1,7 +1,7 @@
 package com.ojt_final.office.controller;
 
 import com.ojt_final.office.dto.response.UploadExcelResponse;
-import com.ojt_final.office.service.module.StandardProductService;
+import com.ojt_final.office.service.module.StandardProdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @RestController
 public class StandardProductController {
 
-    private final StandardProductService standardService;
+    private final StandardProdService standardService;
 
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")

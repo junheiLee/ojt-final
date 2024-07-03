@@ -10,7 +10,7 @@ import java.sql.Date;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class PartnerProduct implements Uploadable {
+public class PartnerProd implements Uploadable {
 
     @ExcelColumn(upload = "대분류코드")
     private int categoryCode;
@@ -40,12 +40,12 @@ public class PartnerProduct implements Uploadable {
     private boolean isLinked;
 
     @Builder
-    public PartnerProduct(int categoryCode, String categoryName, String partnerCode,
-                          String code, String name,
-                          int pcPrice, int mobilePrice,
-                          Date createdAt,
-                          String url, String imageUrl,
-                          boolean isLinked) {
+    public PartnerProd(int categoryCode, String categoryName, String partnerCode,
+                       String code, String name,
+                       int pcPrice, int mobilePrice,
+                       Date createdAt,
+                       String url, String imageUrl,
+                       boolean isLinked) {
 
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;

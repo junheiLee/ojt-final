@@ -1,6 +1,6 @@
 package com.ojt_final.office.dao;
 
-import com.ojt_final.office.domain.StandardProduct;
+import com.ojt_final.office.domain.StandardProd;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
@@ -8,9 +8,9 @@ import java.util.List;
 
 @Mapper
 @Component
-public interface StandardProductDao {
+public interface StandardProdDao {
 
-    int saveAll(List<StandardProduct> products);
+    int saveAll(List<StandardProd> products);
 
     int countAll();
 

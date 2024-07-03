@@ -6,11 +6,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static com.ojt_final.office.domain.sort.StandardSortCondition.*;
+import static com.ojt_final.office.domain.sort.StandardProdSortCond.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class StandardSortConditionTest {
+public class StandardSortCondTest {
 
 
     @DisplayName("같은 컬럼의 오름차순/내림차순 중복 Param, 정의되지 않은 Param Test")
@@ -20,7 +20,7 @@ public class StandardSortConditionTest {
         List<String> params = List.of(PRODUCT_NAME.name(), PRODUCT_NAME_REVERSE.name(), "wrongParam");
 
         //when
-        List<StandardSortCondition> conditions = StandardSortCondition.fromParams(params);
+        List<StandardProdSortCond> conditions = StandardProdSortCond.fromParams(params);
 
         //then
         assertThat(conditions.size()).isEqualTo(2);

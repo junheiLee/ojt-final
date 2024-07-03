@@ -1,9 +1,9 @@
 package com.ojt_final.office.service.batch;
 
 import com.ojt_final.office.dao.CategoryDao;
-import com.ojt_final.office.dao.PartnerProductDao;
+import com.ojt_final.office.dao.PartnerProdDao;
 import com.ojt_final.office.domain.Category;
-import com.ojt_final.office.domain.PartnerProduct;
+import com.ojt_final.office.domain.PartnerProd;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +28,7 @@ public class BatchProcessorTest {
     CategoryDao categoryDao;
 
     @Autowired
-    PartnerProductDao partnerProductDao;
+    PartnerProdDao partnerProdDao;
 
     @Autowired
     BatchProcessor batchProcessor;
@@ -54,14 +54,14 @@ public class BatchProcessorTest {
     @DisplayName("Batch 결과 생성, 수정, 유지, 실패 숫자 확인")
     @ParameterizedTest(name = "insert: {1}, update: {2}, maintain: {3}, failed: {4}")
     @MethodSource("batchListAndResult")
-    void batchSaveResultTest(List<PartnerProduct> products, int insert, int update, int maintain, int failed) {
+    void batchSaveResultTest(List<PartnerProd> products, int insert, int update, int maintain, int failed) {
         //given
-        int previousCount = partnerProductDao.countAll();
+        int previousCount = partnerProdDao.countAll();
 
         //when
         BatchResult batchResult
-                = batchProcessor.save(10, products, partnerProductDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, partnerProductDao.countAll());
+                = batchProcessor.save(10, products, partnerProdDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
         System.out.println(batchResult.toString());
 
         //then
@@ -74,25 +74,25 @@ public class BatchProcessorTest {
     // 주의사항: 같은 UNIQUE KEY update, maintain 동시에 넣으면, update 된 후 maintain으로 update 됨.
     private static Stream<Arguments> batchListAndResult() {
 
-        List<PartnerProduct> insert = List.of(
+        List<PartnerProd> insert = List.of(
                 buildProductForTest("-1", "1", 1, "INSERT"),
                 buildProductForTest("-2", "1", 1, "INSERT")
         );
-        List<PartnerProduct> update = List.of(
+        List<PartnerProd> update = List.of(
                 buildProductForTest("1", "1", 2, "UPDATE"),
                 buildProductForTest("2", "2", 3, "UPDATE")
         );
-        List<PartnerProduct> maintain = List.of(
+        List<PartnerProd> maintain = List.of(
                 buildProductForTest("1", "1", 1, "PartnerProduct1"),
                 buildProductForTest("2", "2", 2, "PartnerProduct2"),
                 buildProductForTest("3", "3", 3, "PartnerProduct3")
         );
-        List<PartnerProduct> failed = List.of(
+        List<PartnerProd> failed = List.of(
                 buildProductForTest("-1", "1", -1, "PartnerProduct1"),
                 buildProductForTest("2", "-2", 2, "PartnerProduct2")
         );
 
-        Map<String, List<PartnerProduct>> targetMap = new HashMap<>();
+        Map<String, List<PartnerProd>> targetMap = new HashMap<>();
         targetMap.put("insert", insert);
         targetMap.put("update", update);
         targetMap.put("maintain", maintain);
@@ -141,9 +141,9 @@ public class BatchProcessorTest {
         );
     }
 
-    private static PartnerProduct buildProductForTest(String code, String partnerCode, int categoryCode, String name) {
+    private static PartnerProd buildProductForTest(String code, String partnerCode, int categoryCode, String name) {
         // select 단일 생성 후, 각 가격 바꿔주기 (pcPrice, mobilePrice)
-        return PartnerProduct.builder()
+        return PartnerProd.builder()
                 .code(code).partnerCode(partnerCode).categoryCode(categoryCode).name(name)
                 .pcPrice(0).mobilePrice(0).url("https://test").imageUrl("https://image.test")
                 .build();

@@ -1,8 +1,8 @@
 package com.ojt_final.office.service.module;
 
 
-import com.ojt_final.office.dao.StandardProductDao;
-import com.ojt_final.office.domain.StandardProduct;
+import com.ojt_final.office.dao.StandardProdDao;
+import com.ojt_final.office.domain.StandardProd;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -23,16 +23,16 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class StandardProductService extends AbstractUploadableService<StandardProduct> {
+public class StandardProdService extends AbstractUploadableService<StandardProd> {
 
     private final BatchProcessor batchProcessor;
-    private final StandardProductDao standardProductDao;
+    private final StandardProdDao standardProdDao;
 
     @Override
     public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
-        List<StandardProduct> standardProducts = parse(excelFile);
-        BatchResult batchResult = saveAll(standardProducts);
+        List<StandardProd> standardProds = parse(excelFile);
+        BatchResult batchResult = saveAll(standardProds);
 
         return UploadExcelResponse.builder()
                 .code(ResultCode.UPLOAD_RESULT)
@@ -41,19 +41,19 @@ public class StandardProductService extends AbstractUploadableService<StandardPr
     }
 
     @Override
-    public Class<StandardProduct> getTargetDomain() {
-        return StandardProduct.class;
+    public Class<StandardProd> getTargetDomain() {
+        return StandardProd.class;
     }
 
-    private BatchResult saveAll(List<StandardProduct> standardProducts) {
+    private BatchResult saveAll(List<StandardProd> standardProds) {
 
-        int previousCount = standardProductDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
-        return batchProcessor.save(BATCH_SIZE, standardProducts, standardProductDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, standardProductDao.countAll());
+        int previousCount = standardProdDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        return batchProcessor.save(BATCH_SIZE, standardProds, standardProdDao::saveAll)
+                .calInsertAndMaintainThenSet(previousCount, standardProdDao.countAll());
     }
 
     public int integrateChange(List<Integer> standardProductCodes) {
 
-        return standardProductDao.integrateChange(standardProductCodes);
+        return standardProdDao.integrateChange(standardProductCodes);
     }
 }
