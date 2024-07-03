@@ -1,4 +1,4 @@
-package com.ojt_final.office.domain;
+package com.ojt_final.office.domain.sort;
 
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-public enum StandardSort {
+public enum StandardSortCondition {
 
     PRODUCT_NAME("sProductName", "ASC"),
     PRODUCT_NAME_REVERSE("sProductName", "DESC"),
@@ -31,24 +31,24 @@ public enum StandardSort {
     private final String columnName;
     private final String inOrder;
 
-    StandardSort(String columnName, String inOrder) {
+    StandardSortCondition(String columnName, String inOrder) {
         this.columnName = columnName;
         this.inOrder = inOrder;
     }
 
-    public static List<StandardSort> getSortPriority(List<String> sortConditions) {
+    public static List<StandardSortCondition> fromParams(List<String> sortParams) {
 
         Set<String> existingColumnNames = new HashSet<>();
-        return sortConditions.stream()
-                .map(StandardSort::getSortConst)
+        return sortParams.stream()
+                .map(StandardSortCondition::getByName)
                 .filter(sort -> existingColumnNames.add(sort.getColumnName()))
                 .collect(Collectors.toList());
     }
 
-    private static StandardSort getSortConst(String name) {
+    private static StandardSortCondition getByName(String param) {
 
         return Arrays.stream(values())
-                .filter(e -> e.name().equals(name))
+                .filter(e -> e.name().equals(param))
                 .findAny().orElse(NONE);
     }
 }
