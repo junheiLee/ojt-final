@@ -56,24 +56,23 @@ VALUES ('5', '5', 'Standard5', NOW());
 
 
 --협력사 상품
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('1', '1', '1', 'PartnerProduct1', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('2', '2', '2', 'PartnerProduct2', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('3', '3', '3', 'PartnerProduct3', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('4', '4', '4', 'PartnerProduct4', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('5', '5', '5', 'PartnerProduct5', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('1', '3', '3', 'PartnerProduct1-p3', '0', '0', 'https://test', 'https://image.test');
-INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice,
-                             nMobilePrice, sUrl, sImageUrl)
-VALUES ('1', '5', '5', 'PartnerProduct1-p5', '0', '0', 'https://test', 'https://image.test');
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('1', '1', '1', 'PartnerProduct1', '0', '0', 'https://test', 'https://image.test', DATE('2024-01-01'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('2', '2', '2', 'PartnerProduct2', '0', '0', 'https://test', 'https://image.test', DATE('2024-02-02'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('3', '3', '3', 'PartnerProduct3', '0', '0', 'https://test', 'https://image.test', DATE('2024-03-03'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('4', '4', '4', 'PartnerProduct4', '0', '0', 'https://test', 'https://image.test', DATE('2024-04-04'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('5', '5', '5', 'PartnerProduct5', '0', '0', 'https://test', 'https://image.test', DATE('2024-05-05'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('1', '3', '3', 'PartnerProduct1-p3', '0', '0', 'https://test', 'https://image.test', DATE('2024-01-03'));
+
+INSERT INTO tPartnerProduct (sPartnerProductCode, sPartnerCode, nCategoryCode, sPartnerProductName, nPcprice, nMobilePrice, sUrl, sImageUrl, dtCreatedAt)
+VALUES ('1', '5', '5', 'PartnerProduct1-p5', '0', '0', 'https://test', 'https://image.test', DATE('2024-01-05'));

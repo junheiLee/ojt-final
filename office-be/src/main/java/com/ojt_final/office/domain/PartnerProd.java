@@ -16,8 +16,11 @@ public class PartnerProd implements Uploadable {
     private int categoryCode;
     @ExcelColumn(upload = "대분류명")
     private String categoryName;
+
     @ExcelColumn(upload = "협력사코드")
     private String partnerCode;
+
+    private String partnerName;
 
     @ExcelColumn(upload = "상품코드")
     private String code;

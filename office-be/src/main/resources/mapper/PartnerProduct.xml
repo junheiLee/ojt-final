@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.PartnerProdDao">
 
-    <insert id="saveAll" parameterType="PartnerProduct">
+    <insert id="saveAll" parameterType="PartnerProd">
         INSERT INTO tPartnerProduct (
                         sPartnerProductCode,
                         sPartnerCode,
@@ -17,17 +17,17 @@
                         dtCreatedAt
                         )
         VALUES
-            <foreach collection="list" item="PartnerProduct" separator="," >
+            <foreach collection="list" item="PartnerProd" separator="," >
                 (
-                 #{PartnerProduct.code},
-                 #{PartnerProduct.partnerCode},
-                 #{PartnerProduct.categoryCode},
-                 #{PartnerProduct.name},
-                 #{PartnerProduct.pcPrice},
-                 #{PartnerProduct.mobilePrice},
-                 #{PartnerProduct.url},
-                 #{PartnerProduct.imageUrl},
-                 #{PartnerProduct.createdAt}
+                 #{PartnerProd.code},
+                 #{PartnerProd.partnerCode},
+                 #{PartnerProd.categoryCode},
+                 #{PartnerProd.name},
+                 #{PartnerProd.pcPrice},
+                 #{PartnerProd.mobilePrice},
+                 #{PartnerProd.url},
+                 #{PartnerProd.imageUrl},
+                 #{PartnerProd.createdAt}
                 )
             </foreach>
         ON DUPLICATE KEY UPDATE
@@ -41,6 +41,52 @@
     <select id="countAll">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct
+    </select>
+
+    <select id="selectByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
+        SELECT P.sPartnerName AS partnerName,
+               C.sCategoryName AS categoryName,
+               PP.sPartnerProductName AS name,
+               PP.sImageUrl AS imageUrl,
+               PP.sUrl AS url,
+               PP.nPcPrice AS pcPrice,
+               PP.nMobilePrice AS mobilePrice,
+               pp.dtCreatedAt AS createdAt
+        FROM tPartnerProduct PP
+        INNER JOIN tCategory C ON (PP.nCategoryCode = C.nCategoryCode)
+        INNER JOIN tPartner P ON (PP.sPartnerCode = P.sPartnerCode)
+        <where>
+            <if test="categoryCode != null and categoryCode != ''">
+                AND C.nCategoryCode = #{categoryCode}
+            </if>
+        </where>
+        <trim prefix="ORDER BY" prefixOverrides=",">
+            <if test="sort.name != '' and sort.name == 'ASC'">
+                ,sPartnerProductName ASC
+            </if>
+            <if test="sort.name != '' and sort.name == 'DESC'">
+                ,sPartnerProductName DESC
+            </if>
+            <if test="sort.createdAt != '' and sort.createdAt == 'ASC'">
+                ,dtCreatedAt ASC
+            </if>
+            <if test="sort.name == '' and sort.createdAt == ''">
+                ,dtCreatedAt DESC
+            </if>
+        </trim>
+        LIMIT #{limit}
+        OFFSET #{offset}
+
+    </select>
+
+    <select id="countAllByCond" parameterType="Cond">
+        SELECT COUNT(sPartnerProductCode)
+        FROM tPartnerProduct
+        <where>
+            <if test="categoryCode != null">
+                nCategoryCode = #{categoryCode}
+            </if>
+        </where>
     </select>
 
     <update id="updateAllIsLinked">

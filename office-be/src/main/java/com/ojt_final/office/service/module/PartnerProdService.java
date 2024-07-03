@@ -2,6 +2,9 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dao.PartnerProdDao;
 import com.ojt_final.office.domain.PartnerProd;
+import com.ojt_final.office.domain.search.PartnerProdCond;
+import com.ojt_final.office.dto.request.search.CondParam;
+import com.ojt_final.office.dto.response.PartnerProdListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -48,6 +51,19 @@ public class PartnerProdService extends AbstractUploadableService<PartnerProd> {
         int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor.save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
                 .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
+    }
+
+    public PartnerProdListResponse getResponseProducts(CondParam condParam) {
+
+        PartnerProdCond cond = condParam.toPartnerProdCond();
+        int count = partnerProdDao.countAllByCond(cond);
+        List<PartnerProd> products = partnerProdDao.selectByCond(cond);
+
+        return PartnerProdListResponse.builder()
+                .resultCode(ResultCode.SUCCESS)
+                .totalItemsCount(count)
+                .products(products)
+                .build();
     }
 
     /**

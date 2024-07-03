@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.StandardProdDao">
 
-    <insert id="saveAll" parameterType="StandardProduct">
+    <insert id="saveAll" parameterType="StandardProd">
         INSERT INTO tStandardProduct (
                     nProductCode,
                     nCategoryCode,
@@ -16,7 +16,7 @@
                     nPartnerCount
         )
         VALUES
-            <foreach collection="list" item="StandardProduct" separator="," >
+            <foreach collection="list" item="StandardProd" separator="," >
                 (
                 #{StandardProduct.code},
                 #{StandardProduct.categoryCode},
