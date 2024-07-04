@@ -26,7 +26,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class StandardProdService extends AbstractUploadableService<StandardProd> {
+public class StandardProdService extends AbstractExcelService<StandardProd> {
 
     private final BatchProcessor batchProcessor;
     private final StandardProdDao standardProdDao;
@@ -55,17 +55,30 @@ public class StandardProdService extends AbstractUploadableService<StandardProd>
                 .calInsertAndMaintainThenSet(previousCount, standardProdDao.countAll());
     }
 
+    public byte[] createExcelFile(CondParam condParam) {
+
+        StandardProdCond cond = condParam.toStandardProdCond();
+        List<StandardProd> prods = getProds(cond);
+
+        return create(prods, StandardProd.class);
+    }
+
     public StandardProdListResponse getResponseProds(CondParam condParam) {
 
         StandardProdCond cond = condParam.toStandardProdCond();
         int count = standardProdDao.countByCond(cond);
-        List<StandardProd> prods = standardProdDao.selectByCond(cond);
+        List<StandardProd> prods = getProds(cond);
 
         return StandardProdListResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .totalItemsCount(count)
                 .prods(prods)
                 .build();
+    }
+
+    private List<StandardProd> getProds(StandardProdCond cond) {
+
+        return standardProdDao.selectByCond(cond);
     }
 
     public int integrateChange(List<Integer> standardProdCodes) {

@@ -13,8 +13,7 @@
                         nPcPrice,
                         nMobilePrice,
                         sUrl,
-                        sImageUrl,
-                        dtCreatedAt
+                        sImageUrl
                         )
         VALUES
             <foreach collection="list" item="PartnerProd" separator="," >
@@ -26,8 +25,7 @@
                  #{PartnerProd.pcPrice},
                  #{PartnerProd.mobilePrice},
                  #{PartnerProd.url},
-                 #{PartnerProd.imageUrl},
-                 #{PartnerProd.createdAt}
+                 #{PartnerProd.imageUrl}
                 )
             </foreach>
         ON DUPLICATE KEY UPDATE

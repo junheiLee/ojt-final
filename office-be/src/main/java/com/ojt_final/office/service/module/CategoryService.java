@@ -21,7 +21,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class CategoryService extends AbstractUploadableService<Category> {
+public class CategoryService extends AbstractExcelService<Category> {
 
     private final BatchProcessor batchProcessor;
     private final CategoryDao categoryDao;

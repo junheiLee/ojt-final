@@ -30,6 +30,7 @@ public interface Uploadable {
         return switch (cellType) {
             case STRING -> cell.getStringCellValue();
             case NUMERIC -> String.format("%.0f", cell.getNumericCellValue());
+            case ERROR -> throw new RuntimeException("임시인데 Excel자체 Column 오류");
             default -> "";
         };
     }

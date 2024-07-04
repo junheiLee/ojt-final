@@ -16,12 +16,12 @@ public class StandardProd implements Uploadable {
 
     @ExcelColumn(upload = "대분류코드")
     private int categoryCode;
-    @ExcelColumn(upload = "대분류명")
+    @ExcelColumn(download = "카테고리")
     private String categoryName;
     @ExcelColumn(upload = "상품코드")
     private int code;
 
-    @ExcelColumn(upload = "상품명")
+    @ExcelColumn(upload = "상품명", download = "상품명")
     private String name;
     @ExcelColumn(upload = "묶음조건")
     private String bundleCondition;
@@ -37,8 +37,15 @@ public class StandardProd implements Uploadable {
 
     private String sImageUrl;
 
+    @ExcelColumn(download = "통합최저가")
     private int minPrice;
+    @ExcelColumn(download = "PC 최저가")
+    private int minPcPrice;
+    @ExcelColumn(download = "모바일최저가")
+    private int minMobilePrice;
+    @ExcelColumn(download = "평균가")
     private int avgPrice;
+    @ExcelColumn(download = "업체")
     private int partnerCount;
 
     @Builder
@@ -46,7 +53,7 @@ public class StandardProd implements Uploadable {
                         int code, String name,
                         String description, String bundleCondition, Date manufactureDate,
                         String sOrigin, String sOriginUrl, String sImageUrl,
-                        int minPrice, int avgPrice,
+                        int minPrice, int minPcPrice, int minMobilePrice, int avgPrice,
                         int partnerCount) {
 
         this.categoryCode = categoryCode;
@@ -63,6 +70,8 @@ public class StandardProd implements Uploadable {
         this.sImageUrl = sImageUrl;
 
         this.minPrice = minPrice;
+        this.minPcPrice = minPcPrice;
+        this.minMobilePrice = minMobilePrice;
         this.avgPrice = avgPrice;
         this.partnerCount = partnerCount;
     }
@@ -83,6 +92,6 @@ public class StandardProd implements Uploadable {
 
     private static String getString(int manufacture) {
 
-        return String.format("%s-%s-01", manufacture/100, manufacture%100);
+        return String.format("%s-%s-01", manufacture / 100, manufacture % 100);
     }
 }

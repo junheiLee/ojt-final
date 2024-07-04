@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class AbstractUploadableService<T extends Uploadable> {
+public abstract class AbstractExcelService<T extends Uploadable> {
 
     private final ExcelConverter excelConverter = ExcelConverter.INSTANCE;
 
@@ -45,5 +45,10 @@ public abstract class AbstractUploadableService<T extends Uploadable> {
         }
 
         return excelConverter.parse(excelFile.getInputStream(), getTargetDomain());
+    }
+
+    protected <T> byte[] create(List<T> items, Class<T> targetDomain) {
+
+        return excelConverter.create(items, targetDomain);
     }
 }

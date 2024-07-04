@@ -24,7 +24,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class PartnerProdService extends AbstractUploadableService<PartnerProd> {
+public class PartnerProdService extends AbstractExcelService<PartnerProd> {
 
     private final BatchProcessor batchProcessor;
     private final PartnerProdDao partnerProdDao;
@@ -53,17 +53,30 @@ public class PartnerProdService extends AbstractUploadableService<PartnerProd> {
                 .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
     }
 
+    public byte[] createExcelFile(CondParam condParam) {
+
+        PartnerProdCond cond = condParam.toPartnerProdCond();
+        List<PartnerProd> prods = getProds(cond);
+
+        return create(prods, PartnerProd.class);
+    }
+
     public PartnerProdListResponse getResponseProds(CondParam condParam) {
 
         PartnerProdCond cond = condParam.toPartnerProdCond();
         int count = partnerProdDao.countByCond(cond);
-        List<PartnerProd> prods = partnerProdDao.selectByCond(cond);
+        List<PartnerProd> prods = getProds(cond);
 
         return PartnerProdListResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .totalItemsCount(count)
                 .prods(prods)
                 .build();
+    }
+
+    private List<PartnerProd> getProds(PartnerProdCond cond) {
+
+        return partnerProdDao.selectByCond(cond);
     }
 
     /**

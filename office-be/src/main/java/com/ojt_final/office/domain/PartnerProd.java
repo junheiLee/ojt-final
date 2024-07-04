@@ -14,25 +14,25 @@ public class PartnerProd implements Uploadable {
 
     @ExcelColumn(upload = "대분류코드")
     private int categoryCode;
-    @ExcelColumn(upload = "대분류명")
+    @ExcelColumn(download = "카테고리")
     private String categoryName;
 
     @ExcelColumn(upload = "협력사코드")
     private String partnerCode;
-
+    @ExcelColumn(download = "협력사")
     private String partnerName;
 
     @ExcelColumn(upload = "상품코드")
     private String code;
-    @ExcelColumn(upload = "상품명")
+    @ExcelColumn(upload = "상품명", download = "상품명")
     private String name;
 
-    @ExcelColumn(upload = "PC가")
+    @ExcelColumn(upload = "PC가", download = "PC 가격")
     private int pcPrice;
-    @ExcelColumn(upload = "모바일가")
+    @ExcelColumn(upload = "모바일가", download = "모바일 가격")
     private int mobilePrice;
 
-    @ExcelColumn(upload = "등록일")
+    @ExcelColumn(download = "최초 등록")
     private Date createdAt;
 
     @ExcelColumn(upload = "url")

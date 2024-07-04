@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.ojt_final.office.service.excel.ExcelConst.*;
@@ -78,7 +79,7 @@ public class ExcelConverter {
                         eachCell -> excelHeaders.add(eachCell.getStringCellValue())
                 );
 
-        if (!excelHeaders.equals(domainFields)) {
+        if (!new HashSet<>(excelHeaders).containsAll(domainFields)) {
             throw new NoExcelColumnAnnotationsException(ResultCode.NOT_HAVE_DOMAIN);
         }
     }
@@ -106,6 +107,7 @@ public class ExcelConverter {
             return item;
 
         } catch (Exception e) {
+            e.printStackTrace();
             // T 타입을 Uploadable 인터페이스 상속으로 규정해 해당 없음
             throw new ExcelInternalException("해당 없음", e);
 
@@ -152,6 +154,10 @@ public class ExcelConverter {
 
             for (Field field : targetDomain.getDeclaredFields()) {
                 field.setAccessible(true);
+                if (!field.isAnnotationPresent(ExcelColumn.class)
+                        || field.getAnnotation(ExcelColumn.class).download().isBlank()) {
+                    continue;
+                }
                 createCell(row, cellIdx, item, field);
                 cellIdx++;
             }
