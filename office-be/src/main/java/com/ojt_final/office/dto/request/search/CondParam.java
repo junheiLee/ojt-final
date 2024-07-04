@@ -20,11 +20,14 @@ import static com.ojt_final.office.global.constant.CommonConst.OUTPUT_LIST_LIMIT
 public class CondParam {
 
     private int page = 1;
-    private int limit;
-    private int offset;
-    private Integer categoryCode;
+    private Integer categoryCode; //null 이면 검색하지 않음
     private List<String> sorts;
 
+    /**
+     * Converts CondParam to {@link StandardProdCond}.
+     *
+     * @return a {@link StandardProdCond} object
+     */
     public StandardProdCond toStandardProdCond() {
 
         return StandardProdCond.builder()
@@ -34,6 +37,11 @@ public class CondParam {
                 .build();
     }
 
+    /**
+     * Converts CondParam to {@link PartnerProdCond}.
+     *
+     * @return a {@link PartnerProdCond} object
+     */
     public PartnerProdCond toPartnerProdCond() {
 
         return PartnerProdCond.builder()

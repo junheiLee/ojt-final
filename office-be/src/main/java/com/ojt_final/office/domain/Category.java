@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.Row;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class Category implements Uploadable {
+public class Category implements ExcelProcessable {
 
     @ExcelColumn(upload = "대분류코드")
     private int code;

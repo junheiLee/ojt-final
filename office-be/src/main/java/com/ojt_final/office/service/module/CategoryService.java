@@ -6,6 +6,7 @@ import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
 import com.ojt_final.office.service.batch.BatchResult;
+import com.ojt_final.office.service.excel.AbstractExcelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,10 @@ public class CategoryService extends AbstractExcelService<Category> {
     private final BatchProcessor batchProcessor;
     private final CategoryDao categoryDao;
 
-    @Override
-    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
-        List<Category> categories = parse(excelFile);
+    public UploadExcelResponse saveExcelData(MultipartFile file) throws IOException {
+
+        List<Category> categories = parse(file);
         BatchResult batchResult = saveAll(categories);
 
         return UploadExcelResponse.builder()

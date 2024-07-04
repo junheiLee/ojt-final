@@ -23,19 +23,32 @@ public class StandardProdController {
 
     public static final String ATTACHMENT = "attachment; filename=standard_products.xlsx";
 
-    private final StandardProdService standardService;
+    private final StandardProdService standardProdService;
 
+    /**
+     * 엑셀 파일 업로드 및 처리 후 기준 상품을 DB에 저장하는 API
+     *
+     * @param excelFile the Excel file to be uploaded
+     * @return the response after processing the Excel file
+     * @throws IOException if an error occurs during file processing
+     */
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
-        return standardService.saveExcelData(excelFile);
+        return standardProdService.saveExcelData(excelFile);
     }
 
+    /**
+     * 주어진 조건에 해당하는 기준 상품들을 Excel 파일에 담아 다운로드 할 수 있는 API
+     *
+     * @param condParam the conditions to filter the standard products
+     * @return a ResponseEntity containing the Excel file as a byte array
+     */
     @GetMapping("/download/excel")
     public ResponseEntity<byte[]> downloadExcel(@ModelAttribute CondParam condParam) {
 
-        byte[] excelBytes = standardService.createExcelFile(condParam);
+        byte[] excelBytes = standardProdService.createExcelFile(condParam);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT);
@@ -46,10 +59,17 @@ public class StandardProdController {
                 .body(excelBytes);
     }
 
+    /**
+     * 주어진 조건에 해당하는 기준 상품 목록을 가져오는 API
+     *
+     * @param condParam the conditions to filter the standard products
+     * @return a response containing the list of standard products
+     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public StandardProdListResponse getPartnerProds(@ModelAttribute CondParam condParam) {
+    public StandardProdListResponse getStandardProds(@ModelAttribute CondParam condParam) {
 
-        return standardService.getResponseProds(condParam);
+        return standardProdService.getResponseProds(condParam);
     }
+
 }

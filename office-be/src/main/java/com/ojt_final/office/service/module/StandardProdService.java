@@ -10,6 +10,7 @@ import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
 import com.ojt_final.office.service.batch.BatchResult;
+import com.ojt_final.office.service.excel.AbstractExcelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class StandardProdService extends AbstractExcelService<StandardProd> {
     private final StandardProdDao standardProdDao;
 
     @Override
+    public Class<StandardProd> getTargetDomain() {
+        return StandardProd.class;
+    }
+
     public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
 
         List<StandardProd> standardProds = parse(excelFile);
@@ -41,11 +46,6 @@ public class StandardProdService extends AbstractExcelService<StandardProd> {
                 .code(ResultCode.UPLOAD_RESULT)
                 .batchResult(batchResult)
                 .build();
-    }
-
-    @Override
-    public Class<StandardProd> getTargetDomain() {
-        return StandardProd.class;
     }
 
     private BatchResult saveAll(List<StandardProd> standardProds) {
@@ -60,7 +60,7 @@ public class StandardProdService extends AbstractExcelService<StandardProd> {
         StandardProdCond cond = condParam.toStandardProdCond();
         List<StandardProd> prods = getProds(cond);
 
-        return create(prods, StandardProd.class);
+        return create(prods);
     }
 
     public StandardProdListResponse getResponseProds(CondParam condParam) {

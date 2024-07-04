@@ -18,6 +18,14 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
+    /**
+     * 엑셀 파일 업로드 및 처리 후 카테고리를 DB에 저장하는 API
+     *
+     * @param excelFile the Excel file to be uploaded
+     * @return an {@link UploadExcelResponse} containing the number of created, updated,
+     *         unchanged, and failed records after processing the file
+     * @throws IOException if an error occurs during file processing
+     */
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {

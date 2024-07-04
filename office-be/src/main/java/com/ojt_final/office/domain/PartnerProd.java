@@ -10,7 +10,7 @@ import java.sql.Date;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-public class PartnerProd implements Uploadable {
+public class PartnerProd implements ExcelProcessable {
 
     @ExcelColumn(upload = "대분류코드")
     private int categoryCode;

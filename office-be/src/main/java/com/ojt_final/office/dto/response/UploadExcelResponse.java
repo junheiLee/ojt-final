@@ -6,28 +6,38 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Represents the response after uploading and processing an Excel file.
+ * Extends {@link BaseResponse} to include base response fields.
+ */
+@ToString(callSuper = true)
 @Getter
-@ToString
 public class UploadExcelResponse extends BaseResponse {
 
-    private final int insertCount;
-    private final int updateCount;
-    private final int maintainCount;
+    private final int createdCount;
+    private final int updatedCount;
+    private final int unchangedCount;
     private final int failedCount;
 
+    /**
+     * Constructs an UploadExcelResponse with the given result code and batch result.
+     *
+     * @param code        the result code indicating the outcome of the request
+     * @param batchResult the batch result containing counts of created, updated, unchanged, and failed records
+     */
     @Builder
     public UploadExcelResponse(ResultCode code,
                                BatchResult batchResult) {
         super(code.name(),
                 String.format(code.getMessage(),
-                        batchResult.getInsertCount(),
-                        batchResult.getUpdateCount(),
-                        batchResult.getMaintainCount(),
+                        batchResult.getCreatedCount(),
+                        batchResult.getUpdatedCount(),
+                        batchResult.getUnChangedCount(),
                         batchResult.getFailedCount()));
 
-        this.insertCount = batchResult.getInsertCount();
-        this.updateCount = batchResult.getUpdateCount();
-        this.maintainCount = batchResult.getMaintainCount();
+        this.createdCount = batchResult.getCreatedCount();
+        this.updatedCount = batchResult.getUpdatedCount();
+        this.unchangedCount = batchResult.getUnChangedCount();
         this.failedCount = batchResult.getFailedCount();
     }
 

@@ -1,7 +1,7 @@
 package com.ojt_final.office.service.excel;
 
 
-import com.ojt_final.office.domain.Uploadable;
+import com.ojt_final.office.domain.ExcelProcessable;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.excel.ExcelInternalException;
 import com.ojt_final.office.global.exception.excel.NoExcelColumnAnnotationsException;
@@ -42,7 +42,7 @@ public class ExcelConverter {
      * 해당 파일이 Excel 확장자(.xlsx, .xls)인지 확인
      *
      * @param fileName 대상 파일 풀네임 (multipartFile.getOriginalFilename())
-     * @return 처리할 수 있는 엑셀 파일이면 True 반환
+     * @return 처리할 수 있는 엑셀 파일이면 True 반환POI Workbook create or close
      */
     public boolean supports(String fileName) {
 
@@ -58,17 +58,25 @@ public class ExcelConverter {
      * @param <T>          엑셀 파일을 읽어 db에 저장할 수 있는 객체
      * @return 객체 리스트
      */
-    public <T extends Uploadable> List<T> parse(InputStream inputStream,
-                                                Class<T> targetDomain) throws IOException {
+    public <T extends ExcelProcessable> List<T> parse(InputStream inputStream,
+                                                      Class<T> targetDomain){
 
-        Workbook wb = WorkbookFactory.create(inputStream);
+        Workbook wb = createWorkbook(inputStream);
         Sheet sheet = wb.getSheetAt(START_INDEX); // sheet 한 개
 
         validHeaders(sheet.getRow(START_INDEX), getFields(Act.UPLOAD, targetDomain)); // 첫 행의 정보로 타겟 도메인에 저장할 수 있는 헤더인지 확인
         List<T> items = parseBody(sheet, targetDomain);
 
-        wb.close();
+        closeWorkbook(wb);
         return items;
+    }
+
+    private Workbook createWorkbook(InputStream inputStream) {
+        try {
+            return WorkbookFactory.create(inputStream);
+        } catch (IOException e) {
+            throw new ExcelInternalException("Workbook 오류", e);
+        }
     }
 
     private void validHeaders(Row headerRow, List<String> domainFields) {
@@ -84,7 +92,7 @@ public class ExcelConverter {
         }
     }
 
-    private <T extends Uploadable> List<T> parseBody(Sheet sheet, Class<T> targetDomain) {
+    private <T extends ExcelProcessable> List<T> parseBody(Sheet sheet, Class<T> targetDomain) {
 
         List<T> items = new ArrayList<>();
 
@@ -98,7 +106,7 @@ public class ExcelConverter {
         return items;
     }
 
-    private <T extends Uploadable> T getItemFromRow(Row row, Class<T> domain) {
+    private <T extends ExcelProcessable> T getItemFromRow(Row row, Class<T> domain) {
 
         try {
             T item = domain.getDeclaredConstructor().newInstance();
@@ -121,7 +129,7 @@ public class ExcelConverter {
      * @param targetDomain 객체 타입
      * @return 엑셀 파일을 byte[]로 반환
      */
-    public <T> byte[] create(List<T> items, Class<T> targetDomain) {
+    public <T extends ExcelProcessable> byte[] create(List<T> items, Class<T> targetDomain) {
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(targetDomain.getName());
@@ -131,7 +139,8 @@ public class ExcelConverter {
 
         // 다운로드하는 byte[] 생성 및 리턴
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeAndCloseWorkbookHandleIOException(wb, out);
+        writeWorkbook(wb, out);
+        closeWorkbook(wb);
         return out.toByteArray();
     }
 
@@ -164,9 +173,17 @@ public class ExcelConverter {
         }
     }
 
-    private void writeAndCloseWorkbookHandleIOException(Workbook wb, ByteArrayOutputStream out) {
+    private void writeWorkbook(Workbook wb, ByteArrayOutputStream out) {
         try {
             wb.write(out);
+
+        } catch (IOException e) {
+            throw new ExcelInternalException("Workbook 오류", e);
+        }
+    }
+
+    private void closeWorkbook(Workbook wb) {
+        try {
             wb.close();
 
         } catch (IOException e) {

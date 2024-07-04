@@ -1,6 +1,7 @@
 package com.ojt_final.office.service;
 
 import com.ojt_final.office.dto.request.CreateLinkRequest;
+import com.ojt_final.office.dto.request.RemoveLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.service.module.LinkService;
 import com.ojt_final.office.service.module.PartnerProdService;
@@ -34,11 +35,13 @@ public class LinkIntegratedService {
     }
 
     @Transactional
-    public BaseResponse delete(List<String> deleteProductCodes) {
-        List<Integer> linkedDeleteStandardCodes = linkService.findAllByProdCodes(deleteProductCodes);
-        int deletedLinkCount = linkService.delete(deleteProductCodes);
+    public BaseResponse delete(RemoveLinkRequest removeLinkRequest) {
 
-        int unLinkedPartnerProductCount = partnerProdService.updateAllIsLinked(false, deleteProductCodes);
+        List<String> partnerProdCodes = removeLinkRequest.getPartnerProdCodes();
+        List<Integer> linkedDeleteStandardCodes = linkService.findAllByProdCodes(partnerProdCodes);
+        int deletedLinkCount = linkService.delete(partnerProdCodes);
+
+        int unLinkedPartnerProductCount = partnerProdService.updateAllIsLinked(false, partnerProdCodes);
         int changedStandardProductCount = standardProdService.integrateChange(linkedDeleteStandardCodes);
         return null;
     }

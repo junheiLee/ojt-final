@@ -4,7 +4,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
-public interface Uploadable {
+public interface ExcelProcessable {
 
     /**
      * 엑셀의 각 Cell Idx의 값을 읽어 객체 필드에 담는 함수

@@ -17,14 +17,23 @@ public class CreateLinkRequest {
     private int standardProdCode;
     private List<String> partnerProdCodes;
 
+    /**
+     * Converts CreateLinkRequest to a list of {@link Link} entities.
+     *
+     * @return a list of {@link Link} entities
+     */
     public List<Link> toEntities() {
 
         return partnerProdCodes.stream()
-                .map(
-                        code -> Link.builder()
-                                .partnerProdCode(code)
-                                .standardProdCode(standardProdCode)
-                                .build())
+                .map(this::createLink)
                 .toList();
+    }
+
+    private Link createLink(String partnerProdCode) {
+
+        return Link.builder()
+                .partnerProdCode(partnerProdCode)
+                .standardProdCode(standardProdCode)
+                .build();
     }
 }

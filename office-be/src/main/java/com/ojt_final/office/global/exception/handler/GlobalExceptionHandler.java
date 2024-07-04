@@ -28,6 +28,7 @@ import static com.ojt_final.office.dto.response.constant.ResultCode.TOO_BIG_SIZE
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    // Spring 자체 예외, 통일된 포맷으로 변경
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                                                                          HttpHeaders headers,
@@ -39,17 +40,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MultipartException.class)
-    public BaseResponse excelHandle() {
+    public BaseResponse excelHandle(MultipartException e) {
+        log.error("[MultipartException]: {}", e.getMessage());
         return new BaseResponse(ResultCode.NO_FILE);
     }
 
     // [Excel 관련 예외 처리]
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(POIXMLException.class)
-    public BaseResponse spreadSheetExHandle(POIXMLException e) {
+    public ResponseEntity<Object> spreadSheetExHandle(POIXMLException e) {
+        log.error("[POIXMLException]: {}", e.getMessage());
 
-        log.error("[ExcelException] 스프레드 시트로 업로드 시도={}", e.getMessage());
-        return new BaseResponse(ResultCode.NOT_INTEGRATED_EXCEL_FILE);
+        if(e.getMessage().contains("#57699")) {
+            return new ResponseEntity<>(
+                    new BaseResponse(ResultCode.UNSUPPORTED_EXCEL_FORMAT),
+                    HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        return new ResponseEntity<>(
+                new BaseResponse(ResultCode.CORRUPTED_OR_INVALID_EXCEL_FILE),
+                HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)

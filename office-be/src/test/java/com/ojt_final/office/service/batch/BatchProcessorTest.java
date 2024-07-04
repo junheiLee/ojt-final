@@ -65,9 +65,9 @@ public class BatchProcessorTest {
         System.out.println(batchResult.toString());
 
         //then
-        assertThat(batchResult.getInsertCount()).isEqualTo(insert);
-        assertThat(batchResult.getUpdateCount()).isEqualTo(update);
-        assertThat(batchResult.getMaintainCount()).isEqualTo(maintain);
+        assertThat(batchResult.getCreatedCount()).isEqualTo(insert);
+        assertThat(batchResult.getUpdatedCount()).isEqualTo(update);
+        assertThat(batchResult.getUnChangedCount()).isEqualTo(maintain);
         assertThat(batchResult.getFailedCount()).isEqualTo(failed);
     }
 

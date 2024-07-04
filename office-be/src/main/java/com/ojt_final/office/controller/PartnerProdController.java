@@ -25,13 +25,25 @@ public class PartnerProdController {
 
     private final PartnerProdService partnerProdService;
 
+    /**
+     * 엑셀 파일 업로드 및 처리 후 파트너 상품을 DB에 저장하는 API
+     *
+     * @param excelFile the Excel file to be uploaded
+     * @return  an {@link UploadExcelResponse} containing details about the result of the file processing
+     * @throws IOException if an error occurs during file processing
+     */
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
-
         return partnerProdService.saveExcelData(excelFile);
     }
 
+    /**
+     * 주어진 조건에 해당하는 파트너 상품들을 Excel 파일에 담아 다운로드 할 수 있는 API
+     *
+     * @param condParam the conditions to filter the partner products
+     * @return a ResponseEntity containing the Excel file as a byte array
+     */
     @GetMapping("/download/excel")
     public ResponseEntity<byte[]> downloadExcel(@ModelAttribute CondParam condParam) {
 
@@ -46,10 +58,17 @@ public class PartnerProdController {
                 .body(excelBytes);
     }
 
+    /**
+     * 주어진 조건에 해당하는 파트너 상품 목록을 가져오는 API
+     *
+     * @param condParam the conditions to filter the partner products
+     * @return a response containing the list of partner products
+     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public PartnerProdListResponse getPartnerProds(@ModelAttribute CondParam condParam) {
 
         return partnerProdService.getResponseProds(condParam);
     }
+
 }
