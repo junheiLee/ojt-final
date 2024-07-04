@@ -30,10 +30,10 @@ public class StandardProdDaoTest {
     void integrateChangeTest_in() {
         //given
         List<Link> links = List.of(
-                Link.builder().partnerProductCode("1").standardProductCode(1).build(),
-                Link.builder().partnerProductCode("2").standardProductCode(2).build());
+                Link.builder().partnerProdCode("1").standardProdCode(1).build(),
+                Link.builder().partnerProdCode("2").standardProdCode(2).build());
         linkDao.saveAll(links);
-        partnerProdDao.updateAllIsLinked(true, links.stream().map(Link::getPartnerProductCode).toList());
+        partnerProdDao.updateAllIsLinked(true, links.stream().map(Link::getPartnerProdCode).toList());
         List<Integer> standardProductCodes = List.of(1, 2);
 
         //when
@@ -49,8 +49,8 @@ public class StandardProdDaoTest {
     void integrateChangeTest_between() {
         //given -> 어차피 Test DB Data는 테스트 직전에 생성됨.
         List<Link> links = List.of(
-                Link.builder().partnerProductCode("1").standardProductCode(1).build(),
-                Link.builder().partnerProductCode("2").standardProductCode(2).build());
+                Link.builder().partnerProdCode("1").standardProdCode(1).build(),
+                Link.builder().partnerProdCode("2").standardProdCode(2).build());
         linkDao.saveAll(links);
         List<Integer> emptyList = Collections.emptyList();
 

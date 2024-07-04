@@ -2,7 +2,6 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dto.request.search.CondParam;
 import com.ojt_final.office.dto.response.PartnerProdListResponse;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -24,18 +22,19 @@ public class PartnerProdServiceTest {
     PartnerProdService partnerProdService;
 
     @ParameterizedTest(name = "정렬조건={0}")
-    @MethodSource("condParam")
-    void getResponseProductsTest(CondParam condParam, int idx, String name){
+    @MethodSource("condParams")
+    void getResponseProdsTest(CondParam condParam, int idx, String name, int pcPrice) {
 
         //when
-        PartnerProdListResponse response = partnerProdService.getResponseProducts(condParam);
+        PartnerProdListResponse response = partnerProdService.getResponseProds(condParam);
 
         //then
-        assertThat(response.getProducts().get(idx).getName()).isEqualTo(name);
+        assertThat(response.getProds().get(idx).getName()).isEqualTo(name);
+        assertThat(response.getProds().get(idx).getPcPrice()).isEqualTo(pcPrice);
 
     }
 
-    private static Stream<Arguments> condParam() {
+    private static Stream<Arguments> condParams() {
 
         CondParam 이름_내림차순 = new CondParam();
         이름_내림차순.setPage(1);
@@ -53,10 +52,10 @@ public class PartnerProdServiceTest {
         없음.setPage(1);
 
         return Stream.of(
-                Arguments.arguments(이름_내림차순, 0, "PartnerProduct5"),
-                Arguments.arguments(오래된순, 0, "PartnerProduct1"),
-                Arguments.arguments(다중, 1, "PartnerProduct1-p3"),
-                Arguments.arguments(없음, 0, "PartnerProduct5")
+                Arguments.arguments(이름_내림차순, 0, "PartnerProduct5", 5),
+                Arguments.arguments(오래된순, 0, "PartnerProduct1", 31),
+                Arguments.arguments(다중, 1, "PartnerProduct1", 61),
+                Arguments.arguments(없음, 0, "PartnerProduct5", 5)
         );
     }
 }

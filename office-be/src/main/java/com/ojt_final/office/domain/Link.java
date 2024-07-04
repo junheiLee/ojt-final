@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor
 public class Link {
 
-    private String partnerProductCode;
-    private int standardProductCode;
+    private String partnerProdCode;
+    private int standardProdCode;
 
     @Builder
-    public Link(String partnerProductCode, int standardProductCode) {
-        this.partnerProductCode = partnerProductCode;
-        this.standardProductCode = standardProductCode;
+    public Link(String partnerProdCode, int standardProdCode) {
+        this.partnerProdCode = partnerProdCode;
+        this.standardProdCode = standardProdCode;
     }
 }

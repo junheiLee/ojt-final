@@ -26,16 +26,16 @@ public class LinkIntegratedService {
         int createdLinkCount = linkService.create(createLinkRequest);
 
         int linkedPartnerProductCount
-                = partnerProdService.updateAllIsLinked(true, createLinkRequest.getPartnerProductCodes());
+                = partnerProdService.updateAllIsLinked(true, createLinkRequest.getPartnerProdCodes());
 
-        List<Integer> linkedChangeCodes = List.of(createLinkRequest.getStandardProductCode());
+        List<Integer> linkedChangeCodes = List.of(createLinkRequest.getStandardProdCode());
         int changedStandardProductCount = standardProdService.integrateChange(linkedChangeCodes);
         return null;
     }
 
     @Transactional
     public BaseResponse delete(List<String> deleteProductCodes) {
-        List<Integer> linkedDeleteStandardCodes = linkService.findAllByProductCodes(deleteProductCodes);
+        List<Integer> linkedDeleteStandardCodes = linkService.findAllByProdCodes(deleteProductCodes);
         int deletedLinkCount = linkService.delete(deleteProductCodes);
 
         int unLinkedPartnerProductCount = partnerProdService.updateAllIsLinked(false, deleteProductCodes);

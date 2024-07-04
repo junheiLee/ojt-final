@@ -3,6 +3,9 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dao.StandardProdDao;
 import com.ojt_final.office.domain.StandardProd;
+import com.ojt_final.office.domain.search.StandardProdCond;
+import com.ojt_final.office.dto.request.search.CondParam;
+import com.ojt_final.office.dto.response.StandardProdListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -52,8 +55,21 @@ public class StandardProdService extends AbstractUploadableService<StandardProd>
                 .calInsertAndMaintainThenSet(previousCount, standardProdDao.countAll());
     }
 
-    public int integrateChange(List<Integer> standardProductCodes) {
+    public StandardProdListResponse getResponseProds(CondParam condParam) {
 
-        return standardProdDao.integrateChange(standardProductCodes);
+        StandardProdCond cond = condParam.toStandardProdCond();
+        int count = standardProdDao.countByCond(cond);
+        List<StandardProd> prods = standardProdDao.selectByCond(cond);
+
+        return StandardProdListResponse.builder()
+                .resultCode(ResultCode.SUCCESS)
+                .totalItemsCount(count)
+                .prods(prods)
+                .build();
+    }
+
+    public int integrateChange(List<Integer> standardProdCodes) {
+
+        return standardProdDao.integrateChange(standardProdCodes);
     }
 }

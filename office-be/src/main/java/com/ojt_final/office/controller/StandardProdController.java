@@ -1,7 +1,9 @@
 package com.ojt_final.office.controller;
 
+import com.ojt_final.office.dto.request.search.CondParam;
+import com.ojt_final.office.dto.response.StandardProdListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
-import com.ojt_final.office.service.module.PartnerProdService;
+import com.ojt_final.office.service.module.StandardProdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,17 +14,23 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/partner-products")
+@RequestMapping("/standard-products")
 @RestController
-public class PartnerProductController {
+public class StandardProdController {
 
-    private final PartnerProdService partnerProdService;
+    private final StandardProdService standardService;
 
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
-        return partnerProdService.saveExcelData(excelFile);
+        return standardService.saveExcelData(excelFile);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public StandardProdListResponse getPartnerProds(@ModelAttribute CondParam condParam) {
+
+        return standardService.getResponseProds(condParam);
+    }
 }

@@ -53,16 +53,16 @@ public class PartnerProdService extends AbstractUploadableService<PartnerProd> {
                 .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
     }
 
-    public PartnerProdListResponse getResponseProducts(CondParam condParam) {
+    public PartnerProdListResponse getResponseProds(CondParam condParam) {
 
         PartnerProdCond cond = condParam.toPartnerProdCond();
-        int count = partnerProdDao.countAllByCond(cond);
-        List<PartnerProd> products = partnerProdDao.selectByCond(cond);
+        int count = partnerProdDao.countByCond(cond);
+        List<PartnerProd> prods = partnerProdDao.selectByCond(cond);
 
         return PartnerProdListResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .totalItemsCount(count)
-                .products(products)
+                .prods(prods)
                 .build();
     }
 

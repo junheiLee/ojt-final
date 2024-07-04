@@ -5,7 +5,6 @@ import lombok.Builder;
 
 import java.util.List;
 
-
 public class StandardProdCond extends Cond {
 
     private StandardProdSort sort;

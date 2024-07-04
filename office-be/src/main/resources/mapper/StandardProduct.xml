@@ -18,14 +18,14 @@
         VALUES
             <foreach collection="list" item="StandardProd" separator="," >
                 (
-                #{StandardProduct.code},
-                #{StandardProduct.categoryCode},
-                #{StandardProduct.name},
-                #{StandardProduct.bundleCondition},
-                #{StandardProduct.description},
-                #{StandardProduct.minPrice},
-                #{StandardProduct.avgPrice},
-                #{StandardProduct.partnerCount}
+                #{StandardProd.code},
+                #{StandardProd.categoryCode},
+                #{StandardProd.name},
+                #{StandardProd.bundleCondition},
+                #{StandardProd.description},
+                #{StandardProd.minPrice},
+                #{StandardProd.avgPrice},
+                #{StandardProd.partnerCount}
                 )
             </foreach>
         ON DUPLICATE KEY UPDATE
@@ -38,6 +38,56 @@
     <select id="countAll">
         SELECT COUNT(nProductCode)
         FROM tStandardProduct
+    </select>
+
+    <select id="selectByCond" parameterType="StandardProdCond" resultType="StandardProd">
+        SELECT C.sCategoryName AS categoryName,
+               SP.nProductCode AS code,
+               SP.sProductName AS name,
+               SP.sImageUrl AS imageUrl,
+               SP.nMinPrice AS minPrice,
+               SP.nMinPcPrice AS minPcPrice,
+               SP.nMinMobilePrice AS minMobilePrice,
+               SP.nAvgPrice AS avgPrice,
+               SP.nPartnerCount AS partnerCount
+        FROM tStandardProduct SP
+        INNER JOIN tCategory C ON (SP.nCategoryCode = C.nCategoryCode)
+        <where>
+            <if test="categoryCode != null and categoryCode != ''">
+                AND SP.nCategoryCode = #{categoryCode}
+            </if>
+        </where>
+        <trim prefix="ORDER BY" prefixOverrides=",">
+            <if test="sort.name == ''
+                  and sort.minPrice == ''
+                  and sort.minPcPrice == ''
+                  and sort.minMobilePrice == ''
+                  and sort.partnerCount == ''">
+                ,nProductCode DESC
+            </if>
+            <if test="sort.name != '' and sort.name == 'ASC'"> , sProductName ASC </if>
+            <if test="sort.name != '' and sort.name == 'DESC'"> , sProductName DESC </if>
+            <if test="sort.minPrice != '' and sort.minPrice == 'ASC'"> , nMinPrice ASC </if>
+            <if test="sort.minPrice != '' and sort.minPrice == 'DESC'"> , nMinPrice DESC </if>
+            <if test="sort.minPcPrice != '' and sort.minPcPrice == 'ASC'"> , nMinPcPrice ASC </if>
+            <if test="sort.minPcPrice != '' and sort.minPcPrice == 'DESC'"> , nMinPcPrice DESC </if>
+            <if test="sort.minMobilePrice != '' and sort.minMobilePrice == 'ASC'"> , nMinMobilePrice ASC </if>
+            <if test="sort.minMobilePrice != '' and sort.minMobilePrice == 'DESC'"> , nMinMobilePrice DESC </if>
+            <if test="sort.partnerCount != '' and sort.partnerCount == 'ASC'"> , nPartnerCount ASC </if>
+            <if test="sort.partnerCount != '' and sort.partnerCount == 'DESC'"> , nPartnerCount DESC </if>
+        </trim>
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countByCond">
+        SELECT COUNT(nProductCode)
+        FROM tStandardProduct
+        <where>
+            <if test="categoryCode != null">
+                nCategoryCode = #{categoryCode}
+            </if>
+        </where>
     </select>
 
     <update id="integrateChange">

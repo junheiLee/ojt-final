@@ -145,7 +145,7 @@ public class BatchProcessorTest {
         // select 단일 생성 후, 각 가격 바꿔주기 (pcPrice, mobilePrice)
         return PartnerProd.builder()
                 .code(code).partnerCode(partnerCode).categoryCode(categoryCode).name(name)
-                .pcPrice(0).mobilePrice(0).url("https://test").imageUrl("https://image.test")
+                .pcPrice(categoryCode).mobilePrice(0).url("https://test").imageUrl("https://image.test")
                 .build();
     }
 

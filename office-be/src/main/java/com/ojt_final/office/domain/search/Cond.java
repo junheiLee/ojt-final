@@ -1,7 +1,9 @@
 package com.ojt_final.office.domain.search;
 
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 @Getter
 public class Cond {
 

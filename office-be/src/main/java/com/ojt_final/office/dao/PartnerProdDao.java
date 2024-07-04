@@ -19,7 +19,7 @@ public interface PartnerProdDao {
 
     List<PartnerProd> selectByCond(PartnerProdCond cond);
 
-    int countAllByCond(Cond cond);
+    int countByCond(Cond cond);
 
     int updateAllIsLinked(@Param("isLinked") boolean isLinked, @Param("codes") List<String> codes);
 

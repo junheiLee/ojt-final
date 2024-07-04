@@ -79,7 +79,7 @@
 
     </select>
 
-    <select id="countAllByCond" parameterType="Cond">
+    <select id="countByCond" parameterType="Cond">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct
         <where>

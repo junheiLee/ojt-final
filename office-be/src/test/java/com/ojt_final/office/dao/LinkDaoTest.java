@@ -22,8 +22,8 @@ public class LinkDaoTest {
     @BeforeEach
     void save() {
         List<Link> links = List.of(
-                Link.builder().partnerProductCode("4").standardProductCode(4).build(),
-                Link.builder().partnerProductCode("5").standardProductCode(5).build());
+                Link.builder().partnerProdCode("4").standardProdCode(4).build(),
+                Link.builder().partnerProdCode("5").standardProdCode(5).build());
 
         linkDao.saveAll(links);
     }
@@ -33,14 +33,14 @@ public class LinkDaoTest {
     void saveAndFindAllStandardCodes() {
         //given
         List<Link> links = List.of(
-                Link.builder().partnerProductCode("1").standardProductCode(1).build(),  // 3개
-                Link.builder().partnerProductCode("2").standardProductCode(1).build(),  // 1개 (기준상품 중복)
-                Link.builder().partnerProductCode("3").standardProductCode(2).build()); // 1개
-        List<String> partnerProductCodes = links.stream().map(Link::getPartnerProductCode).toList();
+                Link.builder().partnerProdCode("1").standardProdCode(1).build(),  // 3개
+                Link.builder().partnerProdCode("2").standardProdCode(1).build(),  // 1개 (기준상품 중복)
+                Link.builder().partnerProdCode("3").standardProdCode(2).build()); // 1개
+        List<String> partnerProductCodes = links.stream().map(Link::getPartnerProdCode).toList();
 
         //when
         int savedCount = linkDao.saveAll(links);
-        List<Integer> linkedChangeStandardCodes = linkDao.findAllByPartnerProductCodes(partnerProductCodes);
+        List<Integer> linkedChangeStandardCodes = linkDao.findAllByPartnerProdCodes(partnerProductCodes);
 
         //then
         assertThat(savedCount).isEqualTo(3);
@@ -56,7 +56,7 @@ public class LinkDaoTest {
 
         //when
         int deletedCount = linkDao.deleteAll(partnerProductCodes);
-        List<Integer> foundStandardProductCodes = linkDao.findAllByPartnerProductCodes(partnerProductCodes);
+        List<Integer> foundStandardProductCodes = linkDao.findAllByPartnerProdCodes(partnerProductCodes);
 
         //then
         assertThat(deletedCount).isEqualTo(2);

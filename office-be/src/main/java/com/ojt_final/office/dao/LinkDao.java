@@ -12,7 +12,7 @@ public interface LinkDao {
 
     int saveAll(List<Link> links);
 
-    List<Integer> findAllByPartnerProductCodes(List<String> partnerProductCodes);
+    List<Integer> findAllByPartnerProdCodes(List<String> partnerProductCodes);
 
     int deleteAll(List<String> partnerProductCodes);
 }

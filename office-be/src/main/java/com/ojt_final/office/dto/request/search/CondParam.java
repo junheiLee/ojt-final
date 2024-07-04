@@ -19,7 +19,7 @@ import static com.ojt_final.office.global.constant.CommonConst.OUTPUT_LIST_LIMIT
 @NoArgsConstructor
 public class CondParam {
 
-    private int page;
+    private int page = 1;
     private int limit;
     private int offset;
     private Integer categoryCode;

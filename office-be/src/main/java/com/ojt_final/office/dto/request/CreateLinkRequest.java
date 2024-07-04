@@ -14,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateLinkRequest {
 
-    private int standardProductCode;
-    private List<String> partnerProductCodes;
+    private int standardProdCode;
+    private List<String> partnerProdCodes;
 
     public List<Link> toEntities() {
 
-        return partnerProductCodes.stream()
+        return partnerProdCodes.stream()
                 .map(
                         code -> Link.builder()
-                                .partnerProductCode(code)
-                                .standardProductCode(standardProductCode)
+                                .partnerProdCode(code)
+                                .standardProdCode(standardProdCode)
                                 .build())
                 .toList();
     }
