@@ -29,7 +29,7 @@ public class PartnerProdController {
      * 엑셀 파일 업로드 및 처리 후 파트너 상품을 DB에 저장하는 API
      *
      * @param excelFile the Excel file to be uploaded
-     * @return  an {@link UploadExcelResponse} containing details about the result of the file processing
+     * @return an {@link UploadExcelResponse} containing details about the result of the file processing
      * @throws IOException if an error occurs during file processing
      */
     @ResponseStatus(HttpStatus.MULTI_STATUS)

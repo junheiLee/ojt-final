@@ -23,7 +23,7 @@ public class CategoryController {
      *
      * @param excelFile the Excel file to be uploaded
      * @return an {@link UploadExcelResponse} containing the number of created, updated,
-     *         unchanged, and failed records after processing the file
+     * unchanged, and failed records after processing the file
      * @throws IOException if an error occurs during file processing
      */
     @ResponseStatus(HttpStatus.MULTI_STATUS)
