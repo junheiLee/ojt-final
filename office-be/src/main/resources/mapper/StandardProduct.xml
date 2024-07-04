@@ -11,9 +11,7 @@
                     sProductName,
                     sBundleCondition,
                     sDescription,
-                    nMinPrice,
-                    nAvgPrice,
-                    nPartnerCount
+                    dtManufactureDate
         )
         VALUES
             <foreach collection="list" item="StandardProd" separator="," >
@@ -23,9 +21,7 @@
                 #{StandardProd.name},
                 #{StandardProd.bundleCondition},
                 #{StandardProd.description},
-                #{StandardProd.minPrice},
-                #{StandardProd.avgPrice},
-                #{StandardProd.partnerCount}
+                #{StandardProd.manufactureDate}
                 )
             </foreach>
         ON DUPLICATE KEY UPDATE

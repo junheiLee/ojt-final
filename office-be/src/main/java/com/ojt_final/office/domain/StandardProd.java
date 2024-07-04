@@ -5,6 +5,8 @@ import com.ojt_final.office.service.excel.ExcelColumn;
 import lombok.*;
 import org.apache.poi.ss.usermodel.Row;
 
+import java.sql.Date;
+
 
 @Getter
 @EqualsAndHashCode
@@ -25,6 +27,8 @@ public class StandardProd implements Uploadable {
     private String bundleCondition;
     @ExcelColumn(upload = "설명")
     private String description;
+    @ExcelColumn(upload = "제조일자")
+    private Date manufactureDate;
 
     @ExcelColumn(upload = "출처")
     private String sOrigin;
@@ -40,7 +44,7 @@ public class StandardProd implements Uploadable {
     @Builder
     public StandardProd(int categoryCode, String categoryName,
                         int code, String name,
-                        String bundleCondition, String description,
+                        String description, String bundleCondition, Date manufactureDate,
                         String sOrigin, String sOriginUrl, String sImageUrl,
                         int minPrice, int avgPrice,
                         int partnerCount) {
@@ -50,8 +54,9 @@ public class StandardProd implements Uploadable {
         this.code = code;
 
         this.name = name;
-        this.description = description;
         this.bundleCondition = bundleCondition;
+        this.description = description;
+        this.manufactureDate = manufactureDate;
 
         this.sOrigin = sOrigin;
         this.sOriginUrl = sOriginUrl;
@@ -70,8 +75,14 @@ public class StandardProd implements Uploadable {
         this.name = getStringCellValue(row.getCell(3));
         this.bundleCondition = getStringCellValue(row.getCell(4));
         this.description = getStringCellValue(row.getCell(5));
-        this.sOrigin = getStringCellValue(row.getCell(9));
-        this.sOriginUrl = getStringCellValue(row.getCell(10));
+        this.sOrigin = getStringCellValue(row.getCell(6));
+        this.sOriginUrl = getStringCellValue(row.getCell(7));
+        this.manufactureDate = Date.valueOf(getString((int) row.getCell(8).getNumericCellValue()));
 
+    }
+
+    private static String getString(int manufacture) {
+
+        return String.format("%s-%s-01", manufacture/100, manufacture%100);
     }
 }
