@@ -50,7 +50,7 @@ public class PartnerProdService extends AbstractExcelService<PartnerProd> {
 
         int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor.save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
+                .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
     }
 
     public byte[] createExcelFile(CondParam condParam) {

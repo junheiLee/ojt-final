@@ -48,6 +48,6 @@ public class CategoryService extends AbstractExcelService<Category> {
 
         int previousCount = categoryDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor.save(BATCH_SIZE, categories, categoryDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, categoryDao.countAll());
+                .calInsertAndUnchangedCount(previousCount, categoryDao.countAll());
     }
 }

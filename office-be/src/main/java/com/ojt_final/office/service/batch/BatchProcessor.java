@@ -25,26 +25,24 @@ public class BatchProcessor {
     @Transactional
     public <T> BatchResult save(int batchSize, List<T> items, Function<List<T>, Integer> batchSaveFunction) {
 
-        int totalSize = items.size();
-        int endIdx; // 배치 처리 시, 적절한 사이즈로 나눌 때, 끝 인덱스
+        int totalItemCount = items.size();
         int affectedRow = 0;
         int failedCount = 0;
 
-        for (int i = 0; i < totalSize; i += batchSize) {
-            endIdx = Math.min(i + batchSize, totalSize);
+        for (int i = 0; i < totalItemCount; i += batchSize) {
+            int endIdx = Math.min(i + batchSize, totalItemCount); // 배치 처리 시, 적절한 사이즈로 나누는 끝 인덱스
             List<T> batchItems = items.subList(i, endIdx);
 
             try {
                 affectedRow += batchSaveFunction.apply(batchItems);
-
             } catch (DataAccessException e) { // 일괄 처리 실패 시, log에 보관
-                log.warn("실패 항목={}", batchItems);
+                log.warn("[BatchFailed] 실패 항목={}", batchItems, e);
                 failedCount += batchItems.size();
             }
         }
 
         return BatchResult.builder()
-                .targetSize(totalSize)
+                .targetSize(totalItemCount)
                 .affectedRow(affectedRow)
                 .failedCount(failedCount)
                 .build();

@@ -22,12 +22,23 @@ public class BatchResult {
         this.targetSize = targetSize;
         this.affectedRow = affectedRow;
         this.failedCount = failedCount;
-        this.updatedCount = affectedRow - targetSize + failedCount;
+        this.updatedCount = calUpdatedCount();
     }
 
-    public BatchResult calInsertAndMaintainThenSet(int previousCount, int currentCount) {
+    /**
+     * 배치 작업 전 후 개수와 반환받은 affectedRow 기반으로 생성된 객체 수와 유지된 객체 수를 계산해 변수를 지정한다.
+     *
+     * @param previousCount the previous count of items before the batch operation
+     * @param currentCount  the current count of items after the operation
+     * @return the updated BatchResult with the calculated counts
+     */
+    public BatchResult calInsertAndUnchangedCount(int previousCount, int currentCount) {
         this.createdCount = currentCount - previousCount;
         this.unChangedCount = affectedRow - 2 * updatedCount - createdCount;
         return this;
+    }
+
+    private int calUpdatedCount() {
+        return affectedRow - targetSize + failedCount;
     }
 }

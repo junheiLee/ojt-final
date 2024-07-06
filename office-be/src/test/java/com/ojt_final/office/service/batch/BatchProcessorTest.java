@@ -61,7 +61,7 @@ public class BatchProcessorTest {
         //when
         BatchResult batchResult
                 = batchProcessor.save(10, products, partnerProdDao::saveAll)
-                .calInsertAndMaintainThenSet(previousCount, partnerProdDao.countAll());
+                .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
         System.out.println(batchResult.toString());
 
         //then
