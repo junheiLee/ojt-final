@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.ojt_final.office.service.excel.ExcelConst.*;
 
@@ -163,8 +164,8 @@ public class ExcelConverter {
 
             for (Field field : targetDomain.getDeclaredFields()) {
                 field.setAccessible(true);
-                if (!field.isAnnotationPresent(ExcelColumn.class)
-                        || field.getAnnotation(ExcelColumn.class).download().isBlank()) {
+                if (!field.isAnnotationPresent(ExcelColumn.class) ||
+                        field.getAnnotation(ExcelColumn.class).download().isBlank()) {
                     continue;
                 }
                 createCell(row, cellIdx, item, field);
@@ -208,23 +209,25 @@ public class ExcelConverter {
         }
     }
 
-    private <T> List<String> getFields(Act behave, Class<T> domain) {
+    private <T> List<String> getHeaderNames(Act action, Class<T> domain) {
 
-        List<String> clazzFields = new ArrayList<>();
+        List<String> fieldNames = new ArrayList<>();
 
-        switch (behave) {
-            case UPLOAD -> Arrays.stream(domain.getDeclaredFields())
-                    .filter(e -> e.isAnnotationPresent(ExcelColumn.class))
-                    .filter(e -> !e.getAnnotation(ExcelColumn.class).upload().isBlank())
-                    .forEach(e -> clazzFields.add(e.getAnnotation(ExcelColumn.class).upload()));
-
-            case DOWNLOAD -> Arrays.stream(domain.getDeclaredFields())
-                    .filter(e -> e.isAnnotationPresent(ExcelColumn.class))
-                    .filter(e -> !e.getAnnotation(ExcelColumn.class).download().isBlank())
-                    .forEach(e -> clazzFields.add(e.getAnnotation(ExcelColumn.class).download()));
+        switch (action) {
+            case UPLOAD -> addHeaderNames(domain, fieldNames, ExcelColumn::upload);
+            case DOWNLOAD -> addHeaderNames(domain, fieldNames, ExcelColumn::download);
         }
 
-        return clazzFields;
+        return fieldNames;
+    }
+
+    private <T> void addHeaderNames(Class<T> domain, List<String> fieldNames, Function<ExcelColumn, String> extractor) {
+
+        Arrays.stream(domain.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ExcelColumn.class))
+                .map(field -> extractor.apply(field.getAnnotation(ExcelColumn.class)))
+                .filter(value -> !value.isBlank())
+                .forEach(fieldNames::add);
     }
 
 }
