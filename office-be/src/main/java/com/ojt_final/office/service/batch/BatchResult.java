@@ -4,16 +4,41 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * 일괄 처리 결과 객체
+ */
 @ToString
 @Getter
 public class BatchResult {
 
+    /**
+     * 일괄 처리 시도 객체 수
+     */
     private int targetSize;
+
+    /**
+     * DB가 반환한 영향받은 Row 수: 생성, 수정, 유지 개수 계산 시 사용
+     */
     private int affectedRow;
+
+    /**
+     * 처리 실패 객체 수
+     */
     private int failedCount;
+
+    /**
+     * 수정된 객체 수
+     */
     private int updatedCount;
 
+    /**
+     * 생성된 객체 수
+     */
     private int createdCount;
+
+    /**
+     * 유지된 객체 수
+     */
     private int unChangedCount;
 
     @Builder

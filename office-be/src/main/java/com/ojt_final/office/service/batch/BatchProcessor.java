@@ -17,10 +17,11 @@ public class BatchProcessor {
      * 설정한 개수만큼 한 번에 DB에 접근해 저장,
      * 실패 시, 로그에 실패 항목을 저장
      *
-     * @param <T>               처리하는 객체 타입
-     * @param items             처리할 객체 리스트
-     * @param batchSaveFunction 해당 객체 리스트 다건 저장 함수 (파라미터: 처리할 객체 리스트, 리턴: 성공 개수)
-     * @return db 반환 row와 실패한 개수를 담은 배치 결과 객체 반환
+     * @param <T>               the type of items to be batch processed
+     * @param batchSize         the size of each batch
+     * @param items             the list of items to be batch processed
+     * @param batchSaveFunction the function to save a batch of items (param: list of items, return: number of affected rows)
+     * @return a {@link BatchResult} object containing the total count of items, number of affected rows, and number of failed items
      */
     @Transactional
     public <T> BatchResult save(int batchSize, List<T> items, Function<List<T>, Integer> batchSaveFunction) {
