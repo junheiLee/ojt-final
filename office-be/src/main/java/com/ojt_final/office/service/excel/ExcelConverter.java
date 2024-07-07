@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import static com.ojt_final.office.service.excel.ExcelConst.*;
@@ -28,7 +25,6 @@ import static com.ojt_final.office.service.excel.ExcelConst.*;
 public class ExcelConverter {
 
     public static final ExcelConverter INSTANCE = new ExcelConverter();
-
     private static boolean created;
 
     private ExcelConverter() {
@@ -40,10 +36,10 @@ public class ExcelConverter {
     }
 
     /**
-     * 해당 파일이 Excel 확장자(.xlsx, .xls)인지 확인
+     * 해당 파일이 Excel 확장자(.xlsx, .xls)인지 확인한다.
      *
-     * @param fileName 대상 파일 풀네임 (multipartFile.getOriginalFilename())
-     * @return 처리할 수 있는 엑셀 파일이면 True 반환POI Workbook create or close
+     * @param fileName the full name of the file (e.g., multipartFile.getOriginalFilename())
+     * @return true if the file is an Excel file, false otherwise
      */
     public boolean supports(String fileName) {
 
@@ -52,91 +48,81 @@ public class ExcelConverter {
     }
 
     /**
-     * 엑셀 파일을 읽어 해당 도메인과 일치하는 헤더인지 확인 후 객체로 변경
+     * 엑셀 파일을 읽어 해당 도메인과 일치하는 헤더인지 확인 후 객체 리스트로 변환해 반환한다.
      *
-     * @param inputStream  대상 엑셀 파일의 inputStream
-     * @param targetDomain 객체 타입
-     * @param <T>          엑셀 파일을 읽어 db에 저장할 수 있는 객체
-     * @return 객체 리스트
+     * @param inputStream  the input stream of the Excel file
+     * @param targetDomain the class of the domain object
+     * @param <T>          the type of the excel-processable domain object to parse and save
+     * @return a list of domain objects parsed from Excel file
      */
-    public <T extends ExcelProcessable> List<T> parse(InputStream inputStream,
-                                                      Class<T> targetDomain){
+    public <T extends ExcelProcessable> List<T> read(InputStream inputStream, Class<T> targetDomain) {
 
         Workbook wb = createWorkbook(inputStream);
-        Sheet sheet = wb.getSheetAt(START_INDEX); // sheet 한 개
+        Sheet sheet = wb.getSheetAt(START_INDEX); // 엑셀 파일의 첫 번째 sheet
 
-        validHeaders(sheet.getRow(START_INDEX), getFields(Act.UPLOAD, targetDomain)); // 첫 행의 정보로 타겟 도메인에 저장할 수 있는 헤더인지 확인
-        List<T> items = parseBody(sheet, targetDomain);
+        validateHeaderRows(sheet.getRow(START_INDEX), getHeaderNames(Act.UPLOAD, targetDomain)); // 첫 행의 헤더로 DB 저장 가능 여부 확인
+        List<T> items = readDataRows(sheet, targetDomain);
 
         closeWorkbook(wb);
         return items;
     }
 
-    private Workbook createWorkbook(InputStream inputStream) {
-        try {
-            return WorkbookFactory.create(inputStream);
-        } catch (IOException e) {
-            throw new ExcelInternalException("Workbook 오류", e);
-        }
-    }
-
-    private void validHeaders(Row headerRow, List<String> domainFields) {
+    private void validateHeaderRows(Row headerRow, List<String> domainHeaders) {
 
         List<String> excelHeaders = new ArrayList<>();
-        headerRow.cellIterator()
-                .forEachRemaining(
-                        eachCell -> excelHeaders.add(eachCell.getStringCellValue())
-                );
+        headerRow.cellIterator().forEachRemaining(cell -> excelHeaders.add(cell.getStringCellValue()));
 
-        if (!new HashSet<>(excelHeaders).containsAll(domainFields)) {
-            throw new NoExcelColumnAnnotationsException(ResultCode.NOT_HAVE_DOMAIN);
+        Set<String> missingHeaders = new HashSet<>(domainHeaders);
+        missingHeaders.removeAll(excelHeaders);
+
+        if (!missingHeaders.isEmpty()) {
+            log.error("[ExcelConverter] missing headers: {}", missingHeaders);
+            throw new NoExcelColumnAnnotationsException(ResultCode.MISSING_HEADERS);
         }
     }
 
-    private <T extends ExcelProcessable> List<T> parseBody(Sheet sheet, Class<T> targetDomain) {
+    private <T extends ExcelProcessable> List<T> readDataRows(Sheet sheet, Class<T> targetDomain) {
 
         List<T> items = new ArrayList<>();
 
         for (Row row : sheet) {
 
-            if (row.getRowNum() == START_INDEX) { // 최초 Row는 개별 값이 아닌 헤더값
+            if (row.getRowNum() == START_INDEX) { // skip header row
                 continue;
             }
-            items.add(getItemFromRow(row, targetDomain));
+            items.add(readRow(row, targetDomain));
         }
         return items;
     }
 
-    private <T extends ExcelProcessable> T getItemFromRow(Row row, Class<T> domain) {
+    private <T extends ExcelProcessable> T readRow(Row row, Class<T> domain) {
 
         try {
             T item = domain.getDeclaredConstructor().newInstance();
-            // 도메인이 구현한 Uploadable 인터페이스의 setValuesFromExcel 함수를 이름으로 가져와 사용
+            // ExcelProcessable 인터페이스의 추상 메서드 호출
             domain.getMethod(SET_VALUES_FROM_EXCEL, Row.class).invoke(item, row);
             return item;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            // T 타입을 Uploadable 인터페이스 상속으로 규정해 해당 없음
             throw new ExcelInternalException("해당 없음", e);
-
         }
     }
 
     /**
-     * 객체 리스트를 행에 기재한 엑셀 파일 생성
+     * 객체 리스트를 행에 기재한 엑셀 파일을 생성해 byte 배열로 반환한다.
      *
-     * @param items        대상 객체 리스트
-     * @param targetDomain 객체 타입
-     * @return 엑셀 파일을 byte[]로 반환
+     * @param items        the list of domain objects to create the Excel file
+     * @param targetDomain the class of the domain object
+     * @param <T>          the type of the excel-processable domain object to create the Excel file
+     * @return the Excel file as a byte array from object list
      */
-    public <T extends ExcelProcessable> byte[] create(List<T> items, Class<T> targetDomain) {
+    public <T extends ExcelProcessable> byte[] write(List<T> items, Class<T> targetDomain) {
 
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(targetDomain.getName());
 
-        renderHeaders(sheet.createRow(START_INDEX), getFields(Act.DOWNLOAD, targetDomain));  // 첫 행 헤더 정보 기입
-        renderBody(sheet, items, targetDomain);
+        writeHeaderRows(sheet.createRow(START_INDEX), getHeaderNames(Act.DOWNLOAD, targetDomain));  // 첫 행 헤더 정보 기입
+        writeDataRows(sheet, items, targetDomain);
 
         // 다운로드하는 byte[] 생성 및 리턴
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -145,54 +131,42 @@ public class ExcelConverter {
         return out.toByteArray();
     }
 
-    private void renderHeaders(Row headerRow, List<String> fieldNames) {
+    private void writeHeaderRows(Row headerRow, List<String> fieldNames) {
 
         int cellIdx = START_INDEX;
+
         for (String header : fieldNames) {
             headerRow.createCell(cellIdx, CellType.STRING).setCellValue(header);
             cellIdx++;
         }
     }
 
-    private <T> void renderBody(Sheet sheet, List<T> items, Class<T> targetDomain) {
+    private <T> void writeDataRows(Sheet sheet, List<T> items, Class<T> targetDomain) {
         int rowIdx = START_INDEX;
 
         for (T item : items) {
             rowIdx++;
-            int cellIdx = START_INDEX;
             Row row = sheet.createRow(rowIdx);
+            writeRow(row, item, targetDomain);
+        }
+    }
 
-            for (Field field : targetDomain.getDeclaredFields()) {
-                field.setAccessible(true);
-                if (!field.isAnnotationPresent(ExcelColumn.class) ||
-                        field.getAnnotation(ExcelColumn.class).download().isBlank()) {
-                    continue;
-                }
-                createCell(row, cellIdx, item, field);
-                cellIdx++;
+    private <T> void writeRow(Row row, T item, Class<T> targetDomain) {
+
+        int cellIdx = START_INDEX;
+
+        for (Field field : targetDomain.getDeclaredFields()) {
+            field.setAccessible(true);
+            if (!field.isAnnotationPresent(ExcelColumn.class) ||
+                    field.getAnnotation(ExcelColumn.class).download().isBlank()) {
+                continue;
             }
+            writeCell(row, cellIdx, item, field);
+            cellIdx++;
         }
     }
 
-    private void writeWorkbook(Workbook wb, ByteArrayOutputStream out) {
-        try {
-            wb.write(out);
-
-        } catch (IOException e) {
-            throw new ExcelInternalException("Workbook 오류", e);
-        }
-    }
-
-    private void closeWorkbook(Workbook wb) {
-        try {
-            wb.close();
-
-        } catch (IOException e) {
-            throw new ExcelInternalException("Workbook 오류", e);
-        }
-    }
-
-    private <T> void createCell(Row row, int cellIdx, T item, Field field) {
+    private <T> void writeCell(Row row, int cellIdx, T item, Field field) {
 
         String type = item.getClass().getTypeName();
 
@@ -228,6 +202,32 @@ public class ExcelConverter {
                 .map(field -> extractor.apply(field.getAnnotation(ExcelColumn.class)))
                 .filter(value -> !value.isBlank())
                 .forEach(fieldNames::add);
+    }
+
+    private Workbook createWorkbook(InputStream inputStream) {
+        try {
+            return WorkbookFactory.create(inputStream);
+        } catch (IOException e) {
+            throw new ExcelInternalException("[Workbook] create error: ", e);
+        }
+    }
+
+    private void writeWorkbook(Workbook wb, ByteArrayOutputStream out) {
+        try {
+            wb.write(out);
+
+        } catch (IOException e) {
+            throw new ExcelInternalException("[Workbook] write error: ", e);
+        }
+    }
+
+    private void closeWorkbook(Workbook wb) {
+        try {
+            wb.close();
+
+        } catch (IOException e) {
+            throw new ExcelInternalException("[Workbook] close error: ", e);
+        }
     }
 
 }

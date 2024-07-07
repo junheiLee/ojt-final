@@ -41,7 +41,7 @@ public abstract class AbstractExcelService<T extends ExcelProcessable> {
             throw new UnSupportedFileException(ResultCode.NOT_EXCEL_FILE);
         }
 
-        return excelConverter.parse(file.getInputStream(), getTargetDomain());
+        return excelConverter.read(file.getInputStream(), getTargetDomain());
     }
 
     /**
@@ -52,6 +52,6 @@ public abstract class AbstractExcelService<T extends ExcelProcessable> {
      */
     protected byte[] create(List<T> items) {
 
-        return excelConverter.create(items, getTargetDomain());
+        return excelConverter.write(items, getTargetDomain());
     }
 }
