@@ -1,7 +1,6 @@
 package com.ojt_final.office.service.excel;
 
 
-import com.ojt_final.office.domain.ExcelProcessable;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.excel.ExcelInternalException;
 import com.ojt_final.office.global.exception.excel.NoExcelColumnAnnotationsException;

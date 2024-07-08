@@ -22,11 +22,10 @@ import java.util.List;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 
-
 @Slf4j
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Service
 public class StandardProdService extends AbstractExcelService<StandardProd> {
 
     private final BatchProcessor batchProcessor;

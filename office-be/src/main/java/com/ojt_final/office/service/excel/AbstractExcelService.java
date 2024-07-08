@@ -1,6 +1,5 @@
 package com.ojt_final.office.service.excel;
 
-import com.ojt_final.office.domain.ExcelProcessable;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
 import org.springframework.web.multipart.MultipartFile;
