@@ -3,7 +3,9 @@ package com.ojt_final.office.service.module;
 import com.ojt_final.office.dao.PartnerProdDao;
 import com.ojt_final.office.domain.PartnerProd;
 import com.ojt_final.office.domain.search.PartnerProdCond;
+import com.ojt_final.office.dto.request.CreatePartnerProdRequest;
 import com.ojt_final.office.dto.request.search.CondParam;
+import com.ojt_final.office.dto.response.CreatePartnerProdResponse;
 import com.ojt_final.office.dto.response.PartnerProdListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
@@ -53,7 +55,21 @@ public class PartnerProdService extends AbstractExcelService<PartnerProd> {
                 .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
     }
 
-    public byte[] createExcelFile(CondParam condParam) {
+    public CreatePartnerProdResponse save(CreatePartnerProdRequest createPartnerProdRequest) {
+
+        PartnerProd partnerProd = createPartnerProdRequest.toEntity();
+
+        if (0 <= partnerProdDao.exist(partnerProd)) {
+            return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode());
+        }
+        int count = partnerProdDao.save(partnerProd);
+
+        return count > 0
+                ? new CreatePartnerProdResponse(ResultCode.SUCCESS, partnerProd.getCode())
+                : new CreatePartnerProdResponse(ResultCode.FAILED, partnerProd.getCode());
+    }
+
+    public byte[] getExcelFile(CondParam condParam) {
 
         PartnerProdCond cond = condParam.toPartnerProdCond();
         List<PartnerProd> prods = getProds(cond);

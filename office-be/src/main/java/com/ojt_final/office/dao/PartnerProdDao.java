@@ -15,6 +15,10 @@ public interface PartnerProdDao {
 
     int saveAll(List<PartnerProd> partnerProds);
 
+    int save(PartnerProd partnerProd);
+
+    int exist(PartnerProd partnerProd);
+
     int countAll();
 
     List<PartnerProd> selectByCond(PartnerProdCond cond);

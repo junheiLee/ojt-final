@@ -7,7 +7,8 @@ import lombok.Setter;
 /**
  * JSON 형식의 Response에 반드시 들어가야하는 항목
  */
-@Getter @Setter
+@Getter
+@Setter
 public class BaseResponse {
 
     private String resultCode;

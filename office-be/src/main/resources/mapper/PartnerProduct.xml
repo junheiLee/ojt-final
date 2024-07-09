@@ -36,6 +36,37 @@
                 sImageUrl = VALUES(sImageUrl)
     </insert>
 
+    <insert id="save" parameterType="PartnerProd">
+        INSERT INTO tPartnerProduct (
+                sPartnerCode,
+                nCategoryCode,
+                sPartnerProductCode,
+                sPartnerProductName,
+                nPcPrice,
+                nMobilePrice,
+                sUrl,
+                sImageUrl
+        )
+        VALUES (
+               #{partnerCode},
+               #{categoryCode},
+               #{code},
+               #{name},
+               #{pcPrice},
+               #{mobilePrice},
+               #{url},
+               #{imageUrl}
+        )
+    </insert>
+
+    <select id="exist" parameterType="PartnerProd">
+        SELECT COUNT(sPartnerCode)
+        FROM tPartnerProduct
+        WHERE sPartnerProductCode = #{code}
+              AND sPartnerCode = #{partnerCode}
+
+    </select>
+
     <select id="countAll">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct

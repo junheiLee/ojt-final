@@ -50,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> spreadSheetExHandle(POIXMLException e) {
         log.error("[POIXMLException]: {}", e.getMessage());
 
-        if(e.getMessage().contains("#57699")) {
+        if (e.getMessage().contains("#57699")) {
             return new ResponseEntity<>(
                     new BaseResponse(ResultCode.UNSUPPORTED_EXCEL_FORMAT),
                     HttpStatus.UNSUPPORTED_MEDIA_TYPE);
