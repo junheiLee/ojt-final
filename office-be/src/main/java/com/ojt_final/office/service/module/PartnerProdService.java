@@ -11,7 +11,7 @@ import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
 import com.ojt_final.office.service.batch.BatchResult;
-import com.ojt_final.office.service.excel.AbstractExcelService;
+import com.ojt_final.office.service.excel.ExcelProcessingHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class PartnerProdService extends AbstractExcelService<PartnerProd> {
+public class PartnerProdService implements ExcelProcessingHandler<PartnerProd> {
 
     private final BatchProcessor batchProcessor;
     private final PartnerProdDao partnerProdDao;
