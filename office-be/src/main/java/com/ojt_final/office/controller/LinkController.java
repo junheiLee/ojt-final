@@ -3,7 +3,7 @@ package com.ojt_final.office.controller;
 import com.ojt_final.office.dto.request.CreateLinkRequest;
 import com.ojt_final.office.dto.request.RemoveLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
-import com.ojt_final.office.service.LinkIntegratedService;
+import com.ojt_final.office.service.IntegratedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class LinkController {
 
-    private final LinkIntegratedService linkIntegratedService;
+    private final IntegratedService integratedService;
 
     /**
      * 기준 상품과 파트너 상품들 간 링크를 생성하는 API
@@ -27,7 +27,7 @@ public class LinkController {
     @PostMapping
     public BaseResponse create(@RequestBody CreateLinkRequest createLinkRequest) {
         log.info("Creating link with request: {}", createLinkRequest);
-        return linkIntegratedService.create(createLinkRequest);
+        return integratedService.create(createLinkRequest);
     }
 
     /**
@@ -40,7 +40,7 @@ public class LinkController {
     @DeleteMapping
     public BaseResponse remove(@RequestBody RemoveLinkRequest removeLinkRequest) {
         log.info("Removing link with request: {}", removeLinkRequest);
-        return linkIntegratedService.delete(removeLinkRequest);
+        return integratedService.delete(removeLinkRequest);
     }
 
 }

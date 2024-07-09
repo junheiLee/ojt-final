@@ -22,7 +22,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class CategoryService implements ExcelProcessingHandler<Category> {
+public class CategoryService extends ExcelProcessingHandler<Category> {
 
     private final BatchProcessor batchProcessor;
     private final CategoryDao categoryDao;

@@ -26,7 +26,7 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class StandardProdService implements ExcelProcessingHandler<StandardProd> {
+public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
 
     private final BatchProcessor batchProcessor;
     private final StandardProdDao standardProdDao;

@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @param <T> the type of domain object that implements {@link ExcelProcessable}
  */
-public interface ExcelProcessingHandler<T extends ExcelProcessable> {
+public abstract class ExcelProcessingHandler<T extends ExcelProcessable> {
 
     ExcelConverter excelConverter = ExcelConverter.INSTANCE;
 
@@ -24,7 +24,7 @@ public interface ExcelProcessingHandler<T extends ExcelProcessable> {
      * @return the Excel-processable domain handled by this service
      * @implSpec This method should return the Excel-processable domain handled by the class.
      */
-    Class<T> getTargetDomain();
+    protected abstract Class<T> getTargetDomain();
 
     /**
      * MultipartFile 확장자 확인 후, Excel 파일의 헤더와 바디를 파싱해 객체 리스트로 반환한다.
@@ -33,7 +33,7 @@ public interface ExcelProcessingHandler<T extends ExcelProcessable> {
      * @return a list of parsed objects
      * @throws IOException if an error occurs while getInputStream() from {@code MultipartFile}
      */
-    default List<T> parse(MultipartFile file) throws IOException {
+    protected List<T> parse(MultipartFile file) throws IOException {
 
         // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
         if (!excelConverter.supports(file.getOriginalFilename())) {
@@ -49,7 +49,7 @@ public interface ExcelProcessingHandler<T extends ExcelProcessable> {
      * @param items items the list of Excel-processable objects
      * @return a byte array representing the Excel file
      */
-    default byte[] create(List<T> items) {
+    protected byte[] create(List<T> items) {
 
         return excelConverter.write(items, getTargetDomain());
     }

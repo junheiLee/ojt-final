@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class LinkIntegratedService {
+public class IntegratedService {
 
     private final LinkService linkService;
     private final StandardProdService standardProdService;
