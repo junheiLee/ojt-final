@@ -36,7 +36,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
         return StandardProd.class;
     }
 
-    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
+    public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
         List<StandardProd> standardProds = parse(excelFile);
         BatchResult batchResult = saveAll(standardProds);
@@ -54,7 +54,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
                 .calInsertAndUnchangedCount(previousCount, standardProdDao.countAll());
     }
 
-    public byte[] createExcelFile(CondParam condParam) {
+    public byte[] exportExcel(CondParam condParam) {
 
         StandardProdCond cond = condParam.toStandardProdCond();
         List<StandardProd> prods = getProds(cond);

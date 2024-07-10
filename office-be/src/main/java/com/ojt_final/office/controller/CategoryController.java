@@ -30,7 +30,7 @@ public class CategoryController {
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
-        return categoryService.saveExcelData(excelFile);
+        return categoryService.importExcel(excelFile);
     }
 
 }

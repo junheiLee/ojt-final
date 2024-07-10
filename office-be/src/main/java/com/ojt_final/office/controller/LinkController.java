@@ -27,7 +27,7 @@ public class LinkController {
     @PostMapping
     public BaseResponse create(@RequestBody CreateLinkRequest createLinkRequest) {
         log.info("Creating link with request: {}", createLinkRequest);
-        return integratedService.create(createLinkRequest);
+        return integratedService.createLink(createLinkRequest);
     }
 
     /**
@@ -40,7 +40,7 @@ public class LinkController {
     @DeleteMapping
     public BaseResponse remove(@RequestBody RemoveLinkRequest removeLinkRequest) {
         log.info("Removing link with request: {}", removeLinkRequest);
-        return integratedService.delete(removeLinkRequest);
+        return integratedService.deleteLink(removeLinkRequest);
     }
 
 }

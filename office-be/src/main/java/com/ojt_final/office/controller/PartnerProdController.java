@@ -37,7 +37,7 @@ public class PartnerProdController {
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
-        return partnerProdService.saveExcelData(excelFile);
+        return partnerProdService.importExcel(excelFile);
     }
 
     /**
@@ -63,7 +63,7 @@ public class PartnerProdController {
     @GetMapping("/download/excel")
     public ResponseEntity<byte[]> downloadExcel(@ModelAttribute CondParam condParam) {
 
-        byte[] excelBytes = partnerProdService.getExcelFile(condParam);
+        byte[] excelBytes = partnerProdService.exportExcel(condParam);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT);

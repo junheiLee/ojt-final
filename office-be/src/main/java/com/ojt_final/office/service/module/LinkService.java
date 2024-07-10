@@ -23,9 +23,9 @@ public class LinkService {
         return linkDao.saveAll(createLinkRequest.toEntities());
     }
 
-    public List<Integer> findAllByProdCodes(List<String> partnerProdCodes) {
+    public List<Integer> findStandardCodesByPartnerProdCodes(List<String> partnerProdCodes) {
 
-        return linkDao.findAllByPartnerProdCodes(partnerProdCodes);
+        return linkDao.findStandardCodesByPartnerProdCodes(partnerProdCodes);
     }
 
     @Transactional

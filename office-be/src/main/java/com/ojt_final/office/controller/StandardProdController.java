@@ -36,7 +36,7 @@ public class StandardProdController {
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
 
-        return standardProdService.saveExcelData(excelFile);
+        return standardProdService.importExcel(excelFile);
     }
 
     /**
@@ -48,7 +48,7 @@ public class StandardProdController {
     @GetMapping("/download/excel")
     public ResponseEntity<byte[]> downloadExcel(@ModelAttribute CondParam condParam) {
 
-        byte[] excelBytes = standardProdService.createExcelFile(condParam);
+        byte[] excelBytes = standardProdService.exportExcel(condParam);
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT);

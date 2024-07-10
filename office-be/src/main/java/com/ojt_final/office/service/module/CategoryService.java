@@ -32,7 +32,7 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
         return Category.class;
     }
 
-    public UploadExcelResponse saveExcelData(MultipartFile file) throws IOException {
+    public UploadExcelResponse importExcel(MultipartFile file) throws IOException {
 
         List<Category> categories = parse(file);
         BatchResult batchResult = saveAll(categories);

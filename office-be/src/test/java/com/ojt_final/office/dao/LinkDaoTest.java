@@ -40,7 +40,7 @@ public class LinkDaoTest {
 
         //when
         int savedCount = linkDao.saveAll(links);
-        List<Integer> linkedChangeStandardCodes = linkDao.findAllByPartnerProdCodes(partnerProductCodes);
+        List<Integer> linkedChangeStandardCodes = linkDao.findStandardCodesByPartnerProdCodes(partnerProductCodes);
 
         //then
         assertThat(savedCount).isEqualTo(3);
@@ -56,7 +56,7 @@ public class LinkDaoTest {
 
         //when
         int deletedCount = linkDao.deleteAll(partnerProductCodes);
-        List<Integer> foundStandardProductCodes = linkDao.findAllByPartnerProdCodes(partnerProductCodes);
+        List<Integer> foundStandardProductCodes = linkDao.findStandardCodesByPartnerProdCodes(partnerProductCodes);
 
         //then
         assertThat(deletedCount).isEqualTo(2);

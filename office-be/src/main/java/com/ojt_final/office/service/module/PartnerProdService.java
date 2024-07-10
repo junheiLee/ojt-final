@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 
@@ -37,7 +38,7 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return PartnerProd.class;
     }
 
-    public UploadExcelResponse saveExcelData(MultipartFile excelFile) throws IOException {
+    public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
         List<PartnerProd> partnerProds = parse(excelFile);
         BatchResult batchResult = saveAll(partnerProds);
@@ -58,8 +59,9 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
     public CreatePartnerProdResponse save(CreatePartnerProdRequest createPartnerProdRequest) {
 
         PartnerProd partnerProd = createPartnerProdRequest.toEntity();
+        Optional<PartnerProd> partnerProdOpt = getPartnerProdOpt(partnerProd);
 
-        if (0 <= partnerProdDao.exist(partnerProd)) {
+        if (partnerProdOpt.isEmpty()) {
             return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode());
         }
         int count = partnerProdDao.save(partnerProd);
@@ -69,7 +71,12 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
                 : new CreatePartnerProdResponse(ResultCode.FAILED, partnerProd.getCode());
     }
 
-    public byte[] getExcelFile(CondParam condParam) {
+    private Optional<PartnerProd> getPartnerProdOpt(PartnerProd partnerProd) {
+        return partnerProdDao.find(partnerProd.getCode(), partnerProd.getPartnerCode());
+    }
+
+
+    public byte[] exportExcel(CondParam condParam) {
 
         PartnerProdCond cond = condParam.toPartnerProdCond();
         List<PartnerProd> prods = getProds(cond);
@@ -92,7 +99,20 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
 
     private List<PartnerProd> getProds(PartnerProdCond cond) {
 
-        return partnerProdDao.selectByCond(cond);
+        return partnerProdDao.findByCond(cond);
+    }
+
+    public boolean update(PartnerProd partnerProd) {
+
+        Optional<PartnerProd> partnerProdOpt = getPartnerProdOpt(partnerProd);
+
+        if (partnerProdOpt.isEmpty()) {
+            // 예외: 존재하지 않는 상품 수정 시도
+            throw new RuntimeException("임시");
+        }
+        partnerProdDao.update(partnerProd);
+
+        return partnerProd.requiresIntegratedProgram(partnerProdOpt.get());
     }
 
     /**
@@ -106,6 +126,10 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
     public int updateAllIsLinked(boolean isLinked, List<String> codes) {
 
         return partnerProdDao.updateAllIsLinked(isLinked, codes);
+    }
+
+    public int delete() {
+        return 0;
     }
 
 }

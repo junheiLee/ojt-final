@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class UpdatePartnerProdRequest {
 
+    private String targetCode;
+    private String targetPartnerCode;
+
     private int categoryCode;
     private String name;
     private int pcPrice;
@@ -20,6 +23,9 @@ public class UpdatePartnerProdRequest {
 
     public PartnerProd toEntity() {
         return PartnerProd.builder()
+                .code(targetCode)
+                .partnerCode(targetPartnerCode)
+
                 .categoryCode(categoryCode)
                 .name(name)
                 .pcPrice(pcPrice)

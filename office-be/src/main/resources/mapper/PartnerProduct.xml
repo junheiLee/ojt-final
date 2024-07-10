@@ -59,20 +59,22 @@
         )
     </insert>
 
-    <select id="exist" parameterType="PartnerProd">
-        SELECT COUNT(sPartnerCode)
+    <select id="find" resultType="PartnerProd">
+        SELECT nCategoryCode AS categoryCode,
+               sPartnerCode AS partnerCode,
+               sPartnerProductCode AS code,
+               sPartnerProudctName AS partnerName,
+               nPcPrice AS pcPrice,
+               nMobilePrice AS mobilePrice,
+               sImageUrl AS imageUrl,
+               bIsLinked AS isLinked
         FROM tPartnerProduct
         WHERE sPartnerProductCode = #{code}
               AND sPartnerCode = #{partnerCode}
 
     </select>
 
-    <select id="countAll">
-        SELECT COUNT(sPartnerProductCode)
-        FROM tPartnerProduct
-    </select>
-
-    <select id="selectByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
+    <select id="findByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
         SELECT P.sPartnerName AS partnerName,
                C.sCategoryName AS categoryName,
                PP.sPartnerProductName AS name,
@@ -108,6 +110,11 @@
 
     </select>
 
+    <select id="countAll">
+        SELECT COUNT(sPartnerProductCode)
+        FROM tPartnerProduct
+    </select>
+
     <select id="countByCond" parameterType="Cond">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct
@@ -118,6 +125,11 @@
         </where>
     </select>
 
+    <update id="update" parameterType="PartnerProd">
+        UPDATE tPartnerProduct
+        SET
+            <if test="categoryCode != "> </if>
+    </update>
     <update id="updateAllIsLinked">
         UPDATE tPartnerProduct
         SET bIsLinked = #{isLinked}

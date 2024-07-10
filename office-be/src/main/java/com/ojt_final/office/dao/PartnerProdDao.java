@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 @Component
@@ -17,13 +18,15 @@ public interface PartnerProdDao {
 
     int save(PartnerProd partnerProd);
 
-    int exist(PartnerProd partnerProd);
+    Optional<PartnerProd> find(String code, String partnerCode);
+
+    List<PartnerProd> findByCond(PartnerProdCond cond);
 
     int countAll();
 
-    List<PartnerProd> selectByCond(PartnerProdCond cond);
-
     int countByCond(Cond cond);
+
+    int update(PartnerProd partnerProd);
 
     int updateAllIsLinked(@Param("isLinked") boolean isLinked, @Param("codes") List<String> codes);
 

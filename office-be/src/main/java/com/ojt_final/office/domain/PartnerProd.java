@@ -84,4 +84,9 @@ public class PartnerProd implements ExcelProcessable {
         this.url = getStringCellValue(row.getCell(8));
         this.imageUrl = getStringCellValue(row.getCell(9));
     }
+
+    public boolean requiresIntegratedProgram(PartnerProd oldProd) {
+
+        return isLinked && (oldProd.pcPrice != pcPrice || oldProd.mobilePrice != mobilePrice);
+    }
 }

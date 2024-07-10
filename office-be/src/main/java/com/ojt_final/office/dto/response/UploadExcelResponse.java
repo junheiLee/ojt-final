@@ -4,6 +4,7 @@ import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchResult;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -18,6 +19,9 @@ public class UploadExcelResponse extends BaseResponse {
     private final int updatedCount;
     private final int unchangedCount;
     private final int failedCount;
+
+    @Setter
+    private int standardChangedCount;
 
     /**
      * Constructs an UploadExcelResponse with the given result code and batch result.
