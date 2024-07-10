@@ -20,7 +20,7 @@ public interface PartnerProdDao {
 
     Optional<PartnerProd> find(String code, String partnerCode);
 
-    List<PartnerProd> findByCond(PartnerProdCond cond);
+    List<PartnerProd> findAllByCond(PartnerProdCond cond);
 
     int countAll();
 
@@ -30,5 +30,5 @@ public interface PartnerProdDao {
 
     int updateAllIsLinked(@Param("isLinked") boolean isLinked, @Param("codes") List<String> codes);
 
-
+    int delete(PartnerProd prod);
 }

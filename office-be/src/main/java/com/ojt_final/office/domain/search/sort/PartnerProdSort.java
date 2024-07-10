@@ -17,7 +17,7 @@ public class PartnerProdSort extends Direction {
     private String createdAt = NONE;
 
     /**
-     * 정렬 파라미터 리스트로 PartnerProdSort 객체를 생성해 반환한다.
+     * 정렬 파라미터 리스트를 받아 정렬 조건을 설정한 PartnerProdSort 객체를 생성해 반환한다.
      *
      * @param params the list of sorting parameters
      * @return a PartnerProdSort instance with sorting criteria set

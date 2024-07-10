@@ -11,7 +11,7 @@ import java.util.List;
 @ToString
 @Getter
 @NoArgsConstructor
-public class RemoveLinkRequest {
+public class DeleteLinkRequest {
 
     private List<String> partnerProdCodes;
 

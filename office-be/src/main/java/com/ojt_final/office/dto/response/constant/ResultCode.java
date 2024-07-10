@@ -21,7 +21,11 @@ public enum ResultCode {
     NO_FILE("파일이 존재하지 않습니다.."),
     DUPLICATE_IDENTIFIER("이미 존재하는 상품입니다. 코드를 확인해 수정해주세요."),
     FAILED("임시"),
-    SPRING_EXCEPTION("SPRING 예외 발생");
+    SPRING_EXCEPTION("SPRING 예외 발생"),
+
+    // 상태
+    UNLINKED("링크되지 않은 상품"),
+    LINKED("링크된 상품");
 
     private final String message;
 

@@ -74,7 +74,7 @@
 
     </select>
 
-    <select id="findByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
+    <select id="findAllByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
         SELECT P.sPartnerName AS partnerName,
                C.sCategoryName AS categoryName,
                PP.sPartnerProductName AS name,

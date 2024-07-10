@@ -23,10 +23,10 @@ public class PartnerProdServiceTest {
 
     @ParameterizedTest(name = "정렬조건={0}")
     @MethodSource("condParams")
-    void getResponseProdsTest(CondParam condParam, int idx, String name, int pcPrice) {
+    void searchWithCountTest(CondParam condParam, int idx, String name, int pcPrice) {
 
         //when
-        PartnerProdListResponse response = partnerProdService.getResponseProds(condParam);
+        PartnerProdListResponse response = partnerProdService.searchWithCount(condParam);
 
         //then
         assertThat(response.getProds().get(idx).getName()).isEqualTo(name);

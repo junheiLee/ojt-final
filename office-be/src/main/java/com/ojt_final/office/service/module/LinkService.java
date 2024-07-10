@@ -2,6 +2,7 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dao.LinkDao;
 import com.ojt_final.office.dto.request.CreateLinkRequest;
+import com.ojt_final.office.dto.request.DeleteLinkRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,21 @@ public class LinkService {
         return linkDao.saveAll(createLinkRequest.toEntities());
     }
 
-    public List<Integer> findStandardCodesByPartnerProdCodes(List<String> partnerProdCodes) {
+    public List<Integer> findStandardCodes(List<String> partnerProdCodes) {
 
-        return linkDao.findStandardCodesByPartnerProdCodes(partnerProdCodes);
+        return linkDao.findStandardCodes(partnerProdCodes);
     }
 
     @Transactional
-    public int delete(List<String> partnerProdCodes) {
+    public int deleteAll(int standardCode) {
 
-        return linkDao.deleteAll(partnerProdCodes);
+        return linkDao.deleteAllByStandardCode(standardCode);
+    }
+
+    @Transactional
+    public int deleteAll(DeleteLinkRequest deleteLinkRequest) {
+
+        return linkDao.deleteByPartnerProdCodes(deleteLinkRequest.getPartnerProdCodes());
     }
 
 }

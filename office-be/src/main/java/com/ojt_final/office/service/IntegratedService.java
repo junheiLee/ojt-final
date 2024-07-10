@@ -2,7 +2,8 @@ package com.ojt_final.office.service;
 
 import com.ojt_final.office.domain.PartnerProd;
 import com.ojt_final.office.dto.request.CreateLinkRequest;
-import com.ojt_final.office.dto.request.RemoveLinkRequest;
+import com.ojt_final.office.dto.request.DeleteLinkRequest;
+import com.ojt_final.office.dto.request.DeletePartnerProdRequest;
 import com.ojt_final.office.dto.request.UpdatePartnerProdRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
@@ -32,23 +33,24 @@ public class IntegratedService {
     public BaseResponse createLink(CreateLinkRequest createLinkRequest) {
 
         List<String> partnerProdCodes = createLinkRequest.getPartnerProdCodes();
-        List<Integer> changedStandardProdCodes = linkService.findStandardCodesByPartnerProdCodes(partnerProdCodes);
-        changedStandardProdCodes.add(createLinkRequest.getStandardProdCode());
+        List<Integer> targetStandardCodes = linkService.findStandardCodes(partnerProdCodes);
+        targetStandardCodes.add(createLinkRequest.getStandardProdCode());
 
         int linkRow = linkService.create(createLinkRequest);
         int partnerRow = partnerProdService.updateAllIsLinked(true, partnerProdCodes);
-        int standardRow = standardProdService.integrateChange(changedStandardProdCodes);
+        int standardRow = standardProdService.integrateChange(targetStandardCodes);
         // TODO: 각 Row 값을 통해 created, updated, unChanged, failed 추적 로직
         return null;
     }
 
-    public BaseResponse deleteLink(RemoveLinkRequest removeLinkRequest) {
+    public BaseResponse deleteLink(DeleteLinkRequest deleteLinkRequest) {
 
-        List<String> partnerProdCodes = removeLinkRequest.getPartnerProdCodes();
-        List<Integer> targetStandardCodes = linkService.findStandardCodesByPartnerProdCodes(partnerProdCodes);
+        int linkRow = linkService.deleteAll(deleteLinkRequest);
 
-        int linkRow = linkService.delete(partnerProdCodes);
+        List<String> partnerProdCodes = deleteLinkRequest.getPartnerProdCodes();
         int partnerRow = partnerProdService.updateAllIsLinked(false, partnerProdCodes);
+
+        List<Integer> targetStandardCodes = linkService.findStandardCodes(partnerProdCodes);
         int standardRow = standardProdService.integrateChange(targetStandardCodes);
         // TODO: 각 Row 값을 통해 created, updated, unChanged, failed 추적 로직
         return null;
@@ -64,14 +66,25 @@ public class IntegratedService {
 
     public void updatePartnerProduct(UpdatePartnerProdRequest request) {
         PartnerProd partnerProd = request.toEntity();
+
         if (partnerProdService.update(partnerProd)) {
-            List<Integer> targetStandardCodes = linkService.findStandardCodesByPartnerProdCodes(List.of(partnerProd.getCode()));
+            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
             standardProdService.integrateChange(targetStandardCodes);
         }
     }
 
-    public void deletePartnerProduct() {
-        // TODO: 한 번 되물어야댐
+    public void deletePartnerProduct(DeletePartnerProdRequest deletePartnerProdRequest) {
+
+        PartnerProd partnerProd = deletePartnerProdRequest.toEntity();
+        partnerProdService.delete(partnerProd);
+
+        if (partnerProd.isLinked()) {
+            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
+            int standardRow = standardProdService.integrateChange(targetStandardCodes);
+        }
     }
 
+    public void deleteStandardProduct() {
+
+    }
 }

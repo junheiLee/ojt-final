@@ -1,7 +1,7 @@
 package com.ojt_final.office.controller;
 
 import com.ojt_final.office.dto.request.CreateLinkRequest;
-import com.ojt_final.office.dto.request.RemoveLinkRequest;
+import com.ojt_final.office.dto.request.DeleteLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.service.IntegratedService;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +33,14 @@ public class LinkController {
     /**
      * 기준 상품과 파트너 상품들 간 링크를 삭제하는 API
      *
-     * @param removeLinkRequest the request containing link removal details
+     * @param deleteLinkRequest the request containing link removal details
      * @return a {@link BaseResponse} indicating the result of the operation
      */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
-    public BaseResponse remove(@RequestBody RemoveLinkRequest removeLinkRequest) {
-        log.info("Removing link with request: {}", removeLinkRequest);
-        return integratedService.deleteLink(removeLinkRequest);
+    public BaseResponse remove(@RequestBody DeleteLinkRequest deleteLinkRequest) {
+        log.info("Removing link with request: {}", deleteLinkRequest);
+        return integratedService.deleteLink(deleteLinkRequest);
     }
 
 }

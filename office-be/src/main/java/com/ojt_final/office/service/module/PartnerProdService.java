@@ -49,20 +49,21 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
                 .build();
     }
 
-    private BatchResult saveAll(List<PartnerProd> partnerProds) {
+    public byte[] exportExcel(CondParam condParam) {
 
-        int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
-        return batchProcessor.save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
-                .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
+        PartnerProdCond cond = condParam.toPartnerProdCond();
+        List<PartnerProd> prods = findAllByCond(cond);
+
+        return create(prods);
     }
 
     public CreatePartnerProdResponse save(CreatePartnerProdRequest createPartnerProdRequest) {
 
         PartnerProd partnerProd = createPartnerProdRequest.toEntity();
-        Optional<PartnerProd> partnerProdOpt = getPartnerProdOpt(partnerProd);
+        Optional<PartnerProd> partnerProdOpt = findOpt(partnerProd);
 
         if (partnerProdOpt.isEmpty()) {
-            return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode());
+            return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode()); //exception
         }
         int count = partnerProdDao.save(partnerProd);
 
@@ -71,24 +72,11 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
                 : new CreatePartnerProdResponse(ResultCode.FAILED, partnerProd.getCode());
     }
 
-    private Optional<PartnerProd> getPartnerProdOpt(PartnerProd partnerProd) {
-        return partnerProdDao.find(partnerProd.getCode(), partnerProd.getPartnerCode());
-    }
-
-
-    public byte[] exportExcel(CondParam condParam) {
-
-        PartnerProdCond cond = condParam.toPartnerProdCond();
-        List<PartnerProd> prods = getProds(cond);
-
-        return create(prods);
-    }
-
-    public PartnerProdListResponse getResponseProds(CondParam condParam) {
+    public PartnerProdListResponse searchWithCount(CondParam condParam) {
 
         PartnerProdCond cond = condParam.toPartnerProdCond();
         int count = partnerProdDao.countByCond(cond);
-        List<PartnerProd> prods = getProds(cond);
+        List<PartnerProd> prods = findAllByCond(cond);
 
         return PartnerProdListResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
@@ -97,14 +85,9 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
                 .build();
     }
 
-    private List<PartnerProd> getProds(PartnerProdCond cond) {
-
-        return partnerProdDao.findByCond(cond);
-    }
-
     public boolean update(PartnerProd partnerProd) {
 
-        Optional<PartnerProd> partnerProdOpt = getPartnerProdOpt(partnerProd);
+        Optional<PartnerProd> partnerProdOpt = findOpt(partnerProd);
 
         if (partnerProdOpt.isEmpty()) {
             // 예외: 존재하지 않는 상품 수정 시도
@@ -128,8 +111,43 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return partnerProdDao.updateAllIsLinked(isLinked, codes);
     }
 
-    public int delete() {
-        return 0;
+    public ResultCode checkIfLinked(PartnerProd partnerProd) {
+        Optional<PartnerProd> prodOpt = findOpt(partnerProd);
+        if (prodOpt.isEmpty()) {
+            throw new RuntimeException("임시 잘못된 사용자 요청: 존재하는 리소스가 없음:404 ");
+        }
+        if (prodOpt.get().isLinked()) {
+            return ResultCode.LINKED;
+        } else {
+            return ResultCode.UNLINKED;
+        }
+
+    }
+
+    public void delete(PartnerProd partnerProd) {
+
+        int deletedRow = partnerProdDao.delete(partnerProd);
+
+        if (deletedRow <= 0) {
+            throw new RuntimeException("임시 항복을 삭제하지 못했다.");
+        }
+    }
+
+    private BatchResult saveAll(List<PartnerProd> partnerProds) {
+
+        int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        return batchProcessor
+                .save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
+                .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
+    }
+
+    private List<PartnerProd> findAllByCond(PartnerProdCond cond) {
+
+        return partnerProdDao.findAllByCond(cond);
+    }
+
+    private Optional<PartnerProd> findOpt(PartnerProd partnerProd) {
+        return partnerProdDao.find(partnerProd.getCode(), partnerProd.getPartnerCode());
     }
 
 }

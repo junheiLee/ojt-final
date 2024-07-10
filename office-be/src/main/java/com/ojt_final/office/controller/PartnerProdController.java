@@ -84,7 +84,7 @@ public class PartnerProdController {
     @GetMapping
     public PartnerProdListResponse getPartnerProds(@ModelAttribute CondParam condParam) {
 
-        return partnerProdService.getResponseProds(condParam);
+        return partnerProdService.searchWithCount(condParam);
     }
 
 }

@@ -19,7 +19,7 @@
                          nProductCode = VALUES(nProductCode)
     </insert>
 
-    <select id="findAllByPartnerProdCodes" parameterType="String" resultType="int">
+    <select id="findStandardCodes" parameterType="String" resultType="int">
         SELECT DISTINCT nProductCode
         FROM tLink
         WHERE sPartnerProductCode in (
@@ -29,7 +29,7 @@
         )
     </select>
 
-    <delete id="deleteAll">
+    <delete id="deleteByPartnerProdCodes">
         DELETE FROM tLink
         WHERE
             sPartnerProductCode IN (

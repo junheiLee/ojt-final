@@ -54,12 +54,13 @@ public class ExcelConverter {
      * @param <T>          the type of the excel-processable domain object to parse and save
      * @return a list of domain objects parsed from Excel file
      */
-    public <T extends ExcelProcessable> List<T> read(InputStream inputStream, Class<T> targetDomain) {
-
+    public <T extends ExcelProcessable> List<T> read(InputStream inputStream,
+                                                     Class<T> targetDomain) {
         Workbook wb = createWorkbook(inputStream);
         Sheet sheet = wb.getSheetAt(START_INDEX); // 엑셀 파일의 첫 번째 sheet
 
-        validateHeaderRows(sheet.getRow(START_INDEX), getHeaderNames(Act.UPLOAD, targetDomain)); // 첫 행의 헤더로 DB 저장 가능 여부 확인
+        // 첫 행의 헤더로 DB 저장 가능 여부 확인
+        validateHeaderRows(sheet.getRow(START_INDEX), getHeaderNames(Act.UPLOAD, targetDomain));
         List<T> items = readDataRows(sheet, targetDomain);
 
         closeWorkbook(wb);
@@ -69,18 +70,24 @@ public class ExcelConverter {
     private void validateHeaderRows(Row headerRow, List<String> domainHeaders) {
 
         List<String> excelHeaders = new ArrayList<>();
-        headerRow.cellIterator().forEachRemaining(cell -> excelHeaders.add(cell.getStringCellValue()));
+        headerRow.cellIterator()
+                .forEachRemaining(
+                        cell -> excelHeaders.add(cell.getStringCellValue())
+                );
 
         Set<String> missingHeaders = new HashSet<>(domainHeaders);
         missingHeaders.removeAll(excelHeaders);
 
         if (!missingHeaders.isEmpty()) {
             log.error("[ExcelConverter] missing headers: {}", missingHeaders);
-            throw new NoExcelColumnAnnotationsException(ResultCode.MISSING_HEADERS);
+            throw new NoExcelColumnAnnotationsException(
+                    ResultCode.MISSING_HEADERS
+            );
         }
     }
 
-    private <T extends ExcelProcessable> List<T> readDataRows(Sheet sheet, Class<T> targetDomain) {
+    private <T extends ExcelProcessable> List<T> readDataRows(Sheet sheet,
+                                                              Class<T> targetDomain) {
 
         List<T> items = new ArrayList<>();
 
@@ -115,15 +122,15 @@ public class ExcelConverter {
      * @param <T>          the type of the excel-processable domain object to create the Excel file
      * @return the Excel file as a byte array from object list
      */
-    public <T extends ExcelProcessable> byte[] write(List<T> items, Class<T> targetDomain) {
-
+    public <T extends ExcelProcessable> byte[] write(List<T> items,
+                                                     Class<T> targetDomain) {
         Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(targetDomain.getName());
 
-        writeHeaderRows(sheet.createRow(START_INDEX), getHeaderNames(Act.DOWNLOAD, targetDomain));  // 첫 행 헤더 정보 기입
+        // 첫 행 헤더 정보 기입
+        writeHeaderRows(sheet.createRow(START_INDEX), getHeaderNames(Act.DOWNLOAD, targetDomain));
         writeDataRows(sheet, items, targetDomain);
 
-        // 다운로드하는 byte[] 생성 및 리턴
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeWorkbook(wb, out);
         closeWorkbook(wb);
@@ -194,7 +201,8 @@ public class ExcelConverter {
         return fieldNames;
     }
 
-    private <T> void addHeaderNames(Class<T> domain, List<String> fieldNames, Function<ExcelColumn, String> extractor) {
+    private <T> void addHeaderNames(Class<T> domain, List<String> fieldNames,
+                                    Function<ExcelColumn, String> extractor) {
 
         Arrays.stream(domain.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(ExcelColumn.class))

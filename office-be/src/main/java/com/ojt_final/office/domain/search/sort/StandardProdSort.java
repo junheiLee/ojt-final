@@ -20,7 +20,7 @@ public class StandardProdSort extends Direction {
     private String partnerCount = NONE;
 
     /**
-     * 정렬 파라미터 리스트로 StandardProdSort 객체를 생성해 반환한다.
+     * 정렬 파라미터 리스트를 받아 정렬 조건을 설정한 StandardProdSort 객체를 생성해 반환한다.
      *
      * @param params the list of sorting parameters
      * @return a StandardProdSort instance with sorting criteria set
