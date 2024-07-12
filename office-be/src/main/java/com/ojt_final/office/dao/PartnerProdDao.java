@@ -24,7 +24,7 @@ public interface PartnerProdDao {
 
     int countAll();
 
-    int countByCond(Cond cond);
+    int countByCond(PartnerProdCond cond);
 
     int update(PartnerProd partnerProd);
 

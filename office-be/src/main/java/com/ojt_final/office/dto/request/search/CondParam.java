@@ -21,6 +21,7 @@ public class CondParam {
 
     private int page = 1;
     private Integer categoryCode; //null 이면 검색하지 않음
+    private Boolean isLinked; //null 이면 검색하지 않음
     private List<String> sorts;
 
     /**
@@ -47,6 +48,7 @@ public class CondParam {
         return PartnerProdCond.builder()
                 .limit(OUTPUT_LIST_LIMIT_SIZE)
                 .offset((Math.abs(page) - 1) * OUTPUT_LIST_LIMIT_SIZE)
+                .isLinked(isLinked)
                 .sortParams(sorts)
                 .build();
     }

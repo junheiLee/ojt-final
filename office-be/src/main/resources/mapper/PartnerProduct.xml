@@ -87,8 +87,11 @@
         INNER JOIN tCategory C ON (PP.nCategoryCode = C.nCategoryCode)
         INNER JOIN tPartner P ON (PP.sPartnerCode = P.sPartnerCode)
         <where>
-            <if test="categoryCode != null and categoryCode != ''">
+            <if test="categoryCode != null">
                 AND C.nCategoryCode = #{categoryCode}
+            </if>
+            <if test="isLinked != null">
+                AND PP.bIsLinked = #{isLinked}
             </if>
         </where>
         <trim prefix="ORDER BY" prefixOverrides=",">
@@ -115,12 +118,15 @@
         FROM tPartnerProduct
     </select>
 
-    <select id="countByCond" parameterType="Cond">
+    <select id="countByCond" parameterType="PartnerProdCond">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct
         <where>
             <if test="categoryCode != null">
-                nCategoryCode = #{categoryCode}
+                AND nCategoryCode = #{categoryCode}
+            </if>
+            <if test="isLinked != null">
+                AND bIsLinked = #{isLinked}
             </if>
         </where>
     </select>
@@ -130,6 +136,7 @@
         SET
             <if test="categoryCode != "> </if>
     </update>
+
     <update id="updateAllIsLinked">
         UPDATE tPartnerProduct
         SET bIsLinked = #{isLinked}

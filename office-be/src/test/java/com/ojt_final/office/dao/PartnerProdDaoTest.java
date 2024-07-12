@@ -1,6 +1,7 @@
 package com.ojt_final.office.dao;
 
 import com.ojt_final.office.domain.PartnerProd;
+import com.ojt_final.office.domain.search.PartnerProdCond;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class PartnerProdDaoTest {
     @Autowired
     PartnerProdDao partnerProdDao;
 
-    @DisplayName("INSERT ON DUPLICATE KEY UPDATE 중 중복 발생 시, UPDATE Test")
+    @DisplayName("PK 중복 값 INSERT 시, affectedRow = 2 Test")
     @Test
     void saveAllTest() {
         final int insertValue = 1;
@@ -36,7 +37,6 @@ public class PartnerProdDaoTest {
         assertThat(affectedRow).isEqualTo(insertValue * insertCount + updateValue * updateCount);
     }
 
-
     private List<PartnerProd> getSaveAllTestList() {
 
         PartnerProd insert
@@ -53,6 +53,26 @@ public class PartnerProdDaoTest {
                 .name("UPDATE").url("test").imageUrl("test").build();
 
         return List.of(insert, insertTemp, update);
+    }
+
+    @DisplayName("링크/미링크 상품 Count Test")
+    @Test
+    void countByCondTest() {
+        //given
+        int totalCount = partnerProdDao.countAll();
+        PartnerProdCond linked = PartnerProdCond.builder().isLinked(true).build();
+        PartnerProdCond unLinked = PartnerProdCond.builder().isLinked(false).build();
+
+        List<String> codes = List.of("3", "4", "5");
+        partnerProdDao.updateAllIsLinked(true, codes);
+
+        //when
+        int linkedCount = partnerProdDao.countByCond(linked);
+        int unlinkedCount = partnerProdDao.countByCond(unLinked);
+
+        //then
+        assertThat(linkedCount).isEqualTo(codes.size());
+        assertThat(linkedCount + unlinkedCount).isEqualTo(totalCount);
     }
 
 }
