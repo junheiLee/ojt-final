@@ -1,5 +1,7 @@
 package com.ojt_final.office.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,6 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class DeleteLinkRequest {
 
-    private List<String> partnerProdCodes;
+    @NotEmpty(message = "EMPTY")
+    private List<
+            @NotEmpty(message = "EMPTY")
+            @Size(max = 50, message = "SIZE_OVER_50")
+                    String> partnerProdCodes;
 
 }

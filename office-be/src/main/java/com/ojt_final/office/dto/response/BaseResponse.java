@@ -11,16 +11,16 @@ import lombok.Setter;
 @Setter
 public class BaseResponse {
 
-    private String resultCode;
+    private String code;
     private String message;
 
     public BaseResponse(ResultCode resultCode) {
-        this.resultCode = resultCode.name();
+        this.code = resultCode.name();
         this.message = resultCode.getMessage();
     }
 
     public BaseResponse(String resultCode, String message) {
-        this.resultCode = resultCode;
+        this.code = resultCode;
         this.message = message;
     }
 }

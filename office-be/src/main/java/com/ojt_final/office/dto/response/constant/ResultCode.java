@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ResultCode {
 
-    //성공
+    // 성공
     SUCCESS("성공적으로 처리되었습니다."),
     CREATED("생성된 상품 코드: %d"),
     UPLOAD_RESULT("생성: %d개, 수정: %d개, 유지: %d개"),
@@ -17,14 +17,19 @@ public enum ResultCode {
     CORRUPTED_OR_INVALID_EXCEL_FILE("파일이 손상되었거나 유효하지 않은 구조입니다."),
     MISSING_HEADERS("업로드하는 파일의 헤더를 확인해 주세요."),
 
-    // 예외: 공통
+    // 실패
     NO_FILE("파일이 존재하지 않습니다.."),
     DUPLICATE_IDENTIFIER("이미 존재하는 상품입니다. 코드를 확인해 수정해주세요."),
     FAILED("임시"),
-    SPRING_EXCEPTION("SPRING 예외 발생"),
+
+    INVALID("다음 항목의 값을 확인해 주세요."),
+    TYPE_MISMATCH("다음의 타입이 일치하지 않습니다."),
+    EMPTY_BODY("요청 본문이 없거나 잘못된 형식입니다."),
+    NOT_EXIST_URL("존재하지 않는 URL 입니다."),
+
 
     // 상태
-    UNLINKED("링크되지 않은 상품"),
+    UNLINKED("링크 되지 않은 상품"),
     LINKED("링크된 상품");
 
     private final String message;

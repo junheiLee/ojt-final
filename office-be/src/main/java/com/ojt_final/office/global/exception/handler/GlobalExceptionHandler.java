@@ -1,7 +1,9 @@
 package com.ojt_final.office.global.exception.handler;
 
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.ojt_final.office.dto.response.BaseResponse;
+import com.ojt_final.office.dto.response.ErrorResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.excel.ExcelInternalException;
 import com.ojt_final.office.global.exception.excel.NoExcelColumnAnnotationsException;
@@ -9,33 +11,96 @@ import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ooxml.POIXMLException;
 import org.apache.poi.util.RecordFormatException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
-import static com.ojt_final.office.dto.response.constant.ResultCode.TOO_BIG_SIZE;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.ojt_final.office.dto.response.constant.ResultCode.*;
 
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
-    // Spring 자체 예외, 통일된 포맷으로 변경
-    @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
-                                                                         HttpHeaders headers,
-                                                                         HttpStatusCode status,
-                                                                         WebRequest request) {
-        log.error("[SPRING EXCEPTION]={}", ex.getMessage());
-        return new ResponseEntity<>(new BaseResponse(ResultCode.SPRING_EXCEPTION), status);
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+
+        log.error("[BAD REQUEST]: 존재하지 않는 URL 요청");
+        return buildErrorResponse(ResultCode.NOT_EXIST_URL, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorCode = error.getDefaultMessage();
+            errors.put(fieldName, errorCode);
+        });
+
+        log.error("[BAD REQUEST]: 유효성 검사 실패 항목={}", errors);
+        return buildErrorResponse(ResultCode.INVALID, errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+        errors.put(ex.getName(), ex.getValue() + "->" + ex.getRequiredType().getSimpleName());
+
+        log.error("[BAD REQUEST]: 타입 불일치 항목={}", errors);
+        return buildErrorResponse(TYPE_MISMATCH, errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+
+        Throwable mostSpecificCause = ex.getMostSpecificCause();
+
+        if (mostSpecificCause instanceof InvalidFormatException ifex) {
+
+            Map<String, String> errors = new HashMap<>();
+            String fieldName = ifex.getPath().get(0).getFieldName();
+            errors.put(fieldName, ifex.getValue() + "->" + ifex.getTargetType().getSimpleName());
+
+            log.error("[BAD REQUEST]: 타입 불일치 항목={}", errors);
+            return buildErrorResponse(TYPE_MISMATCH, errors, HttpStatus.BAD_REQUEST);
+
+        } else {
+
+            log.error("[BAD REQUEST]: 올바르지 않은 Body 요청");
+            return buildErrorResponse(EMPTY_BODY, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+
+        log.error("[ERROR]: ", ex);
+        return buildErrorResponse(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, HttpStatus status) {
+        return new ResponseEntity<>(new ErrorResponse(resultCode), status);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, Map<String, String> errors,
+                                                             HttpStatus status) {
+        return new ResponseEntity<>(new ErrorResponse(resultCode, errors), status);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

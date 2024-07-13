@@ -4,6 +4,7 @@ import com.ojt_final.office.dto.request.CreateLinkRequest;
 import com.ojt_final.office.dto.request.DeleteLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.service.IntegratedService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,8 @@ public class LinkController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public BaseResponse create(@RequestBody CreateLinkRequest createLinkRequest) {
-        log.info("Creating link with request: {}", createLinkRequest);
+    public BaseResponse create(@Valid @RequestBody CreateLinkRequest createLinkRequest) {
+
         return integratedService.createLink(createLinkRequest);
     }
 
@@ -38,8 +39,8 @@ public class LinkController {
      */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
-    public BaseResponse remove(@RequestBody DeleteLinkRequest deleteLinkRequest) {
-        log.info("Removing link with request: {}", deleteLinkRequest);
+    public BaseResponse remove(@Valid @RequestBody DeleteLinkRequest deleteLinkRequest) {
+
         return integratedService.deleteLink(deleteLinkRequest);
     }
 
