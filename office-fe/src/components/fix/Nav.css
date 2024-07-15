@@ -1,0 +1,40 @@
+.nav {
+    display: flex;
+    background-color: rgb(219, 219, 219);
+    font-size: 1.1rem;
+
+    align-items: center;
+    justify-content: center
+}
+
+.logo {
+    margin-right: auto;
+}
+
+.menu {
+    margin-right: 10rem;
+}
+
+a:link {
+    color : black;
+
+}
+
+a:visited {
+    color : black;
+        
+}
+
+a:hover {
+    color : green;
+}
+
+.active {
+    color : black;
+    font-weight: bolder;
+    text-decoration: none;
+
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+}
+
