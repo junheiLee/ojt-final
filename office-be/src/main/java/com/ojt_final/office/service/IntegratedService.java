@@ -6,7 +6,10 @@ import com.ojt_final.office.dto.request.DeleteLinkRequest;
 import com.ojt_final.office.dto.request.DeletePartnerProdRequest;
 import com.ojt_final.office.dto.request.UpdatePartnerProdRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
+import com.ojt_final.office.dto.response.CreateLinkResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
+import com.ojt_final.office.dto.response.constant.ResultCode;
+import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.module.LinkService;
 import com.ojt_final.office.service.module.PartnerProdService;
 import com.ojt_final.office.service.module.StandardProdService;
@@ -17,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @Slf4j
@@ -30,61 +35,74 @@ public class IntegratedService {
     private final PartnerProdService partnerProdService;
 
 
-    public BaseResponse createLink(CreateLinkRequest createLinkRequest) {
-
+    public CreateLinkResponse createLink(CreateLinkRequest createLinkRequest) {
         List<String> partnerProdCodes = createLinkRequest.getPartnerProdCodes();
-        List<Integer> targetStandardCodes = linkService.findStandardCodes(partnerProdCodes);
-        targetStandardCodes.add(createLinkRequest.getStandardProdCode());
+        Set<Integer> targetStandardCodes = findUniqueStandardCodes(partnerProdCodes, createLinkRequest.getStandardProdCode());
 
-        int linkRow = linkService.create(createLinkRequest);
-        int partnerRow = partnerProdService.updateAllIsLinked(true, partnerProdCodes);
-        int standardRow = standardProdService.integrateChange(targetStandardCodes);
-        // TODO: 각 Row 값을 통해 created, updated, unChanged, failed 추적 로직
-        return null;
+        saveLinkAndUpdatePartners(createLinkRequest, partnerProdCodes);
+
+        int changedStandardCount = standardProdService.integrateChange(targetStandardCodes);
+
+        return CreateLinkResponse.builder()
+                .resultCode(ResultCode.SUCCESS)
+                .createdCount(partnerProdService.updateAllIsLinked(true, partnerProdCodes))
+                .changedStandardCount(changedStandardCount)
+                .build();
     }
 
-    public BaseResponse deleteLink(DeleteLinkRequest deleteLinkRequest) {
-
-        int linkRow = linkService.deleteAll(deleteLinkRequest);
-
-        List<String> partnerProdCodes = deleteLinkRequest.getPartnerProdCodes();
-        int partnerRow = partnerProdService.updateAllIsLinked(false, partnerProdCodes);
-
-        List<Integer> targetStandardCodes = linkService.findStandardCodes(partnerProdCodes);
-        int standardRow = standardProdService.integrateChange(targetStandardCodes);
-        // TODO: 각 Row 값을 통해 created, updated, unChanged, failed 추적 로직
-        return null;
+    private Set<Integer> findUniqueStandardCodes(List<String> partnerProdCodes, int standardProdCode) {
+        Set<Integer> targetStandardCodes = new HashSet<>(linkService.findStandardCodes(partnerProdCodes));
+        targetStandardCodes.add(standardProdCode);
+        return targetStandardCodes;
     }
 
-    public UploadExcelResponse uploadPartnerProdByExcel(MultipartFile excelFile) throws IOException {
-        UploadExcelResponse response = partnerProdService.importExcel(excelFile);
-        int changedRow = standardProdService.integrateChange(List.of());
-        response.setStandardChangedCount(changedRow);
-
-        return response;
+    private void saveLinkAndUpdatePartners(CreateLinkRequest createLinkRequest, List<String> partnerProdCodes) {
+        linkService.saveAll(createLinkRequest);
+        partnerProdService.updateAllIsLinked(true, partnerProdCodes);
     }
+//
+//    public BaseResponse deleteLink(DeleteLinkRequest deleteLinkRequest) {
+//
+//        int linkRow = linkService.deleteAll(deleteLinkRequest);
+//
+//        List<String> partnerProdCodes = deleteLinkRequest.getPartnerProdCodes();
+//        partnerProdService.updateAllIsLinked(false, partnerProdCodes);
+//
+//        List<Integer> targetStandardCodes = linkService.findStandardCodes(partnerProdCodes);
+//        int standardRow = standardProdService.integrateChange(targetStandardCodes);
+//        // TODO: 삭제된 개수, 변경된 기준 상품 개수
+//        return null;
+//    }
 
-    public void updatePartnerProduct(UpdatePartnerProdRequest request) {
-        PartnerProd partnerProd = request.toEntity();
-
-        if (partnerProdService.update(partnerProd)) {
-            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
-            standardProdService.integrateChange(targetStandardCodes);
-        }
-    }
-
-    public void deletePartnerProduct(DeletePartnerProdRequest deletePartnerProdRequest) {
-
-        PartnerProd partnerProd = deletePartnerProdRequest.toEntity();
-        partnerProdService.delete(partnerProd);
-
-        if (partnerProd.isLinked()) {
-            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
-            int standardRow = standardProdService.integrateChange(targetStandardCodes);
-        }
-    }
-
-    public void deleteStandardProduct() {
-
-    }
+//    public UploadExcelResponse uploadPartnerProdByExcel(MultipartFile excelFile) throws IOException {
+//        UploadExcelResponse response = partnerProdService.importExcel(excelFile);
+//        int changedRow = standardProdService.integrateChange(Set.of());
+//        response.setStandardChangedCount(changedRow);
+//
+//        return response;
+//    }
+//
+//    public void updatePartnerProduct(UpdatePartnerProdRequest request) {
+//        PartnerProd partnerProd = request.toEntity();
+//
+//        if (partnerProdService.update(partnerProd)) {
+//            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
+//            standardProdService.integrateChange(targetStandardCodes);
+//        }
+//    }
+//
+//    public void deletePartnerProduct(DeletePartnerProdRequest deletePartnerProdRequest) {
+//
+//        PartnerProd partnerProd = deletePartnerProdRequest.toEntity();
+//        partnerProdService.delete(partnerProd);
+//
+//        if (partnerProd.isLinked()) {
+//            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
+//            int standardRow = standardProdService.integrateChange(targetStandardCodes);
+//        }
+//    }
+//
+//    public void deleteStandardProduct() {
+//
+//    }
 }

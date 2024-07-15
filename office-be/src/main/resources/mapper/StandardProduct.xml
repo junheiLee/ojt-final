@@ -110,7 +110,7 @@
         <where>
             <if test="list != null and list.size() != 0">
                 SP.nProductCode IN (
-                <foreach collection="list" item="code" separator=", ">
+                <foreach collection="standardProdCodes" item="code" separator=", ">
                     #{code}
                 </foreach>
                 )

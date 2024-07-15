@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 @Component
@@ -20,5 +21,5 @@ public interface StandardProdDao {
 
     int countByCond(Cond cond);
 
-    int integrateChange(List<Integer> standardProdCodes);
+    int integrateChange(Set<Integer> standardProdCodes);
 }

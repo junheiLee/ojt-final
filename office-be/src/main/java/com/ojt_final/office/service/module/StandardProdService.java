@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 
@@ -80,7 +81,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
         return standardProdDao.selectByCond(cond);
     }
 
-    public int integrateChange(List<Integer> standardProdCodes) {
+    public int integrateChange(Set<Integer> standardProdCodes) {
 
         return standardProdDao.integrateChange(standardProdCodes);
     }
