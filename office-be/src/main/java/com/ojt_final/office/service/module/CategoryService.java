@@ -38,7 +38,7 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
         BatchResult batchResult = saveAll(categories);
 
         return UploadExcelResponse.builder()
-                .code(ResultCode.UPLOAD_RESULT)
+                .code(ResultCode.UPLOAD)
                 .batchResult(batchResult)
                 .build();
     }

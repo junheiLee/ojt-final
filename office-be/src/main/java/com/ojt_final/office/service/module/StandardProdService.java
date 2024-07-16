@@ -43,7 +43,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
         BatchResult batchResult = saveAll(standardProds);
 
         return UploadExcelResponse.builder()
-                .code(ResultCode.UPLOAD_RESULT)
+                .code(ResultCode.UPLOAD)
                 .batchResult(batchResult)
                 .build();
     }

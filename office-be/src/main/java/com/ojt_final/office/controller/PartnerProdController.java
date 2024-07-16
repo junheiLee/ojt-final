@@ -41,20 +41,6 @@ public class PartnerProdController {
     }
 
     /**
-     * 한 건의 파트너 상품을 DB에 저장하는 API
-     *
-     * @param createPartnerProdRequest
-     * @return
-     * @throws IOException
-     */
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public CreatePartnerProdResponse save(@RequestBody CreatePartnerProdRequest createPartnerProdRequest) throws IOException {
-        log.info("requestBody={}", createPartnerProdRequest);
-        return partnerProdService.save(createPartnerProdRequest);
-    }
-
-    /**
      * 주어진 조건에 해당하는 파트너 상품들을 Excel 파일에 담아 다운로드 할 수 있는 API
      *
      * @param condParam the conditions to filter the partner products
@@ -72,6 +58,20 @@ public class PartnerProdController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(excelBytes);
+    }
+
+    /**
+     * 한 건의 파트너 상품을 DB에 저장하는 API
+     *
+     * @param createPartnerProdRequest
+     * @return
+     * @throws IOException
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public CreatePartnerProdResponse save(@RequestBody CreatePartnerProdRequest createPartnerProdRequest) throws IOException {
+        log.info("requestBody={}", createPartnerProdRequest);
+        return partnerProdService.save(createPartnerProdRequest);
     }
 
     /**

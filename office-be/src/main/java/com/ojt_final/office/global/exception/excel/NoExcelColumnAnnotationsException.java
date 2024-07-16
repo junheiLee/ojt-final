@@ -1,12 +1,12 @@
 package com.ojt_final.office.global.exception.excel;
 
-
-import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.CustomException;
+
+import static com.ojt_final.office.dto.response.constant.ResultCode.MISSING_HEADERS;
 
 public class NoExcelColumnAnnotationsException extends CustomException {
 
-    public NoExcelColumnAnnotationsException(ResultCode resultCode) {
-        super(resultCode);
+    public NoExcelColumnAnnotationsException() {
+        super(MISSING_HEADERS);
     }
 }

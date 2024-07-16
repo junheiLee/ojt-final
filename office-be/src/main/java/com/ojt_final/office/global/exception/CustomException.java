@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class CustomException extends RuntimeException {
 
-    private final ResultCode resultCode;
+    private final ResultCode code;
 
-    public CustomException(ResultCode resultCode) {
-        super(resultCode.getMessage());
-        this.resultCode = resultCode;
+    public CustomException(ResultCode code) {
+        super(code.getMessage());
+        this.code = code;
     }
 }

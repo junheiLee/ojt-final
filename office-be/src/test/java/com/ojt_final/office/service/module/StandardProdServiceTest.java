@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,7 @@ public class StandardProdServiceTest {
                 Link.builder().partnerProdCode("4").standardProdCode(4).build(),
                 Link.builder().partnerProdCode("5").standardProdCode(5).build());
         linkDao.saveAll(links);
-        standardProdService.integrateChange(List.of(1, 2, 3, 4, 5));
+        standardProdService.integrateChange(Set.of(1, 2, 3, 4, 5));
 
         //when
         List<Integer> result = standardProdService.getResponseProds(condParam)

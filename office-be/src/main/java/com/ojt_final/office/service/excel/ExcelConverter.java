@@ -80,9 +80,7 @@ public class ExcelConverter {
 
         if (!missingHeaders.isEmpty()) {
             log.error("[ExcelConverter] missing headers: {}", missingHeaders);
-            throw new NoExcelColumnAnnotationsException(
-                    ResultCode.MISSING_HEADERS
-            );
+            throw new NoExcelColumnAnnotationsException();
         }
     }
 

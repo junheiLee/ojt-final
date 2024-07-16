@@ -37,7 +37,7 @@ public abstract class ExcelProcessingHandler<T extends ExcelProcessable> {
 
         // 파일이 Excel 확장자(.xlsx, .xls)인지 확인
         if (!excelConverter.supports(file.getOriginalFilename())) {
-            throw new UnSupportedFileException(ResultCode.NOT_EXCEL_FILE);
+            throw new UnSupportedFileException();
         }
 
         return excelConverter.read(file.getInputStream(), getTargetDomain());

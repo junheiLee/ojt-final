@@ -6,7 +6,7 @@ import com.ojt_final.office.global.exception.CustomException;
 
 public class UnSupportedFileException extends CustomException {
 
-    public UnSupportedFileException(ResultCode resultCode) {
-        super(resultCode);
+    public UnSupportedFileException() {
+        super(ResultCode.NOT_EXCEL_FILE);
     }
 }

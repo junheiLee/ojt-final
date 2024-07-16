@@ -98,24 +98,25 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(resultCode), status);
     }
 
-    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, Map<String, String> errors,
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode,
+                                                             Map<String, String> errors,
                                                              HttpStatus status) {
         return new ResponseEntity<>(new ErrorResponse(resultCode, errors), status);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MultipartException.class)
-    public BaseResponse excelHandle(MultipartException e) {
+    public BaseResponse handleMultipartException(MultipartException e) {
         log.error("[MultipartException]: {}", e.getMessage());
         return new BaseResponse(ResultCode.NO_FILE);
     }
 
     // [Excel 관련 예외 처리]
     @ExceptionHandler(POIXMLException.class)
-    public ResponseEntity<Object> spreadSheetExHandle(POIXMLException e) {
-        log.error("[POIXMLException]: {}", e.getMessage());
+    public ResponseEntity<Object> handlePOIXMLException(POIXMLException e) {
+        log.error("[ExcelException]: {}", e.getMessage());
 
-        if (e.getMessage().contains("#57699")) {
+        if (e.getMessage().contains("#57699")) { // 스프레드 시트 업로드 불가
             return new ResponseEntity<>(
                     new BaseResponse(ResultCode.UNSUPPORTED_EXCEL_FORMAT),
                     HttpStatus.UNSUPPORTED_MEDIA_TYPE);
@@ -128,31 +129,32 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(UnSupportedFileException.class)
-    public BaseResponse UnSupportedFileExHandle(UnSupportedFileException e) {
+    public BaseResponse handleUnSupportedFileException(UnSupportedFileException e) {
 
         log.error("[ExcelException] excel 외 파일 업로드 시도");
-        return new BaseResponse(e.getResultCode());
+        return new BaseResponse(e.getCode());
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(NoExcelColumnAnnotationsException.class)
-    public BaseResponse NoExcelColumnAnnotationsExHandle(NoExcelColumnAnnotationsException e) {
+    public BaseResponse handleNoExcelColumnAnnotationsException(NoExcelColumnAnnotationsException e) {
 
         log.error("[ExcelException] excel 파일 헤더와 업로드하고자 하는 도메인이 다름");
-        return new BaseResponse(e.getResultCode());
+        return new BaseResponse(e.getCode());
     }
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(RecordFormatException.class)
-    public BaseResponse excelSizeExHandle() {
+    public BaseResponse handleRecordFormatException() {
+
         log.error("[ExcelException] SIZE OVER");
-        return new BaseResponse(TOO_BIG_SIZE);
+        return new BaseResponse(ResultCode.TOO_BIG_SIZE);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ExcelInternalException.class)
-    public void ExcelInternalExHandle(ExcelInternalException e) {
+    public void handleExcelInternalException(ExcelInternalException e) {
 
-        log.error("[ExcelException] 해당 없음", e);
+        log.error("[ExcelException] :", e);
     }
 }

@@ -14,7 +14,7 @@ const Nav = () => {
                 <NavLink to="/123"><span> 기준상품등록</span></NavLink>&nbsp;| &nbsp;
                 <NavLink to="/456"><span> 협력사상품등록</span></NavLink> &nbsp;|&nbsp;
                 <NavLink to="/link"><span> 상품링크</span></NavLink> &nbsp;|&nbsp;
-                <NavLink to="/zz"><span> 엑셀파일등록</span></NavLink> &nbsp;|&nbsp;
+                <NavLink to="/upload/excel"><span> 엑셀파일등록</span></NavLink> &nbsp;|&nbsp;
                 <NavLink to="/9"><span> 통계</span></NavLink>
             </div>
         </div>

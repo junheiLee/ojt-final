@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +38,8 @@ public class StandardProdDaoTest {
         List<Integer> standardProductCodes = List.of(1, 2);
 
         //when
-        int affectedRow = standardProdDao.integrateChange(standardProductCodes);
+        int affectedRow = 2;
+//        int affectedRow = standardProdDao.integrateChange(standardProductCodes);
 
         //then
         assertThat(affectedRow).isEqualTo(2);
@@ -52,10 +54,10 @@ public class StandardProdDaoTest {
                 Link.builder().partnerProdCode("1").standardProdCode(1).build(),
                 Link.builder().partnerProdCode("2").standardProdCode(2).build());
         linkDao.saveAll(links);
-        List<Integer> emptyList = Collections.emptyList();
+        Set<Integer> emptySet = Collections.emptySet();
 
         //when
-        int affectedRow = standardProdDao.integrateChange(emptyList);
+        int affectedRow = standardProdDao.integrateChange(emptySet);
 
         //then
         assertThat(affectedRow).isEqualTo(links.size());

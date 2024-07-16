@@ -31,17 +31,17 @@ public class LinkController {
         return integratedService.createLink(createLinkRequest);
     }
 
-    /**
-     * 기준 상품과 파트너 상품들 간 링크를 삭제하는 API
-     *
-     * @param deleteLinkRequest the request containing link removal details
-     * @return a {@link BaseResponse} indicating the result of the operation
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping
-    public BaseResponse remove(@Valid @RequestBody DeleteLinkRequest deleteLinkRequest) {
-
-        return integratedService.deleteLink(deleteLinkRequest);
-    }
+//    /**
+//     * 기준 상품과 파트너 상품들 간 링크를 삭제하는 API
+//     *
+//     * @param deleteLinkRequest the request containing link removal details
+//     * @return a {@link BaseResponse} indicating the result of the operation
+//     */
+//    @ResponseStatus(HttpStatus.OK)
+//    @DeleteMapping
+//    public BaseResponse remove(@Valid @RequestBody DeleteLinkRequest deleteLinkRequest) {
+//
+//        return integratedService.deleteLink(deleteLinkRequest);
+//    }
 
 }

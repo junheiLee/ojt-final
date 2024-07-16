@@ -44,7 +44,7 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         BatchResult batchResult = saveAll(partnerProds);
 
         return UploadExcelResponse.builder()
-                .code(ResultCode.UPLOAD_RESULT)
+                .code(ResultCode.UPLOAD)
                 .batchResult(batchResult)
                 .build();
     }
