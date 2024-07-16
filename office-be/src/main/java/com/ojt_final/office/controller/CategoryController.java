@@ -1,5 +1,7 @@
 package com.ojt_final.office.controller;
 
+import com.ojt_final.office.dto.response.CategoriesResponse;
+import com.ojt_final.office.dto.response.PartnerListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.service.module.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +35,14 @@ public class CategoryController {
         return categoryService.importExcel(excelFile);
     }
 
+    /**
+     * 카테고리 목록 조회 API
+     *
+     * @return a {@link PartnerListResponse} containing partner list
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public CategoriesResponse getList() {
+        return categoryService.getList();
+    }
 }

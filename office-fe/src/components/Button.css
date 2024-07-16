@@ -1,0 +1,21 @@
+.btn {
+    width: 100px;
+    height: 46px;
+    
+    left: 50px;
+    top: 50px;
+    
+    margin-bottom: 30px;
+    border: 0px;
+    background-color: rgb(219, 219, 219);
+      
+    border-radius: 10px;
+    box-shadow:.4rem .3rem 0.7rem rgb(219, 219, 219),
+               -.2rem -.2rem .4rem #FBFBFB;
+  
+    color: #333333;
+    font-size: 1rem;
+    font-weight: bold;
+
+    margin: 1rem 3rem;
+}

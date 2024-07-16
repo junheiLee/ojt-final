@@ -1,12 +1,10 @@
 package com.ojt_final.office.service.excel;
 
-import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
 
 /**
  * Excel 파일 관련 처리 인터페이스
@@ -39,7 +37,6 @@ public abstract class ExcelProcessingHandler<T extends ExcelProcessable> {
         if (!excelConverter.supports(file.getOriginalFilename())) {
             throw new UnSupportedFileException();
         }
-
         return excelConverter.read(file.getInputStream(), getTargetDomain());
     }
 

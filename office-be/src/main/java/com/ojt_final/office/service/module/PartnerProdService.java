@@ -41,6 +41,7 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
     public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
         List<PartnerProd> partnerProds = parse(excelFile);
+        log.info("hihi");
         BatchResult batchResult = saveAll(partnerProds);
 
         return UploadExcelResponse.builder()
@@ -134,7 +135,7 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
     }
 
     private BatchResult saveAll(List<PartnerProd> partnerProds) {
-
+        log.info("ssaveAll");
         int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor
                 .save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)

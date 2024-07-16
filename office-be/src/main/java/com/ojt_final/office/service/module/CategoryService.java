@@ -2,6 +2,9 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dao.CategoryDao;
 import com.ojt_final.office.domain.Category;
+import com.ojt_final.office.domain.Partner;
+import com.ojt_final.office.dto.response.CategoriesResponse;
+import com.ojt_final.office.dto.response.PartnerListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -32,6 +35,12 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
         return Category.class;
     }
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public UploadExcelResponse importExcel(MultipartFile file) throws IOException {
 
         List<Category> categories = parse(file);
@@ -43,10 +52,31 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
                 .build();
     }
 
+    /**
+     * 모든 category 목록을 가져온다.
+     *
+     * @return
+     */
+    public CategoriesResponse getList() {
+
+        List<Category> categories = categoryDao.selectAll();
+        return CategoriesResponse
+                .builder()
+                .code(ResultCode.SUCCESS)
+                .categories(categories)
+                .build();
+    }
+
+    /**
+     *
+     * @param categories
+     * @return
+     */
     private BatchResult saveAll(List<Category> categories) {
 
         int previousCount = categoryDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor.save(BATCH_SIZE, categories, categoryDao::saveAll)
                 .calInsertAndUnchangedCount(previousCount, categoryDao.countAll());
     }
+
 }

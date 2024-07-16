@@ -12,6 +12,8 @@ const FileUpload = () => {
         const formData = new FormData();
         formData.append("excelFile", excelFile.files[0]);
         
+        
+        console.log("ㅋㅋ")
         uploadFile(option, formData);
     }
 

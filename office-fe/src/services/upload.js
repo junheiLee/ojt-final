@@ -25,7 +25,7 @@ export const uploadFile = async (option, excelFile) => {
             + `\n유지: ${result.unchangedCount}개`
             + `\n실패: ${result.failedCount}개`;
 
-        if(option == 'partner-products') {
+        if(option === 'partner-products') {
             message += `\n기준 상품 변경: ${result.standardChangedCount}개`;
         }
             
