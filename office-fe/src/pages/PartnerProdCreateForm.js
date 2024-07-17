@@ -1,29 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import he from 'he';
 import Button from '../components/Button';
+import { getPartners } from '../services/partner';
+import { createPartnerProd } from '../services/partner-product';
 
-const PartnerProductCreate = () => {
+const PartnerProductCreate = ({categories}) => {
 
-    const data = {
-        code: "FE13DD123",
-        partnerCode: "ED901",
-        categoryCode: 1304,
-        name: "test",
-        pcPrice: 11000,
-        mobilePrice: 12000,
-        url: "naver.com",
-        imageUrl: "github.com"
-      };
+    const [partners, setPartners] = useState([]);
+    const [formData, setFormData] = useState({
+        code: '',
+        partnerCode: '',
+        categoryCode: '',
+        name: '',
+        pcPrice: '',
+        mobilePrice: '',
+        url: '',
+        imageUrl: ''
+      });
+    const navigate = useNavigate();
 
-  const partnerOptions = [
-    { value: 'ED901', label: 'Partner 1' },
-    { value: 'ED902', label: 'Partner 2' },
-    { value: 'ED903', label: 'Partner 3' },
-  ];
+    useEffect(() => {
+        const fetchPartners = async () => {
+            const {data, error} = await getPartners();
+            setPartners(data);
+        }
 
-  const categoryOptions = Array.from({ length: 50 }, (_, i) => ({
-    value: 1300 + i,
-    label: `Category ${1300 + i}`,
-  }));
+        fetchPartners();
+    }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data, error } = await createPartnerProd(formData);
+
+    if (data) {
+        alert(`${data.prodCode} 상품 등록 완료`);
+        navigate('/link');
+    } else {
+      if(error) {
+        alert(error);
+      }
+    }
+  };
 
   return (
     <div style={{height: "50%", margin: "1rem auto"}}>
@@ -33,9 +59,11 @@ const PartnerProductCreate = () => {
             <td width="30%">협력사상품코드</td>
             <td>
                 <input
-                type="text"
-                name="code"
-                style={{outline:"solid black thin"}}
+                    type="text"
+                    name="code"
+                    value={formData.code}
+                    onChange={handleChange}
+                    style={{outline:"solid black thin"}}
                 />
             </td>
             </tr>
@@ -43,14 +71,17 @@ const PartnerProductCreate = () => {
             <td>협력사코드</td>
             <td>
                 <select
-                name="partnerCode"
-                style={{width: '20%'}}
+                    name="partnerCode"
+                    value={formData.partnerCode}
+                    onChange={handleChange}
+                    style={{width: '20%'}}
                 >
-                {partnerOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                    {option.label}
-                    </option>
-                ))}
+                    <option>협력사 선택</option>
+                    {partners.map(partner => (
+                        <option key={partner.code} value={partner.code}>
+                            {he.decode(partner.name)}  
+                        </option>
+                    ))}
                 </select>
             </td>
             </tr>
@@ -59,7 +90,9 @@ const PartnerProductCreate = () => {
             <td>
                 <input
                 type="text"
-                name="name"
+                name="name"            
+                value={formData.name}
+                onChange={handleChange}
                 style={{outline:"solid black thin", width: "90%"}}
                 />
             </td>
@@ -70,6 +103,8 @@ const PartnerProductCreate = () => {
                 <input
                 type="number"
                 name="pcPrice"
+                value={formData.pcPrice}
+                onChange={handleChange}
                 style={{outline:"solid black thin"}}
                 />
             </td>
@@ -80,6 +115,8 @@ const PartnerProductCreate = () => {
                 <input
                 type="number"
                 name="mobilePrice"
+                value={formData.mobilePrice}
+                onChange={handleChange}
                 style={{outline:"solid black thin"}}
                 />
             </td>
@@ -88,14 +125,15 @@ const PartnerProductCreate = () => {
             <td>카테고리</td>
             <td>
                 <select
-                size={5}
-                name="categoryCode"
-                defaultValue={data.categoryCode}
-                style={{ width: '60%', overflowY: 'auto', maxHeight: '100px' }}
+                    size={5}
+                    name="categoryCode"
+                    value={formData.categoryCode}
+                    onChange={handleChange}
+                    style={{ width: '60%', overflowY: 'auto', maxHeight: '100px' }}
                 >
-                {categoryOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                    {option.label}
+                {categories.map(category => (
+                    <option key={category.code} value={category.code}>
+                        {category.name}
                     </option>
                 ))}
                 </select>
@@ -106,9 +144,11 @@ const PartnerProductCreate = () => {
             <td>협력사상품 URL</td>
             <td>
                 <input
-                type="text"
-                name="url"
-                style={{outline:"solid black thin", width: "90%"}}
+                    type="text"
+                    name="url"
+                    value={formData.url}
+                    onChange={handleChange}
+                    style={{outline:"solid black thin", width: "90%"}}
                 />
             </td>
             </tr>
@@ -116,17 +156,19 @@ const PartnerProductCreate = () => {
             <td>상품이미지 URL</td>
             <td>
                 <input
-                type="text"
-                name="imageUrl"
-                style={{outline:"solid black thin", width: "90%"}}
+                    type="text"
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleChange}
+                    style={{outline:"solid black thin", width: "90%"}}
                 />
             </td>
             </tr>
         </tbody>
         </table>
-        <div style={{textAlign:"center"}}>
-            <Button type="submit" >제출</Button>
-            <Button type="button" onClick={() => console.log('Cancel clicked')}>취소</Button>
+        <div style={{textAlign:'center'}}>
+            <Button type="submit" onClick={handleSubmit}> 등록 </Button>
+            <Button type="button" onClick={() => navigate('/link')}> 취소 </Button>
 
         </div>
         

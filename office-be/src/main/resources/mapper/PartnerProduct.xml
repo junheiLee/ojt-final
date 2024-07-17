@@ -63,7 +63,7 @@
         SELECT nCategoryCode AS categoryCode,
                sPartnerCode AS partnerCode,
                sPartnerProductCode AS code,
-               sPartnerProudctName AS partnerName,
+               sPartnerProductName AS partnerName,
                nPcPrice AS pcPrice,
                nMobilePrice AS mobilePrice,
                sImageUrl AS imageUrl,

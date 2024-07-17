@@ -23,7 +23,7 @@ public interface PartnerProdDao {
 
     int insert(PartnerProd partnerProd);
 
-    Optional<PartnerProd> select(String code, String partnerCode);
+    Optional<PartnerProd> select(PartnerProd partnerProd);
 
     List<PartnerProd> selectAllByCond(PartnerProdCond cond);
 

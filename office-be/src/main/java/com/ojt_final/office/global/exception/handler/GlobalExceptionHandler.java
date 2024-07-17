@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.dto.response.ErrorResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
+import com.ojt_final.office.global.exception.DuplicateIdentifierException;
 import com.ojt_final.office.global.exception.excel.ExcelInternalException;
 import com.ojt_final.office.global.exception.excel.NoExcelColumnAnnotationsException;
 import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
@@ -94,16 +95,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, HttpStatus status) {
-        return new ResponseEntity<>(new ErrorResponse(resultCode), status);
-    }
-
-    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode,
-                                                             Map<String, String> errors,
-                                                             HttpStatus status) {
-        return new ResponseEntity<>(new ErrorResponse(resultCode, errors), status);
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MultipartException.class)
     public BaseResponse handleMultipartException(MultipartException e) {
@@ -111,20 +102,22 @@ public class GlobalExceptionHandler {
         return new BaseResponse(ResultCode.NO_FILE);
     }
 
+    @ExceptionHandler(DuplicateIdentifierException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateIdentifierException(DuplicateIdentifierException ex) {
+        log.error("[BAD REQUEST]: 식별자 중복", ex.getCause());
+        return buildErrorResponse(DUPLICATE_IDENTIFIER, HttpStatus.CONFLICT);
+    }
+
     // [Excel 관련 예외 처리]
     @ExceptionHandler(POIXMLException.class)
-    public ResponseEntity<Object> handlePOIXMLException(POIXMLException e) {
+    public ResponseEntity<ErrorResponse> handlePOIXMLException(POIXMLException e) {
         log.error("[ExcelException]: {}", e.getMessage());
 
         if (e.getMessage().contains("#57699")) { // 스프레드 시트 업로드 불가
-            return new ResponseEntity<>(
-                    new BaseResponse(ResultCode.UNSUPPORTED_EXCEL_FORMAT),
-                    HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            return buildErrorResponse(ResultCode.UNSUPPORTED_EXCEL_FORMAT, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
-        return new ResponseEntity<>(
-                new BaseResponse(ResultCode.CORRUPTED_OR_INVALID_EXCEL_FILE),
-                HttpStatus.UNPROCESSABLE_ENTITY);
+        return buildErrorResponse(ResultCode.CORRUPTED_OR_INVALID_EXCEL_FILE, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
@@ -156,5 +149,15 @@ public class GlobalExceptionHandler {
     public void handleExcelInternalException(ExcelInternalException e) {
 
         log.error("[ExcelException] :", e);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, HttpStatus status) {
+        return new ResponseEntity<>(new ErrorResponse(resultCode), status);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode,
+                                                             Map<String, String> errors,
+                                                             HttpStatus status) {
+        return new ResponseEntity<>(new ErrorResponse(resultCode, errors), status);
     }
 }

@@ -9,6 +9,8 @@ import com.ojt_final.office.dto.response.CreatePartnerProdResponse;
 import com.ojt_final.office.dto.response.PartnerProdListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
+import com.ojt_final.office.global.exception.DatabaseOperationException;
+import com.ojt_final.office.global.exception.DuplicateIdentifierException;
 import com.ojt_final.office.service.batch.BatchProcessor;
 import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.excel.ExcelProcessingHandler;
@@ -64,19 +66,36 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return create(prods);
     }
 
+    /**
+     * 새로운 협력사 상품을 저장한다.
+     *
+     * <p>
+     * This method converts the request DTO to a PartnerProd entity, validates that there
+     * are no duplicates, and attempts to insert the entity into the database.
+     * </p>
+     *
+     * @param createPartnerProdRequest the request containing the PartnerProd data
+     * @return the response containing the result code and identity of the created PartnerProd
+     * @throws DuplicateIdentifierException if a duplicate PartnerProd is found
+     * @throws DatabaseOperationException   if the database operation fails to insert the PartnerProd
+     */
     public CreatePartnerProdResponse save(CreatePartnerProdRequest createPartnerProdRequest) {
 
         PartnerProd partnerProd = createPartnerProdRequest.toEntity();
-        Optional<PartnerProd> partnerProdOpt = findOpt(partnerProd);
-
-        if (partnerProdOpt.isEmpty()) {
-            return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode()); //exception
-        }
+        validateNoDuplicate(partnerProd);
         int count = partnerProdDao.insert(partnerProd);
 
-        return count > 0
-                ? new CreatePartnerProdResponse(ResultCode.SUCCESS, partnerProd.getCode())
-                : new CreatePartnerProdResponse(ResultCode.FAILED, partnerProd.getCode());
+        if (count <= 0) {
+            throw new DatabaseOperationException("협력사 상품 DB 저장 실패");
+        }
+        return new CreatePartnerProdResponse(ResultCode.SUCCESS, partnerProd);
+    }
+
+    private void validateNoDuplicate(PartnerProd partnerProd) {
+
+        findOpt(partnerProd).ifPresent(existingProd -> {
+            throw new DuplicateIdentifierException();
+        });
     }
 
     public PartnerProdListResponse searchWithCount(CondParam condParam) {
@@ -159,7 +178,8 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
     }
 
     private Optional<PartnerProd> findOpt(PartnerProd partnerProd) {
-        return partnerProdDao.select(partnerProd.getCode(), partnerProd.getPartnerCode());
+
+        return partnerProdDao.select(partnerProd);
     }
 
 }

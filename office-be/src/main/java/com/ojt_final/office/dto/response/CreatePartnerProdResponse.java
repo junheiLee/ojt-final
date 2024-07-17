@@ -1,18 +1,23 @@
 package com.ojt_final.office.dto.response;
 
+import com.ojt_final.office.domain.PartnerProd;
 import com.ojt_final.office.dto.response.constant.ResultCode;
+import lombok.Getter;
 
+@Getter
 public class CreatePartnerProdResponse extends BaseResponse {
 
-    private String code;
+    private String prodCode;
+    private String partnerCode;
 
-    public CreatePartnerProdResponse(ResultCode resultCode, String code) {
+    public CreatePartnerProdResponse(ResultCode resultCode, PartnerProd partnerProd) {
         super(resultCode);
-        this.code = code;
+        this.prodCode = partnerProd.getCode();
+        this.partnerCode = partnerProd.getPartnerCode();
     }
 
-    public CreatePartnerProdResponse(String resultCode, String message, String code) {
+    public CreatePartnerProdResponse(String resultCode, String message, String prodCode) {
         super(resultCode, message);
-        this.code = code;
+        this.prodCode = prodCode;
     }
 }

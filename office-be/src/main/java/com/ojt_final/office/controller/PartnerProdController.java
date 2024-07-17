@@ -71,7 +71,6 @@ public class PartnerProdController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public CreatePartnerProdResponse save(@RequestBody CreatePartnerProdRequest createPartnerProdRequest) throws IOException {
-        log.info("requestBody={}", createPartnerProdRequest);
 
         return partnerProdService.save(createPartnerProdRequest);
     }

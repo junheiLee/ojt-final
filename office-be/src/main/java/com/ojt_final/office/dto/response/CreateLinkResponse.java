@@ -2,7 +2,9 @@ package com.ojt_final.office.dto.response;
 
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class CreateLinkResponse extends BaseResponse {
 
     int createdCount;
