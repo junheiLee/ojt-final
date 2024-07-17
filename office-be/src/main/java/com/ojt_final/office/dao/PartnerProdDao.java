@@ -1,7 +1,6 @@
 package com.ojt_final.office.dao;
 
 import com.ojt_final.office.domain.PartnerProd;
-import com.ojt_final.office.domain.search.Cond;
 import com.ojt_final.office.domain.search.PartnerProdCond;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,14 +13,25 @@ import java.util.Optional;
 @Component
 public interface PartnerProdDao {
 
-    int saveAll(List<PartnerProd> partnerProds);
+    /**
+     * 협력사 상품 목록 저장 (링크 여부 = false)
+     *
+     * @param partnerProds 협력사 상품 목록
+     * @return affected row
+     */
+    int insertAll(List<PartnerProd> partnerProds);
 
-    int save(PartnerProd partnerProd);
+    int insert(PartnerProd partnerProd);
 
-    Optional<PartnerProd> find(String code, String partnerCode);
+    Optional<PartnerProd> select(String code, String partnerCode);
 
-    List<PartnerProd> findAllByCond(PartnerProdCond cond);
+    List<PartnerProd> selectAllByCond(PartnerProdCond cond);
 
+    /**
+     * 전체 협력사 상품 개수 조회
+     *
+     * @return 전체 협력사 상품 개수
+     */
     int countAll();
 
     int countByCond(PartnerProdCond cond);

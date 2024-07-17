@@ -1,15 +1,8 @@
 package com.ojt_final.office.service;
 
-import com.ojt_final.office.domain.PartnerProd;
 import com.ojt_final.office.dto.request.CreateLinkRequest;
-import com.ojt_final.office.dto.request.DeleteLinkRequest;
-import com.ojt_final.office.dto.request.DeletePartnerProdRequest;
-import com.ojt_final.office.dto.request.UpdatePartnerProdRequest;
-import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.dto.response.CreateLinkResponse;
-import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
-import com.ojt_final.office.service.batch.BatchResult;
 import com.ojt_final.office.service.module.LinkService;
 import com.ojt_final.office.service.module.PartnerProdService;
 import com.ojt_final.office.service.module.StandardProdService;
@@ -17,9 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -37,6 +37,7 @@ public class PartnerProdController {
     @ResponseStatus(HttpStatus.MULTI_STATUS)
     @PostMapping("/upload/excel")
     public UploadExcelResponse uploadExcel(@RequestParam(name = "excelFile") MultipartFile excelFile) throws IOException {
+
         return partnerProdService.importExcel(excelFile);
     }
 
@@ -71,6 +72,7 @@ public class PartnerProdController {
     @PostMapping
     public CreatePartnerProdResponse save(@RequestBody CreatePartnerProdRequest createPartnerProdRequest) throws IOException {
         log.info("requestBody={}", createPartnerProdRequest);
+
         return partnerProdService.save(createPartnerProdRequest);
     }
 

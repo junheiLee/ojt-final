@@ -21,23 +21,23 @@ public class PartnerProdDaoTest {
 
     @DisplayName("PK 중복 값 INSERT 시, affectedRow = 2 Test")
     @Test
-    void saveAllTest() {
+    void insertAllTest() {
         final int insertValue = 1;
         final int updateValue = 2;
 
         //given
-        List<PartnerProd> partnerProds = getSaveAllTestList();
+        List<PartnerProd> partnerProds = getInsertAllTestList();
         int insertCount = (int) partnerProds.stream().filter(e -> e.getName().equals("INSERT")).count();
         int updateCount = (int) partnerProds.stream().filter(e -> e.getName().equals("UPDATE")).count();
 
         //when
-        int affectedRow = partnerProdDao.saveAll(partnerProds);
+        int affectedRow = partnerProdDao.insertAll(partnerProds);
 
         //then
         assertThat(affectedRow).isEqualTo(insertValue * insertCount + updateValue * updateCount);
     }
 
-    private List<PartnerProd> getSaveAllTestList() {
+    private List<PartnerProd> getInsertAllTestList() {
 
         PartnerProd insert
                 = PartnerProd.builder()

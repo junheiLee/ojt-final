@@ -20,7 +20,6 @@ public class PartnerService {
     private final PartnerDao partnerDao;
 
     /**
-     *
      * @return
      */
     public PartnerListResponse getList() {

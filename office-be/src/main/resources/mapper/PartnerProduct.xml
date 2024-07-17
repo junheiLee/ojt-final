@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.PartnerProdDao">
 
-    <insert id="saveAll" parameterType="PartnerProd">
+    <insert id="insertAll" parameterType="PartnerProd">
         INSERT INTO tPartnerProduct (
                         sPartnerProductCode,
                         sPartnerCode,
@@ -36,7 +36,7 @@
                 sImageUrl = VALUES(sImageUrl)
     </insert>
 
-    <insert id="save" parameterType="PartnerProd">
+    <insert id="insert" parameterType="PartnerProd">
         INSERT INTO tPartnerProduct (
                 sPartnerCode,
                 nCategoryCode,
@@ -59,7 +59,7 @@
         )
     </insert>
 
-    <select id="find" resultType="PartnerProd">
+    <select id="select" resultType="PartnerProd">
         SELECT nCategoryCode AS categoryCode,
                sPartnerCode AS partnerCode,
                sPartnerProductCode AS code,
@@ -74,7 +74,7 @@
 
     </select>
 
-    <select id="findAllByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
+    <select id="selectAllByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
         SELECT P.sPartnerName AS partnerName,
                C.sCategoryName AS categoryName,
                PP.sPartnerProductName AS name,

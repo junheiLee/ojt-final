@@ -1,7 +1,6 @@
 package com.ojt_final.office.controller;
 
 import com.ojt_final.office.dto.request.CreateLinkRequest;
-import com.ojt_final.office.dto.request.DeleteLinkRequest;
 import com.ojt_final.office.dto.response.BaseResponse;
 import com.ojt_final.office.service.IntegratedService;
 import jakarta.validation.Valid;

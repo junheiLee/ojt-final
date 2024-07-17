@@ -55,7 +55,8 @@ public class StandardProdSort extends Direction {
         PARTNER_COUNT(sort -> sort.partnerCount = toggle(sort.partnerCount, ASC)),
         PARTNER_COUNT_REVERSE(sort -> sort.partnerCount = toggle(sort.partnerCount, DESC)),
 
-        NOT_USED(s -> {});
+        NOT_USED(s -> {
+        });
 
         private final Consumer<StandardProdSort> setter;
 

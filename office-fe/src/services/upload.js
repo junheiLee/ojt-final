@@ -20,19 +20,27 @@ export const uploadFile = async (option, excelFile) => {
 
     
         const result = response.data;
-        const message = `생성: ${result.createdCount}개`
+        let message = `생성: ${result.createdCount}개`
             + `\n수정: ${result.updatedCount}개`
             + `\n유지: ${result.unchangedCount}개`
             + `\n실패: ${result.failedCount}개`;
+        
+        console.log("여기까지는?");
 
-        if(option === 'partner-products') {
-            message += `\n기준 상품 변경: ${result.standardChangedCount}개`;
+        alert(message);
+
+        if(option == "partner-products") {
+            console.log("이프문 안");
+            message = message + `\n기준 상품 변경: ${result.standardChangedCount}개`;
         }
-            
+        
         alert(message);
 
     } catch(error) {
-        
+
+        alert(error);
+
+        console.log(error);
         const errorCode = error.response.data.code;
         const errorMessage = errorCodeMessages[errorCode];
 

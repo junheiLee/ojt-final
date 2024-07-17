@@ -38,10 +38,16 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return PartnerProd.class;
     }
 
+    /**
+     * Excel 파일을 파싱해 협력사 상품 데이터를 저장한다.
+     *
+     * @param excelFile the Excel file to be parsed
+     * @return response containing the result of the upload
+     * @throws IOException if an I/O error occurs, particularly when checking the file extension with {@code excelFile.getOriginalFilename()}
+     */
     public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
         List<PartnerProd> partnerProds = parse(excelFile);
-        log.info("hihi");
         BatchResult batchResult = saveAll(partnerProds);
 
         return UploadExcelResponse.builder()
@@ -66,7 +72,7 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         if (partnerProdOpt.isEmpty()) {
             return new CreatePartnerProdResponse(ResultCode.DUPLICATE_IDENTIFIER, partnerProd.getCode()); //exception
         }
-        int count = partnerProdDao.save(partnerProd);
+        int count = partnerProdDao.insert(partnerProd);
 
         return count > 0
                 ? new CreatePartnerProdResponse(ResultCode.SUCCESS, partnerProd.getCode())
@@ -134,21 +140,26 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         }
     }
 
+    /**
+     * Saves all PartnerProd entities in batch mode.
+     *
+     * @param partnerProds the list of PartnerProd entities to be saved
+     * @return result of the batch save operation
+     */
     private BatchResult saveAll(List<PartnerProd> partnerProds) {
-        log.info("ssaveAll");
         int previousCount = partnerProdDao.countAll();   // 생성된 데이터 수를 구하기 위한 이전 데이터 수
         return batchProcessor
-                .save(BATCH_SIZE, partnerProds, partnerProdDao::saveAll)
+                .save(BATCH_SIZE, partnerProds, partnerProdDao::insertAll)
                 .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
     }
 
     private List<PartnerProd> findAllByCond(PartnerProdCond cond) {
 
-        return partnerProdDao.findAllByCond(cond);
+        return partnerProdDao.selectAllByCond(cond);
     }
 
     private Optional<PartnerProd> findOpt(PartnerProd partnerProd) {
-        return partnerProdDao.find(partnerProd.getCode(), partnerProd.getPartnerCode());
+        return partnerProdDao.select(partnerProd.getCode(), partnerProd.getPartnerCode());
     }
 
 }

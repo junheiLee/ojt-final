@@ -2,9 +2,7 @@ package com.ojt_final.office.service.module;
 
 import com.ojt_final.office.dao.CategoryDao;
 import com.ojt_final.office.domain.Category;
-import com.ojt_final.office.domain.Partner;
 import com.ojt_final.office.dto.response.CategoriesResponse;
-import com.ojt_final.office.dto.response.PartnerListResponse;
 import com.ojt_final.office.dto.response.UploadExcelResponse;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import com.ojt_final.office.service.batch.BatchProcessor;
@@ -36,14 +34,15 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
     }
 
     /**
+     * Excel 파일을 파싱해 Category 데이터를 저장한다.
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param excelFile the Excel file to be parsed
+     * @return response containing the result of the upload
+     * @throws IOException if an I/O error occurs, particularly when checking the file extension with {@code file.getOriginalFilename()}
      */
-    public UploadExcelResponse importExcel(MultipartFile file) throws IOException {
+    public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
-        List<Category> categories = parse(file);
+        List<Category> categories = parse(excelFile);
         BatchResult batchResult = saveAll(categories);
 
         return UploadExcelResponse.builder()
@@ -55,7 +54,7 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
     /**
      * 모든 category 목록을 가져온다.
      *
-     * @return
+     * @return response containing the list of categories and a success code
      */
     public CategoriesResponse getList() {
 
@@ -68,14 +67,15 @@ public class CategoryService extends ExcelProcessingHandler<Category> {
     }
 
     /**
+     * Saves all Category entities in batch mode.
      *
-     * @param categories
-     * @return
+     * @param categories the list of Category entities to be saved
+     * @return result of the batch save operation
      */
     private BatchResult saveAll(List<Category> categories) {
 
         int previousCount = categoryDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
-        return batchProcessor.save(BATCH_SIZE, categories, categoryDao::saveAll)
+        return batchProcessor.save(BATCH_SIZE, categories, categoryDao::insertAll)
                 .calInsertAndUnchangedCount(previousCount, categoryDao.countAll());
     }
 

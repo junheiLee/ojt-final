@@ -37,6 +37,13 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
         return StandardProd.class;
     }
 
+    /**
+     * Excel 파일을 파싱해 기준 상품 데이터를 저장한다.
+     *
+     * @param excelFile the Excel file to be parsed
+     * @return response containing the result of the upload
+     * @throws IOException if an I/O error occurs, particularly when checking the file extension with {@code excelFile.getOriginalFilename()}
+     */
     public UploadExcelResponse importExcel(MultipartFile excelFile) throws IOException {
 
         List<StandardProd> standardProds = parse(excelFile);
@@ -46,13 +53,6 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
                 .code(ResultCode.UPLOAD)
                 .batchResult(batchResult)
                 .build();
-    }
-
-    private BatchResult saveAll(List<StandardProd> standardProds) {
-
-        int previousCount = standardProdDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
-        return batchProcessor.save(BATCH_SIZE, standardProds, standardProdDao::saveAll)
-                .calInsertAndUnchangedCount(previousCount, standardProdDao.countAll());
     }
 
     public byte[] exportExcel(CondParam condParam) {
@@ -76,13 +76,26 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
                 .build();
     }
 
-    private List<StandardProd> getProds(StandardProdCond cond) {
-
-        return standardProdDao.selectByCond(cond);
-    }
-
     public int integrateChange(Set<Integer> standardProdCodes) {
 
         return standardProdDao.integrateChange(standardProdCodes);
+    }
+
+    /**
+     * Saves all StandardProd entities in batch mode.
+     *
+     * @param standardProds the list of StandardProd entities to be saved
+     * @return result of the batch save operation
+     */
+    private BatchResult saveAll(List<StandardProd> standardProds) {
+
+        int previousCount = standardProdDao.countAll(); // 생성된 데이터 수를 구하기 위한 이전 데이터 수
+        return batchProcessor.save(BATCH_SIZE, standardProds, standardProdDao::insertAll)
+                .calInsertAndUnchangedCount(previousCount, standardProdDao.countAll());
+    }
+
+    private List<StandardProd> getProds(StandardProdCond cond) {
+
+        return standardProdDao.selectByCond(cond);
     }
 }

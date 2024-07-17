@@ -29,7 +29,7 @@ public class CategoryDaoTest {
 
         //when
         List<Category> beforeInsert = categoryDao.selectAll();
-        int insertCount = categoryDao.saveAll(categories);
+        int insertCount = categoryDao.insertAll(categories);
         List<Category> results = categoryDao.selectAll();
 
         //then
@@ -40,7 +40,7 @@ public class CategoryDaoTest {
 
     @DisplayName("INSERT 중 중복 발생 시, UPDATE Test")
     @Test
-    void saveAllTest() {
+    void insertAllTest() {
         final int insertValue = 1;
         final int updateValue = 2;
 
@@ -54,7 +54,7 @@ public class CategoryDaoTest {
         int updateCount = (int) categories.stream().filter(category -> category.getName().equals("update")).count();
 
         //when
-        int affectedRow = categoryDao.saveAll(categories);
+        int affectedRow = categoryDao.insertAll(categories);
         List<Category> results = categoryDao.selectAll();
 
         //then
@@ -64,7 +64,7 @@ public class CategoryDaoTest {
 
     @DisplayName("INSERT 중 중복되어도 데이터가 변경되지 않을 때")
     @Test
-    void saveAllDuplicateTest() {
+    void insertAllDuplicateTest() {
 
         //given
         Category category1 = Category.builder().code(1).name("Category1").build();
@@ -75,7 +75,7 @@ public class CategoryDaoTest {
 
 
         //when
-        int affectedRow = categoryDao.saveAll(categories);
+        int affectedRow = categoryDao.insertAll(categories);
         List<Category> results = categoryDao.selectAll();
 
         //then

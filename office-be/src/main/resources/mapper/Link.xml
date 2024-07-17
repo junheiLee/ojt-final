@@ -3,7 +3,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.LinkDao">
 
-    <insert id="saveAll" parameterType="Link">
+    <insert id="insertAll" parameterType="Link">
         INSERT INTO tLink (
                             sPartnerProductCode,
                             nProductCode
@@ -19,7 +19,7 @@
                          nProductCode = VALUES(nProductCode)
     </insert>
 
-    <select id="findStandardCodes" parameterType="String" resultType="int">
+    <select id="selectStandardCodes" parameterType="String" resultType="int">
         SELECT DISTINCT nProductCode
         FROM tLink
         WHERE sPartnerProductCode in (

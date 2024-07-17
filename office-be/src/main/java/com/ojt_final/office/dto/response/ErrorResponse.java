@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter
-public class ErrorResponse extends BaseResponse{
+public class ErrorResponse extends BaseResponse {
 
     private Map<String, String> errors;
 

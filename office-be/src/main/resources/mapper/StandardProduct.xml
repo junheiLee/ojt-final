@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.StandardProdDao">
 
-    <insert id="saveAll" parameterType="StandardProd">
+    <insert id="insertAll" parameterType="StandardProd">
         INSERT INTO tStandardProduct (
                     nProductCode,
                     nCategoryCode,
@@ -31,21 +31,16 @@
                 dtManufactureDate = VALUES(dtManufactureDate)
     </insert>
 
-    <select id="countAll">
-        SELECT COUNT(nProductCode)
-        FROM tStandardProduct
-    </select>
-
     <select id="selectByCond" parameterType="StandardProdCond" resultType="StandardProd">
         SELECT C.sCategoryName AS categoryName,
-               SP.nProductCode AS code,
-               SP.sProductName AS name,
-               SP.sImageUrl AS imageUrl,
-               SP.nMinPrice AS minPrice,
-               SP.nMinPcPrice AS minPcPrice,
-               SP.nMinMobilePrice AS minMobilePrice,
-               SP.nAvgPrice AS avgPrice,
-               SP.nPartnerCount AS partnerCount
+        SP.nProductCode AS code,
+        SP.sProductName AS name,
+        SP.sImageUrl AS imageUrl,
+        SP.nMinPrice AS minPrice,
+        SP.nMinPcPrice AS minPcPrice,
+        SP.nMinMobilePrice AS minMobilePrice,
+        SP.nAvgPrice AS avgPrice,
+        SP.nPartnerCount AS partnerCount
         FROM tStandardProduct SP
         INNER JOIN tCategory C ON (SP.nCategoryCode = C.nCategoryCode)
         <where>
@@ -74,6 +69,11 @@
         </trim>
         LIMIT #{limit}
         OFFSET #{offset}
+    </select>
+
+    <select id="countAll">
+        SELECT COUNT(nProductCode)
+        FROM tStandardProduct
     </select>
 
     <select id="countByCond">

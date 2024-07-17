@@ -33,7 +33,7 @@ public class StandardProdDaoTest {
         List<Link> links = List.of(
                 Link.builder().partnerProdCode("1").standardProdCode(1).build(),
                 Link.builder().partnerProdCode("2").standardProdCode(2).build());
-        linkDao.saveAll(links);
+        linkDao.insertAll(links);
         partnerProdDao.updateAllIsLinked(true, links.stream().map(Link::getPartnerProdCode).toList());
         List<Integer> standardProductCodes = List.of(1, 2);
 
@@ -53,7 +53,7 @@ public class StandardProdDaoTest {
         List<Link> links = List.of(
                 Link.builder().partnerProdCode("1").standardProdCode(1).build(),
                 Link.builder().partnerProdCode("2").standardProdCode(2).build());
-        linkDao.saveAll(links);
+        linkDao.insertAll(links);
         Set<Integer> emptySet = Collections.emptySet();
 
         //when

@@ -3,7 +3,7 @@
 
 <mapper namespace="com.ojt_final.office.dao.CategoryDao">
 
-    <insert id="saveAll" parameterType="Category">
+    <insert id="insertAll" parameterType="Category">
         INSERT INTO tCategory (
                                 nCategoryCode,
                                 sCategoryName)

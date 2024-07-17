@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class PartnerListResponse extends BaseResponse{
+public class PartnerListResponse extends BaseResponse {
 
     private final List<Partner> partners;
 

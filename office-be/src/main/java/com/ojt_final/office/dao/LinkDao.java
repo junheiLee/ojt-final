@@ -10,9 +10,9 @@ import java.util.List;
 @Component
 public interface LinkDao {
 
-    int saveAll(List<Link> links);
+    int insertAll(List<Link> links);
 
-    List<Integer> findStandardCodes(List<String> partnerProdCodes);
+    List<Integer> selectStandardCodes(List<String> partnerProdCodes);
 
     int deleteByPartnerProdCodes(List<String> partnerProdCodes);
 

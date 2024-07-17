@@ -25,7 +25,7 @@ public class LinkDaoTest {
                 Link.builder().partnerProdCode("4").standardProdCode(4).build(),
                 Link.builder().partnerProdCode("5").standardProdCode(5).build());
 
-        linkDao.saveAll(links);
+        linkDao.insertAll(links);
     }
 
     @DisplayName("저장, 파트너상품코드로 중복 없는 기준상품 코드 반환 Test")
@@ -39,8 +39,8 @@ public class LinkDaoTest {
         List<String> partnerProductCodes = links.stream().map(Link::getPartnerProdCode).toList();
 
         //when
-        int savedCount = linkDao.saveAll(links);
-        List<Integer> linkedChangeStandardCodes = linkDao.findStandardCodes(partnerProductCodes);
+        int savedCount = linkDao.insertAll(links);
+        List<Integer> linkedChangeStandardCodes = linkDao.selectStandardCodes(partnerProductCodes);
 
         //then
         assertThat(savedCount).isEqualTo(3);
@@ -56,7 +56,7 @@ public class LinkDaoTest {
 
         //when
         int deletedCount = linkDao.deleteByPartnerProdCodes(partnerProductCodes);
-        List<Integer> foundStandardProductCodes = linkDao.findStandardCodes(partnerProductCodes);
+        List<Integer> foundStandardProductCodes = linkDao.selectStandardCodes(partnerProductCodes);
 
         //then
         assertThat(deletedCount).isEqualTo(2);

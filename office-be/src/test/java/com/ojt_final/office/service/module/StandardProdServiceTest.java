@@ -37,7 +37,7 @@ public class StandardProdServiceTest {
                 Link.builder().partnerProdCode("3").standardProdCode(3).build(),
                 Link.builder().partnerProdCode("4").standardProdCode(4).build(),
                 Link.builder().partnerProdCode("5").standardProdCode(5).build());
-        linkDao.saveAll(links);
+        linkDao.insertAll(links);
         standardProdService.integrateChange(Set.of(1, 2, 3, 4, 5));
 
         //when

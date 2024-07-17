@@ -18,7 +18,7 @@ import java.util.List;
 public class CreateLinkRequest {
 
     @NotEmpty(message = "EMPTY")
-    @Positive(message="RANGE_OVER")
+    @Positive(message = "RANGE_OVER")
     private int standardProdCode;
 
     @NotEmpty(message = "EMPTY")

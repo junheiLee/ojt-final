@@ -10,5 +10,10 @@ import java.util.List;
 @Component
 public interface PartnerDao {
 
+    /**
+     * 협력사 목록 조회
+     *
+     * @return 협력사 코드, 이름 목록
+     */
     List<Partner> selectAll();
 }

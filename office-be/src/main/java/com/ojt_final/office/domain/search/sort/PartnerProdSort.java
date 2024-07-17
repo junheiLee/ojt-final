@@ -43,7 +43,8 @@ public class PartnerProdSort extends Direction {
         OLDEST(sort -> sort.createdAt = toggle(sort.createdAt, ASC)),
         NEWEST(sort -> sort.createdAt = toggle(sort.createdAt, DESC)),
 
-        NOT_USED(sort -> {});
+        NOT_USED(sort -> {
+        });
 
         private final Consumer<PartnerProdSort> setter;
 

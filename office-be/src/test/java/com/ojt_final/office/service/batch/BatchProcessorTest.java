@@ -45,7 +45,7 @@ public class BatchProcessorTest {
         List<Category> categories = List.of(category1, category2, category3, category4);
 
         //when
-        BatchResult batchResult = batchProcessor.save(3, categories, categoryDao::saveAll);
+        BatchResult batchResult = batchProcessor.save(3, categories, categoryDao::insertAll);
 
         //then
         assertThat(batchResult.getAffectedRow()).isEqualTo(categories.size());
@@ -60,7 +60,7 @@ public class BatchProcessorTest {
 
         //when
         BatchResult batchResult
-                = batchProcessor.save(10, products, partnerProdDao::saveAll)
+                = batchProcessor.save(10, products, partnerProdDao::insertAll)
                 .calInsertAndUnchangedCount(previousCount, partnerProdDao.countAll());
         System.out.println(batchResult.toString());
 

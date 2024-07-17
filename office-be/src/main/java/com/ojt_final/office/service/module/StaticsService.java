@@ -19,7 +19,7 @@ public class StaticsService {
     private PartnerProdDao partnerProdDao;
     private StandardProdDao standardProdDao;
 
-    public void add(){
+    public void add() {
         PartnerProdCond linked = PartnerProdCond.builder().isLinked(true).build();
         PartnerProdCond unLinked = PartnerProdCond.builder().isLinked(false).build();
 

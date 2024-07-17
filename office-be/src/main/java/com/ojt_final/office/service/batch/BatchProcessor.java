@@ -36,6 +36,7 @@ public class BatchProcessor {
 
             try {
                 affectedRow += batchSaveFunction.apply(batchItems);
+                log.info("affectedRow={}", affectedRow);
             } catch (DataAccessException e) { // 일괄 처리 실패 시, log에 보관
                 log.warn("[BatchFailed] 실패 항목: {}", batchItems, e);
                 failedCount += batchItems.size();

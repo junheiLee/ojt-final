@@ -3,7 +3,7 @@ package com.ojt_final.office.dto.response;
 import com.ojt_final.office.dto.response.constant.ResultCode;
 import lombok.Builder;
 
-public class CreateLinkResponse extends BaseResponse{
+public class CreateLinkResponse extends BaseResponse {
 
     int createdCount;
     int changedStandardCount;
