@@ -6,6 +6,7 @@ public enum ValidationErrorCode {
     EMPTY,
     SIZE_MISS,
     SIZE_OVER_50,
+    SIZE_OVER_300,
     RANGE_OVER
 
 }

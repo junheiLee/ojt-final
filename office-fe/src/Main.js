@@ -4,6 +4,7 @@ import Nav from "./components/fix/Nav";
 import Footer from "./components/fix/Footer";
 import FileUpload from "./pages/FileUpload";
 import PartnerProductCreate from "./pages/PartnerProdCreateForm";
+import PartnerProductEdit from "./pages/PartnerProdEditForm";
 import { getCategories } from "./services/category";
 
 const Main = () => {
@@ -17,7 +18,7 @@ const Main = () => {
         };
 
         fetchData();
-    }, [])
+    }, []);
 
 
     return (
@@ -27,7 +28,8 @@ const Main = () => {
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',  flexDirection: 'column' }}>
                 <Routes>
                     <Route path="/upload/excel"  element={<FileUpload />} />
-                    <Route path="/partner-products/create" element={<PartnerProductCreate  categories = {categories} />} />
+                    <Route path="/partner-products/form" element={<PartnerProductCreate  categories = {categories} />} />
+                    <Route path="/partner-products/form/:partnerCode/:prodCode" element={<PartnerProductEdit  categories = {categories} />} />
                 </Routes>
             </div>
             <Footer />

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ojt_final.office.dao.PartnerDao">
+<mapper namespace="com.ojt_final.office.company.PartnerDao">
 
-    <select id="selectAll" resultType="Partner">
+    <select id="selectAll" resultType="com.ojt_final.office.company.Partner">
         SELECT sPartnerCode AS code,
-               sPartnerName AS name
+        sPartnerName AS name
         FROM tPartner
     </select>
 </mapper>

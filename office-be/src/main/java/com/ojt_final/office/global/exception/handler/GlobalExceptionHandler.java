@@ -2,13 +2,15 @@ package com.ojt_final.office.global.exception.handler;
 
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.ojt_final.office.dto.response.BaseResponse;
-import com.ojt_final.office.dto.response.ErrorResponse;
-import com.ojt_final.office.dto.response.constant.ResultCode;
+import com.ojt_final.office.global.constant.ResultCode;
+import com.ojt_final.office.global.dto.BaseResponse;
+import com.ojt_final.office.global.dto.ErrorResponse;
 import com.ojt_final.office.global.exception.DuplicateIdentifierException;
+import com.ojt_final.office.global.exception.ResourceNotFoundException;
 import com.ojt_final.office.global.exception.excel.ExcelInternalException;
 import com.ojt_final.office.global.exception.excel.NoExcelColumnAnnotationsException;
 import com.ojt_final.office.global.exception.excel.UnSupportedFileException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ooxml.POIXMLException;
 import org.apache.poi.util.RecordFormatException;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -27,7 +30,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ojt_final.office.dto.response.constant.ResultCode.*;
+import static com.ojt_final.office.global.constant.ResultCode.*;
 
 
 @Slf4j
@@ -37,8 +40,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException ex) {
 
-        log.error("[BAD REQUEST]: 존재하지 않는 URL 요청");
+        log.error("[BAD REQUEST]: 존재하지 않는 URL 요청 url={}", ex.getRequestURL());
         return buildErrorResponse(ResultCode.NOT_EXIST_URL, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException ex,
+            HttpServletRequest request) {
+
+        log.error("[BAD REQUEST]: 지원하지 않는 메서드 요청 method={}, url={}",
+                ex.getMethod(), request.getRequestURL());
+        return buildErrorResponse(ResultCode.NOT_SUPPORTED_METHOD, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -92,7 +105,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
 
         log.error("[ERROR]: ", ex);
-        return buildErrorResponse(FAILED, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildErrorResponse(SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -144,12 +157,19 @@ public class GlobalExceptionHandler {
         return new BaseResponse(ResultCode.TOO_BIG_SIZE);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ExcelInternalException.class)
     public void handleExcelInternalException(ExcelInternalException e) {
 
         log.error("[ExcelException] :", e);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public BaseResponse handleResourceNotFoundException(ResourceNotFoundException exception) {
+
+        return new BaseResponse(ResultCode.RESOURCE_NOT_FOUND);
+    }
+
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(ResultCode resultCode, HttpStatus status) {
         return new ResponseEntity<>(new ErrorResponse(resultCode), status);

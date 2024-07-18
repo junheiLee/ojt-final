@@ -1,6 +1,6 @@
 package com.ojt_final.office.global.exception;
 
-import com.ojt_final.office.dto.response.constant.ResultCode;
+import com.ojt_final.office.global.constant.ResultCode;
 import lombok.Getter;
 
 @Getter

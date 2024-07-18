@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ojt_final.office.dao.LinkDao">
+<mapper namespace="com.ojt_final.office.link.LinkDao">
 
-    <insert id="insertAll" parameterType="Link">
+    <insert id="insertAll" parameterType="com.ojt_final.office.link.Link">
         INSERT INTO tLink (
-                            sPartnerProductCode,
-                            nProductCode
+        sPartnerProductCode,
+        nProductCode
         )
         VALUES
-            <foreach collection="list" item="Link" separator=",">
-                (
-                 #{Link.partnerProdCode},
-                 #{Link.standardProdCode}
-                )
-            </foreach>
+        <foreach collection="list" item="Link" separator=",">
+            (
+            #{Link.partnerProdCode},
+            #{Link.standardProdCode}
+            )
+        </foreach>
         ON DUPLICATE KEY UPDATE
-                         nProductCode = VALUES(nProductCode)
+        nProductCode = VALUES(nProductCode)
     </insert>
 
     <select id="selectStandardCodes" parameterType="String" resultType="int">
         SELECT DISTINCT nProductCode
         FROM tLink
         WHERE sPartnerProductCode in (
-            <foreach collection="list" item="partnerProdCode" separator=", ">
-                #{partnerProdCode}
-            </foreach>
+        <foreach collection="list" item="partnerProdCode" separator=", ">
+            #{partnerProdCode}
+        </foreach>
         )
     </select>
 
     <delete id="deleteByPartnerProdCodes">
         DELETE FROM tLink
         WHERE
-            sPartnerProductCode IN (
-                <foreach collection="list" item="code" separator=",">
-                    #{code}
-                </foreach>
-            )
+        sPartnerProductCode IN (
+        <foreach collection="list" item="code" separator=",">
+            #{code}
+        </foreach>
+        )
     </delete>
 </mapper>

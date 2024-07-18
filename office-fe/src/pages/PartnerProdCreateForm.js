@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import he from 'he';
-import ConfirmModal from '../components/ConfirmModal';
 import Button from '../components/Button';
 import { getPartners } from '../services/partner';
-import { createPartnerProduct, updatePartnerProduct } from '../services/partner-product';
+import { createPartnerProduct } from '../services/partner-product';
 
 const PartnerProductCreate = ({ categories }) => {
+
   const [partners, setPartners] = useState([]);
   const [formData, setFormData] = useState({
     code: '',
@@ -18,17 +18,12 @@ const PartnerProductCreate = ({ categories }) => {
     url: '',
     imageUrl: ''
   });
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [productData, setProductData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPartners = async () => {
-      const { data, error } = await getPartners();
-      if (data) {
+      const { data } = await getPartners();   
         setPartners(data);
-      } else {
-      }
     };
 
     fetchPartners();
@@ -44,38 +39,18 @@ const PartnerProductCreate = ({ categories }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const { data, error, status } = await createPartnerProduct(formData);
+    const { data, error } = await createPartnerProduct(formData);
 
     if (data) {
-      alert('성공');
-      navigate('/');
+      alert(`${data.prodCode} 상품 등록 완료`);
+      navigate('/link');
     } else {
-      if (status === 409) { // Conflict status
-        setProductData(formData);
-        setModalIsOpen(true);
-      } else {
-        alert('Failed to create product');
-      }
+        if(error) {
+            alert(error);
+        }
     }
   };
 
-  const handleConfirmUpdate = async () => {
-    setModalIsOpen(false);
-
-    const { data, error } = await updatePartnerProduct(productData);
-
-    if (data) {
-      alert('성공');
-      navigate('/');
-    } else {
-      alert('Failed to update product');
-    }
-  };
-
-  const handleCancelUpdate = () => {
-    setModalIsOpen(false);
-  };
 
   return (
     <div>
@@ -105,11 +80,15 @@ const PartnerProductCreate = ({ categories }) => {
                     style={{ width: '20%' }}
                   >
                     <option>협력사 선택</option>
-                    {partners.map((partner) => (
-                      <option key={partner.code} value={partner.code}>
-                        {he.decode(partner.name)}
-                      </option>
-                    ))}
+                    {
+                      partners && partners.length > 0 ? (
+                      partners.map((partner) => (
+                        <option key={partner.code} value={partner.code}>
+                            {he.decode(partner.name)}
+                        </option>
+                      )))
+                       : (<option>협력사 없음</option>)
+                    }
                   </select>
                 </td>
               </tr>
@@ -195,16 +174,10 @@ const PartnerProductCreate = ({ categories }) => {
           </table>
           <div style={{ textAlign: 'center' }}>
             <Button type="submit">등록</Button>
-            <Button type="button" onClick={() => console.log('Cancel clicked')}>취소</Button>
+            <Button type="button" onClick={() => navigate('/link')}>취소</Button>
           </div>
         </div>
       </form>
-      <ConfirmModal
-        isOpen={modalIsOpen}
-        onRequestClose={handleCancelUpdate}
-        onConfirm={handleConfirmUpdate}
-        message={"다음의 상품이 존재합니다.\n 수정하시겠습니까?"}
-      />
     </div>
   );
 };

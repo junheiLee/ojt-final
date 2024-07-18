@@ -2,87 +2,89 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ojt_final.office.dao.PartnerProdDao">
+<mapper namespace="com.ojt_final.office.partnerProd.PartnerProdDao">
 
-    <insert id="insertAll" parameterType="PartnerProd">
+    <insert id="insertAll" parameterType="com.ojt_final.office.partnerProd.PartnerProd">
         INSERT INTO tPartnerProduct (
-                        sPartnerProductCode,
-                        sPartnerCode,
-                        nCategoryCode,
-                        sPartnerProductName,
-                        nPcPrice,
-                        nMobilePrice,
-                        sUrl,
-                        sImageUrl
-                        )
+        sPartnerProductCode,
+        sPartnerCode,
+        nCategoryCode,
+        sPartnerProductName,
+        nPcPrice,
+        nMobilePrice,
+        sUrl,
+        sImageUrl
+        )
         VALUES
-            <foreach collection="list" item="PartnerProd" separator="," >
-                (
-                 #{PartnerProd.code},
-                 #{PartnerProd.partnerCode},
-                 #{PartnerProd.categoryCode},
-                 #{PartnerProd.name},
-                 #{PartnerProd.pcPrice},
-                 #{PartnerProd.mobilePrice},
-                 #{PartnerProd.url},
-                 #{PartnerProd.imageUrl}
-                )
-            </foreach>
+        <foreach collection="list" item="PartnerProd" separator=",">
+            (
+            #{PartnerProd.code},
+            #{PartnerProd.partnerCode},
+            #{PartnerProd.categoryCode},
+            #{PartnerProd.name},
+            #{PartnerProd.pcPrice},
+            #{PartnerProd.mobilePrice},
+            #{PartnerProd.url},
+            #{PartnerProd.imageUrl}
+            )
+        </foreach>
         ON DUPLICATE KEY UPDATE
-                sPartnerProductName = VALUES(sPartnerProductName),
-                nCategoryCode = VALUES(nCategoryCode),
-                nPcPrice = VALUES(nPcPrice),
-                nMobilePrice = VALUES(nMobilePrice),
-                sImageUrl = VALUES(sImageUrl)
+        sPartnerProductName = VALUES(sPartnerProductName),
+        nCategoryCode = VALUES(nCategoryCode),
+        nPcPrice = VALUES(nPcPrice),
+        nMobilePrice = VALUES(nMobilePrice),
+        sImageUrl = VALUES(sImageUrl)
     </insert>
 
-    <insert id="insert" parameterType="PartnerProd">
+    <insert id="insert" parameterType="com.ojt_final.office.partnerProd.PartnerProd">
         INSERT INTO tPartnerProduct (
-                sPartnerCode,
-                nCategoryCode,
-                sPartnerProductCode,
-                sPartnerProductName,
-                nPcPrice,
-                nMobilePrice,
-                sUrl,
-                sImageUrl
+        sPartnerCode,
+        nCategoryCode,
+        sPartnerProductCode,
+        sPartnerProductName,
+        nPcPrice,
+        nMobilePrice,
+        sUrl,
+        sImageUrl
         )
         VALUES (
-               #{partnerCode},
-               #{categoryCode},
-               #{code},
-               #{name},
-               #{pcPrice},
-               #{mobilePrice},
-               #{url},
-               #{imageUrl}
+        #{partnerCode},
+        #{categoryCode},
+        #{code},
+        #{name},
+        #{pcPrice},
+        #{mobilePrice},
+        #{url},
+        #{imageUrl}
         )
     </insert>
 
-    <select id="select" resultType="PartnerProd">
+    <select id="select" resultType="com.ojt_final.office.partnerProd.PartnerProd">
         SELECT nCategoryCode AS categoryCode,
-               sPartnerCode AS partnerCode,
-               sPartnerProductCode AS code,
-               sPartnerProductName AS partnerName,
-               nPcPrice AS pcPrice,
-               nMobilePrice AS mobilePrice,
-               sImageUrl AS imageUrl,
-               bIsLinked AS isLinked
+        sPartnerCode AS partnerCode,
+        sPartnerProductCode AS code,
+        sPartnerProductName AS partnerName,
+        nPcPrice AS pcPrice,
+        nMobilePrice AS mobilePrice,
+        sUrl AS url,
+        sImageUrl AS imageUrl,
+        bIsLinked AS isLinked
         FROM tPartnerProduct
         WHERE sPartnerProductCode = #{code}
-              AND sPartnerCode = #{partnerCode}
+        AND sPartnerCode = #{partnerCode}
 
     </select>
 
-    <select id="selectAllByCond" parameterType="PartnerProdCond" resultType="PartnerProd">
+    <select id="selectAllByCond" parameterType="com.ojt_final.office.global.search.PartnerProdCond"
+            resultType="com.ojt_final.office.partnerProd.PartnerProd">
         SELECT P.sPartnerName AS partnerName,
-               C.sCategoryName AS categoryName,
-               PP.sPartnerProductName AS name,
-               PP.sImageUrl AS imageUrl,
-               PP.sUrl AS url,
-               PP.nPcPrice AS pcPrice,
-               PP.nMobilePrice AS mobilePrice,
-               pp.dtCreatedAt AS createdAt
+        C.sCategoryName AS categoryName,
+        PP.sPartnerProductName AS name,
+        PP.sImageUrl AS imageUrl,
+        PP.sUrl AS url,
+        PP.nPcPrice AS pcPrice,
+        PP.nMobilePrice AS mobilePrice,
+        pp.dtCreatedAt AS createdAt
         FROM tPartnerProduct PP
         INNER JOIN tCategory C ON (PP.nCategoryCode = C.nCategoryCode)
         INNER JOIN tPartner P ON (PP.sPartnerCode = P.sPartnerCode)
@@ -118,7 +120,7 @@
         FROM tPartnerProduct
     </select>
 
-    <select id="countByCond" parameterType="PartnerProdCond">
+    <select id="countByCond" parameterType="com.ojt_final.office.global.search.PartnerProdCond">
         SELECT COUNT(sPartnerProductCode)
         FROM tPartnerProduct
         <where>
@@ -131,19 +133,25 @@
         </where>
     </select>
 
-    <update id="update" parameterType="PartnerProd">
+    <update id="update" parameterType="com.ojt_final.office.partnerProd.PartnerProd">
         UPDATE tPartnerProduct
-        SET
-            <if test="categoryCode != "> </if>
+        SET nCategoryCode = #{categoryCode},
+            sPartnerProductName = #{name},
+            nPcPrice = #{pcPrice},
+            nMobilePrice = #{mobilePrice},
+            sImageUrl = #{imageUrl}
+        WHERE
+            sPartnerCode = #{partnerCode}
+            AND sPartnerProductCode = #{code}
     </update>
 
     <update id="updateAllIsLinked">
         UPDATE tPartnerProduct
         SET bIsLinked = #{isLinked}
         WHERE sPartnerProductCode IN (
-            <foreach collection="codes" item="code" separator=", ">
-                #{code}
-            </foreach>
+        <foreach collection="codes" item="code" separator=", ">
+            #{code}
+        </foreach>
         )
     </update>
 </mapper>
