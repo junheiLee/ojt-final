@@ -39,7 +39,7 @@ public class StandardProdServiceTest {
         standardProdService.renewIntegrated(List.of(1, 2, 3, 4, 5));
 
         //when
-        List<Integer> result = standardProdService.getResponseProds(condParam)
+        List<Integer> result = standardProdService.searchWithCount(condParam)
                 .getProds().stream()
                 .map(StandardProd::getCode)
                 .toList();

@@ -3,6 +3,7 @@ package com.ojt_final.office.partnerProd.dto;
 import com.ojt_final.office.partnerProd.PartnerProd;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +30,17 @@ public class CreatePartnerProdRequest {
     @NotEmpty(message = "EMPTY")
     private String name;
 
+    @PositiveOrZero(message = "NEGATIVE")
     private int pcPrice;
+
+    @PositiveOrZero(message = "NEGATIVE")
     private int mobilePrice;
 
     @NotEmpty(message = "EMPTY")
     @Size(max = 300, message = "SIZE_OVER_300")
     private String url;
+
+    @Size(max = 300, message = "SIZE_OVER_300")
     private String imageURl;
 
     /**

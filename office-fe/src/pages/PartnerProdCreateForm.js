@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import he from 'he';
 import Button from '../components/Button';
-import { getPartners } from '../services/partner';
 import { createPartnerProduct } from '../services/partner-product';
 
-const PartnerProductCreate = ({ categories }) => {
+const PartnerProductCreate = ({ categories, partners }) => {
 
-  const [partners, setPartners] = useState([]);
   const [formData, setFormData] = useState({
     code: '',
     partnerCode: '',
@@ -19,15 +17,6 @@ const PartnerProductCreate = ({ categories }) => {
     imageUrl: ''
   });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchPartners = async () => {
-      const { data } = await getPartners();   
-        setPartners(data);
-    };
-
-    fetchPartners();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,13 +70,11 @@ const PartnerProductCreate = ({ categories }) => {
                   >
                     <option>협력사 선택</option>
                     {
-                      partners && partners.length > 0 ? (
                       partners.map((partner) => (
                         <option key={partner.code} value={partner.code}>
                             {he.decode(partner.name)}
                         </option>
-                      )))
-                       : (<option>협력사 없음</option>)
+                      ))
                     }
                   </select>
                 </td>
@@ -138,11 +125,13 @@ const PartnerProductCreate = ({ categories }) => {
                     onChange={handleChange}
                     style={{ width: '60%', overflowY: 'auto', maxHeight: '100px' }}
                   >
-                    {categories.map((category) => (
+                    {
+                      categories.map((category) => (
                       <option key={category.code} value={category.code}>
                         {category.name}
                       </option>
-                    ))}
+                      ))
+                    }
                   </select>
                 </td>
               </tr>

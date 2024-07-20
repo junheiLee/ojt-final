@@ -34,11 +34,30 @@ public class IntegratedService {
      */
     public IntegratedResponse updatePartnerProduct(UpdatePartnerProdRequest request) {
 
-        PartnerProd partnerProd = request.toEntity();
-        boolean requireRenewal = partnerProdService.requiresRenewalAfterUpdate(partnerProd);
+        PartnerProd target = request.toEntity();
+        boolean requireRenewal = partnerProdService.requiresRenewalAfterUpdate(target);
 
         if (requireRenewal) {
-            return renew(List.of(partnerProd.getCode()));
+            return renew(List.of(target.getCode()));
+        }
+        return IntegratedResponse.builder()
+                .code(ResultCode.SUCCESS)
+                .build();
+    }
+
+    /**
+     * 협력사 상품을 삭제하고, 링크된 상품을 삭제하는 경우 기준 상품의 최저가 및 업체를 갱신한다.
+     *
+     * @param partnerCode the code of the partner associated with the product to be deleted
+     * @param prodCode    the code of the product to be deleted
+     * @return an {@link IntegratedResponse} containing the result code and, if applicable, the number of changed standard products
+     */
+    public IntegratedResponse deletePartnerProduct(String partnerCode, String prodCode) {
+
+        boolean requireRenewal = partnerProdService.requiresRenewalAfterDelete(partnerCode, prodCode);
+
+        if (requireRenewal) {
+            return renew(List.of(prodCode));
         }
         return IntegratedResponse.builder()
                 .code(ResultCode.SUCCESS)
@@ -60,17 +79,6 @@ public class IntegratedService {
                 .changedStandardCount(changedStandardCount)
                 .build();
     }
-
-//    public void deletePartnerProduct(DeletePartnerProdRequest deletePartnerProdRequest) {
-//
-//        PartnerProd partnerProd = deletePartnerProdRequest.toEntity();
-//        partnerProdService.delete(partnerProd);
-//
-//        if (partnerProd.isLinked()) {
-//            List<Integer> targetStandardCodes = linkService.findStandardCodes(List.of(partnerProd.getCode()));
-//            int standardRow = standardProdService.integrateChange(targetStandardCodes);
-//        }
-//    }
 
     public CreateLinkResponse createLink(CreateLinkRequest createLinkRequest) {
         List<String> partnerProdCodes = createLinkRequest.getPartnerProdCodes();

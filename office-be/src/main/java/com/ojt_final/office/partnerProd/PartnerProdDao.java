@@ -25,10 +25,11 @@ public interface PartnerProdDao {
     /**
      * 협력사 상품 옵셔널 조회
      *
-     * @param partnerProd the partner product domain object containing the partner code and product code.
+     * @param partnerCode the code of the partner associated with the product to retrieve
+     * @param code        the code of the product to retrieve
      * @return an {@link Optional} containing the retrieved partner product. If no product is found, an empty Optional is returned.
      */
-    Optional<PartnerProd> select(PartnerProd partnerProd);
+    Optional<PartnerProd> select(@Param("partnerCode") String partnerCode, @Param("code") String code);
 
     List<PartnerProd> selectAllByCond(PartnerProdCond cond);
 
@@ -51,5 +52,12 @@ public interface PartnerProdDao {
 
     int updateAllIsLinked(@Param("isLinked") boolean isLinked, @Param("codes") List<String> codes);
 
-    int delete(PartnerProd prod);
+    /**
+     * 협력사 상품 삭제
+     *
+     * @param partnerCode the code of the partner associated with the product to be deleted
+     * @param code        the code of the product to be deleted
+     * @return the number of rows affected by the deletion operation
+     */
+    int delete(@Param("partnerCode") String partnerCode, @Param("code") String code);
 }

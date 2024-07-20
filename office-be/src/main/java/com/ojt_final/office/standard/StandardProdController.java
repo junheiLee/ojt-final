@@ -1,7 +1,11 @@
 package com.ojt_final.office.standard;
 
+import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
+import com.ojt_final.office.standard.dto.CreateStandardProdRequest;
+import com.ojt_final.office.standard.dto.StandardProdsResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -65,9 +69,21 @@ public class StandardProdController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public StandardProdListResponse getStandardProds(@ModelAttribute CondParam condParam) {
+    public StandardProdsResponse getStandardProds(@ModelAttribute CondParam condParam) {
 
-        return standardProdService.getResponseProds(condParam);
+        return standardProdService.searchWithCount(condParam);
     }
+
+    /**
+     * 한 건의 기준 상품을 DB에 저장하는 API
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping
+    public BaseResponse save(@Valid @RequestPart(value="image") MultipartFile imageFile,
+                             @RequestPart(value = "createDto") CreateStandardProdRequest createRequest) {
+        log.info("image={}, dto={}", imageFile, createRequest);
+        return standardProdService.save(createRequest);
+    }
+
 
 }

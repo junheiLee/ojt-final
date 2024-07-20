@@ -11,7 +11,7 @@ const Nav = () => {
                 <img src={`${process.env.PUBLIC_URL}/assets/danawa_logo_main_brand.png`} alt="Danawa" />
             </div>
             <div className='menu'>
-                <NavLink to="/123"><span> 기준상품등록</span></NavLink>&nbsp;| &nbsp;
+                <NavLink to="/standard-products/form"><span> 기준상품등록</span></NavLink>&nbsp;| &nbsp;
                 <NavLink to="/partner-products/form"><span> 협력사상품등록</span></NavLink> &nbsp;|&nbsp;
                 <NavLink to="/link"><span> 상품링크</span></NavLink> &nbsp;|&nbsp;
                 <NavLink to="/upload/excel"><span> 엑셀파일등록</span></NavLink> &nbsp;|&nbsp;

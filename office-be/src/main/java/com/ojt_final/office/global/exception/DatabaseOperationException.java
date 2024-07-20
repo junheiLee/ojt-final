@@ -5,6 +5,6 @@ import com.ojt_final.office.global.constant.ResultCode;
 public class DatabaseOperationException extends CustomException {
 
     public DatabaseOperationException(String message) {
-        super(ResultCode.FAILED, message);
+        super(ResultCode.DB_ERROR, message);
     }
 }

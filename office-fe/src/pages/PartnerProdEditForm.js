@@ -3,12 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import he from 'he';
 import ConfirmModal from '../components/ConfirmModal';
 import Button from '../components/Button';
-import { getPartners } from '../services/partner';
-import { updatePartnerProduct, getProductById } from '../services/partner-product';
+import { updatePartnerProduct, getProductById, deletePartnerProduct, tryDelete } from '../services/partner-product';
 
-const PartnerProductCreate = ({ categories }) => {
+const PartnerProductCreate = ({ categories, partners }) => {
 
-  const [partners, setPartners] = useState([]);
   const [formData, setFormData] = useState({
     code: '',
     partnerCode: '',
@@ -19,17 +17,10 @@ const PartnerProductCreate = ({ categories }) => {
     url: '',
     imageUrl: ''
   });
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const navigate = useNavigate();
-  const {partnerCode, prodCode} = useParams();
-
-  useEffect(() => {
-    const fetchPartners = async () => {
-      const { data } = await getPartners();   
-        setPartners(data);
-    };
-
-    fetchPartners();
-  }, []);
+  const { partnerCode, prodCode } = useParams();
 
   useEffect(() => {
     const fetchInitalData = async () => {
@@ -76,6 +67,37 @@ const PartnerProductCreate = ({ categories }) => {
         }
     }
   };
+
+
+  const handleDelete = async () => {
+    const { data, error } = await tryDelete(partnerCode, prodCode);
+
+    if (error) {
+      alert(error);
+    } else if (data.code === 'UNLINKED') {
+      await deletePartnerProduct(partnerCode, prodCode);
+      navigate('/link');
+    } else {
+      setProductToDelete({ partnerCode, prodCode });
+      setShowConfirm(true);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (productToDelete) {
+      await deletePartnerProduct(productToDelete.partnerCode, productToDelete.prodCode);
+      setProductToDelete(null);
+      setShowConfirm(false);
+      navigate('/link');
+    }
+  };
+
+
+  const cancelDelete = () => {
+    setProductToDelete(null);
+    setShowConfirm(false);
+  };
+
 
   const getPartnerNameByCode = () => {
     const partner = partners.find(p => p.code === partnerCode);
@@ -176,11 +198,15 @@ const PartnerProductCreate = ({ categories }) => {
                     style={{ width: '60%', overflowY: 'auto', maxHeight: '100px' }}
                   >
                     <option value={formData.categoryCode}>{getCategoryNameByCode(formData.categoryCode)}</option>
-                    {categories.map((category) => (
+                    {
+                      categories && categories.length > 0 ? (
+                      categories.map((category) => (
                       <option key={category.code} value={category.code}>
                         {category.name}
                       </option>
-                    ))}
+                      )))
+                        : (<option>카테고리 없음</option>)
+                    }
                   </select>
                 </td>
               </tr>
@@ -213,11 +239,17 @@ const PartnerProductCreate = ({ categories }) => {
           </table>
           <div style={{ textAlign: 'center' }}>
             <Button type="submit">수정</Button>
-            <Button type="button" onClick={() => navigate('/link')}>삭제</Button>
+            <Button type="button" onClick={handleDelete}>삭제</Button>
             <Button type="button" onClick={() => navigate('/link')}>취소</Button>
           </div>
         </div>
       </form>
+
+      <ConfirmModal
+        show={showConfirm}
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
     </div>
   );
 };

@@ -6,20 +6,37 @@ import FileUpload from "./pages/FileUpload";
 import PartnerProductCreate from "./pages/PartnerProdCreateForm";
 import PartnerProductEdit from "./pages/PartnerProdEditForm";
 import { getCategories } from "./services/category";
+import { getPartners } from './services/partner';
+import StandardProdCreate from "./pages/StandardProdCreateForm";
 
 const Main = () => {
 
     const [categories, setCategories] = useState([]);
+    const [partners, setPartners] = useState([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const { data, error } = await getCategories();
+        const fetchCategories = async () => {
+            let { data, error } = await getCategories();
+            if(data == null || data.length == 0) {
+                data = [{code:"", name: "카테고리 없음"}]
+            }
             setCategories(data);
         };
 
-        fetchData();
+        fetchCategories();
     }, []);
 
+    useEffect(() => {
+        const fetchPartners = async () => {
+            let { data } = await getPartners();   
+            if(data == null || data.length == 0) {
+                data = [{code: "" , name: "협력사 없음"}]
+            }
+            setPartners(data);
+        };
+    
+        fetchPartners();
+    }, []);
 
     return (
         <BrowserRouter>
@@ -28,8 +45,9 @@ const Main = () => {
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',  flexDirection: 'column' }}>
                 <Routes>
                     <Route path="/upload/excel"  element={<FileUpload />} />
-                    <Route path="/partner-products/form" element={<PartnerProductCreate  categories = {categories} />} />
-                    <Route path="/partner-products/form/:partnerCode/:prodCode" element={<PartnerProductEdit  categories = {categories} />} />
+                    <Route path="/standard-products/form" element={<StandardProdCreate categories={categories} partners={partners}/> } />
+                    <Route path="/partner-products/form" element={<PartnerProductCreate  categories = {categories} partners={partners} />} />
+                    <Route path="/partner-products/form/:partnerCode/:prodCode" element={<PartnerProductEdit  categories = {categories} partners={partners} />} />
                 </Routes>
             </div>
             <Footer />

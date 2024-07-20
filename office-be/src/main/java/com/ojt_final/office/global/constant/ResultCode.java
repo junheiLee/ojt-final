@@ -32,6 +32,7 @@ public enum ResultCode {
     NOT_SUPPORTED_METHOD("해당 메서드를 지원하지 않습니다."),
 
     // 오류
+    DB_ERROR("Database 오류"),
     SERVER_ERROR("서버 오류"),
 
     // 상태

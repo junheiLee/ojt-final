@@ -1,7 +1,8 @@
-package com.ojt_final.office.standard;
+package com.ojt_final.office.standard.dto;
 
 import com.ojt_final.office.global.constant.ResultCode;
 import com.ojt_final.office.global.dto.BaseResponse;
+import com.ojt_final.office.standard.StandardProd;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @ToString(callSuper = true)
 @Getter
-public class StandardProdListResponse extends BaseResponse {
+public class StandardProdsResponse extends BaseResponse {
 
     private int totalItemsCount;
     private List<StandardProd> prods;
@@ -27,8 +28,8 @@ public class StandardProdListResponse extends BaseResponse {
      * @param prods           the list of partner products
      */
     @Builder
-    public StandardProdListResponse(ResultCode resultCode,
-                                    int totalItemsCount, List<StandardProd> prods) {
+    public StandardProdsResponse(ResultCode resultCode,
+                                 int totalItemsCount, List<StandardProd> prods) {
         super(resultCode);
         this.totalItemsCount = totalItemsCount;
         this.prods = prods;

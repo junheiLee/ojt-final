@@ -4,10 +4,13 @@ package com.ojt_final.office.standard;
 import com.ojt_final.office.global.batch.BatchProcessor;
 import com.ojt_final.office.global.batch.BatchResult;
 import com.ojt_final.office.global.constant.ResultCode;
+import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.global.excel.ExcelProcessingHandler;
 import com.ojt_final.office.global.search.StandardProdCond;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
+import com.ojt_final.office.standard.dto.CreateStandardProdRequest;
+import com.ojt_final.office.standard.dto.StandardProdsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,13 +64,13 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
         return create(prods);
     }
 
-    public StandardProdListResponse getResponseProds(CondParam condParam) {
+    public StandardProdsResponse searchWithCount(CondParam condParam) {
 
         StandardProdCond cond = condParam.toStandardProdCond();
         int count = standardProdDao.countByCond(cond);
         List<StandardProd> prods = getProds(cond);
 
-        return StandardProdListResponse.builder()
+        return StandardProdsResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
                 .totalItemsCount(count)
                 .prods(prods)
@@ -75,8 +78,20 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
     }
 
     /**
-     * @param standardProdCodes
+     *
+     * @param createRequest
      * @return
+     */
+    public BaseResponse save(CreateStandardProdRequest createRequest) {
+
+        return null;
+    }
+
+    /**
+     * 링크된 협력사 상품을 바탕으로 최저가 및 업체를 갱신한다.
+     *
+     * @param standardProdCodes a list of standard product codes to be renewed
+     * @return the number of updated standard products
      */
     public int renewIntegrated(List<Integer> standardProdCodes) {
 

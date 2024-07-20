@@ -3,6 +3,7 @@ package com.ojt_final.office.partnerProd;
 import com.ojt_final.office.global.batch.BatchProcessor;
 import com.ojt_final.office.global.batch.BatchResult;
 import com.ojt_final.office.global.constant.ResultCode;
+import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.global.excel.ExcelProcessingHandler;
 import com.ojt_final.office.global.exception.DatabaseOperationException;
@@ -87,26 +88,26 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
      * are no duplicates, and attempts to insert the entity into the database.
      * </p>
      *
-     * @param createPartnerProdRequest the request containing the PartnerProd data
+     * @param createRequest the request containing the PartnerProd data
      * @return the response containing the result code and identity of the created PartnerProd
      * @throws DuplicateIdentifierException if a duplicate PartnerProd is found
      * @throws DatabaseOperationException   if the database operation fails to insert the PartnerProd
      */
-    public CreatePartnerProdResponse save(CreatePartnerProdRequest createPartnerProdRequest) {
+    public CreatePartnerProdResponse save(CreatePartnerProdRequest createRequest) {
 
-        PartnerProd partnerProd = createPartnerProdRequest.toEntity();
-        validateNoDuplicate(partnerProd);
-        int count = partnerProdDao.insert(partnerProd);
+        PartnerProd createProd = createRequest.toEntity();
+        validateNoDuplicate(createProd);
+        int count = partnerProdDao.insert(createProd);
 
         if (count <= 0) {
             throw new DatabaseOperationException("협력사 상품 DB 저장 실패");
         }
-        return new CreatePartnerProdResponse(ResultCode.SUCCESS, partnerProd);
+        return new CreatePartnerProdResponse(ResultCode.SUCCESS, createProd);
     }
 
-    private void validateNoDuplicate(PartnerProd partnerProd) {
+    private void validateNoDuplicate(PartnerProd prod) {
 
-        findOpt(partnerProd).ifPresent(existingProd -> {
+        findOpt(prod.getPartnerCode(), prod.getCode()).ifPresent(existingProd -> {
             throw new DuplicateIdentifierException();
         });
     }
@@ -121,32 +122,22 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
      */
     public GetPartnerProdResponse get(String partnerCode, String code) {
 
-        PartnerProd searchProd = PartnerProd.builder().partnerCode(partnerCode).code(code).build();
-        Optional<PartnerProd> partnerProdOpt = partnerProdDao.select(searchProd);
-
-        if (partnerProdOpt.isEmpty()) {
-            throw new ResourceNotFoundException();
-        } else {
-            return new GetPartnerProdResponse(ResultCode.SUCCESS, partnerProdOpt.get());
-        }
+        return new GetPartnerProdResponse(ResultCode.SUCCESS, find(partnerCode, code));
     }
 
     /**
      * 특정 협력사 상품을 수정한 후 기준 상품 갱신이 필요한지 여부를 결정한다.
      *
-     * @param partnerProd the partner product entity to be updated
+     * @param updateProd the partner product entity to be updated
      * @return {@code true} if the updated partner product requires an integrated renewal;
-     *         {@code false} otherwise
+     * {@code false} otherwise
      * @throws ResourceNotFoundException if the partner product is not found in the database
      */
-    public boolean requiresRenewalAfterUpdate(PartnerProd partnerProd) {
-        Optional<PartnerProd> partnerProdOpt = findOpt(partnerProd);
+    public boolean requiresRenewalAfterUpdate(PartnerProd updateProd) {
+        PartnerProd oldProd = find(updateProd.getPartnerCode(), updateProd.getCode());
+        partnerProdDao.update(updateProd);
 
-        if (partnerProdOpt.isEmpty()) {
-            throw new ResourceNotFoundException();
-        }
-        partnerProdDao.update(partnerProd);
-        return partnerProd.requiresIntegratedProgram(partnerProdOpt.get());
+        return updateProd.requiresIntegratedRenewal(oldProd);
     }
 
     /**
@@ -162,26 +153,24 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return partnerProdDao.updateAllIsLinked(isLinked, codes);
     }
 
-    public ResultCode checkIfLinked(PartnerProd partnerProd) {
-        Optional<PartnerProd> prodOpt = findOpt(partnerProd);
-        if (prodOpt.isEmpty()) {
-            throw new RuntimeException("임시 잘못된 사용자 요청: 존재하는 리소스가 없음:404 ");
-        }
-        if (prodOpt.get().isLinked()) {
-            return ResultCode.LINKED;
-        } else {
-            return ResultCode.UNLINKED;
-        }
+    public BaseResponse checkIfLinked(String partnerCode, String code) {
 
+        PartnerProd partnerProd = find(partnerCode, code);
+        if (partnerProd.isLinked()) {
+            return new BaseResponse(ResultCode.LINKED);
+        } else {
+            return new BaseResponse(ResultCode.UNLINKED);
+        }
     }
 
-    public void delete(PartnerProd partnerProd) {
-
-        int deletedRow = partnerProdDao.delete(partnerProd);
+    public boolean requiresRenewalAfterDelete(String partnerCode, String code) {
+        PartnerProd deletedProd = find(partnerCode, code);
+        int deletedRow = partnerProdDao.delete(partnerCode, code);
 
         if (deletedRow <= 0) {
-            throw new RuntimeException("임시 항복을 삭제하지 못했다.");
+            throw new DatabaseOperationException("상품 삭제 실패");
         }
+        return deletedProd.isLinked();
     }
 
     /**
@@ -202,9 +191,18 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         return partnerProdDao.selectAllByCond(cond);
     }
 
-    private Optional<PartnerProd> findOpt(PartnerProd partnerProd) {
+    private PartnerProd find(String partnerCode, String prodCode) {
+        Optional<PartnerProd> partnerProdOpt = findOpt(partnerCode, prodCode);
 
-        return partnerProdDao.select(partnerProd);
+        if (partnerProdOpt.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        return partnerProdOpt.get();
+    }
+
+    private Optional<PartnerProd> findOpt(String partnerCode, String prodCode) {
+
+        return partnerProdDao.select(partnerCode, prodCode);
     }
 
 }

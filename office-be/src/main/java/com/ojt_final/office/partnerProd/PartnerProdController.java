@@ -3,6 +3,7 @@ package com.ojt_final.office.partnerProd;
 import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.integrate.IntegratedService;
+import com.ojt_final.office.integrate.dto.IntegratedResponse;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
 import com.ojt_final.office.partnerProd.dto.*;
 import jakarta.validation.Valid;
@@ -63,29 +64,16 @@ public class PartnerProdController {
     }
 
     /**
-     * 주어진 조건에 해당하는 파트너 상품 목록을 조회하는 API
+     * 한 건의 협력사 상품을 DB에 저장하는 API
      *
-     * @param condParam the conditions to filter the partner products
-     * @return a response containing the list of partner products
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public PartnerProdsResponse getPartnerProds(@ModelAttribute CondParam condParam) {
-
-        return partnerProdService.searchWithCount(condParam);
-    }
-
-    /**
-     * 한 건의 파트너 상품을 DB에 저장하는 API
-     *
-     * @param createPartnerProdRequest the request containing the partner product data
+     * @param createRequest the request containing the partner product data
      * @return a response containing the result code and details of the created partner product
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CreatePartnerProdResponse save(@Valid @RequestBody CreatePartnerProdRequest createPartnerProdRequest) {
+    public CreatePartnerProdResponse save(@Valid @RequestBody CreatePartnerProdRequest createRequest) {
 
-        return partnerProdService.save(createPartnerProdRequest);
+        return partnerProdService.save(createRequest);
     }
 
     /**
@@ -95,10 +83,23 @@ public class PartnerProdController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{partnerCode}/{prodCode}")
-    public GetPartnerProdResponse getPartnerProd(@PathVariable(value = "partnerCode") String partnerCode,
-                                                 @PathVariable(value = "prodCode") String prodCode) {
+    public GetPartnerProdResponse get(@PathVariable(value = "partnerCode") String partnerCode,
+                                      @PathVariable(value = "prodCode") String prodCode) {
 
         return partnerProdService.get(partnerCode, prodCode);
+    }
+
+    /**
+     * 주어진 조건에 해당하는 파트너 상품 목록을 조회하는 API
+     *
+     * @param condParam the conditions to filter the partner products
+     * @return a response containing the list of partner products
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public PartnerProdsResponse getList(@ModelAttribute CondParam condParam) {
+
+        return partnerProdService.searchWithCount(condParam);
     }
 
     /**
@@ -107,13 +108,48 @@ public class PartnerProdController {
      * 링크된 상품의 가격이 변동된 경우, 해당 기준 상품의 최저가를 갱신한다.
      * </p>
      *
-     * @param updatePartnerProdRequest the request containing the updatable partner product data
+     * @param updateRequest the request containing the updatable partner product data
      * @return a response containing the result code and message
      */
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping
-    public BaseResponse edit(UpdatePartnerProdRequest updatePartnerProdRequest) {
+    public BaseResponse edit(UpdatePartnerProdRequest updateRequest) {
 
-        return integratedService.updatePartnerProduct(updatePartnerProdRequest);
+        return integratedService.updatePartnerProduct(updateRequest);
     }
+
+    /**
+     * 기준 상품과 연결 확인 API
+     *
+     * @param partnerCode the code of the partner associated with the product to check
+     * @param prodCode    the code of the product to check
+     * @return a {@link BaseResponse} containing the result code indicating the status of the product and
+     * whether it is linked or unlinked, or if it does not exist.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{partnerCode}/{prodCode}")
+    public BaseResponse checkBeforeDelete(@PathVariable(value = "partnerCode") String partnerCode,
+                                          @PathVariable(value = "prodCode") String prodCode) {
+
+        return partnerProdService.checkIfLinked(partnerCode, prodCode);
+    }
+
+    /**
+     * 협력사 상품 삭제 API
+     * <p>
+     * 링크된 상품이 삭제되는 경우, 해당 기준 상품의 최저가를 갱신한다.
+     * </p>
+     *
+     * @param partnerCode the code of the partner associated with the product to be deleted
+     * @param prodCode    the code of the product to be deleted
+     * @return an {@link IntegratedResponse} containing the result code and, if applicable, the number of changed standard products
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{partnerCode}/{prodCode}")
+    public IntegratedResponse remove(@PathVariable(value = "partnerCode") String partnerCode,
+                                     @PathVariable(value = "prodCode") String prodCode) {
+
+        return integratedService.deletePartnerProduct(partnerCode, prodCode);
+    }
+
 }
