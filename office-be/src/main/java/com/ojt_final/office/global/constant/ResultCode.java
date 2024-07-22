@@ -26,6 +26,7 @@ public enum ResultCode {
 
     // Validation
     INVALID("다음 항목의 값을 확인해 주세요."),
+    INVALID_DATE("제조일자를 확인해 주세요."),
     TYPE_MISMATCH("다음의 타입이 일치하지 않습니다."),
     EMPTY_BODY("요청 본문이 없거나 잘못된 형식입니다."),
     NOT_EXIST_URL("존재하지 않는 URL 입니다."),
@@ -34,6 +35,7 @@ public enum ResultCode {
     // 오류
     DB_ERROR("Database 오류"),
     SERVER_ERROR("서버 오류"),
+    IMAGE_ERROR("이미지 저장 실패"),
 
     // 상태
     UNLINKED("링크 되지 않은 상품"),

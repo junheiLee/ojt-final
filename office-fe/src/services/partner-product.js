@@ -35,11 +35,13 @@ export const createPartnerProduct = async (productData) => {
     if(error.response.data.code === 'INVALID'){
       const errors = error.response.data.errors;
       let list = "";
+
       for (const key in errors) {
         if (params[key] && errorCodeMessages[errors[key]]) {
           list += `${params[key]}: ${errorCodeMessages[errors[key]]}\n`;
         }
       }
+      
       message = "유효하지 않은 입력입니다. 다음 항목을 확인해주세요.\n\n" + list;
     } else {
 
@@ -74,7 +76,7 @@ export const updatePartnerProduct = async (productData) => {
 
 export const tryDelete = async (partnerCode, prodCode) => {
   try {
-    const response = await axios.get(`/partner-products/${partnerCode}/${prodCode}`);
+    const response = await axios.get(`/partner-products/check/link/${partnerCode}/${prodCode}`);
     return { data: response.data, error: null };
   } catch(error) {
     const message = error.response?.data?.message || '링크 여부 확인에 실패했습니다.';

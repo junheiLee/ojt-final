@@ -14,12 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Date;
 
-
 @Slf4j
 @ToString
 @Getter
 @NoArgsConstructor
-public class CreateStandardProdRequest {
+public class UpdateStandardProdRequest {
 
     @NotBlank(message = "EMPTY")
     @Size(max = 300, message = "SIZE_OVER_300")
@@ -42,7 +41,7 @@ public class CreateStandardProdRequest {
     private String imageOriginUrl;
 
     /**
-     * Converts CreateStandardProdRequest to {@link StandardProd} entity.
+     * Converts UpdateStandardProdRequest to {@link StandardProd} entity.
      *
      * @param code     the internally generated standard product code
      * @param imageUrl the URL of the product image stored on the server

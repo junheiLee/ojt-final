@@ -12,7 +12,6 @@ import com.ojt_final.office.global.exception.ResourceNotFoundException;
 import com.ojt_final.office.global.search.PartnerProdCond;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
 import com.ojt_final.office.partnerProd.dto.CreatePartnerProdRequest;
-import com.ojt_final.office.partnerProd.dto.CreatePartnerProdResponse;
 import com.ojt_final.office.partnerProd.dto.GetPartnerProdResponse;
 import com.ojt_final.office.partnerProd.dto.PartnerProdsResponse;
 import lombok.RequiredArgsConstructor;
@@ -89,20 +88,20 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
      * </p>
      *
      * @param createRequest the request containing the PartnerProd data
-     * @return the response containing the result code and identity of the created PartnerProd
+     * @return the response containing the result code
      * @throws DuplicateIdentifierException if a duplicate PartnerProd is found
      * @throws DatabaseOperationException   if the database operation fails to insert the PartnerProd
      */
-    public CreatePartnerProdResponse save(CreatePartnerProdRequest createRequest) {
+    public BaseResponse save(CreatePartnerProdRequest createRequest) {
 
         PartnerProd createProd = createRequest.toEntity();
         validateNoDuplicate(createProd);
-        int count = partnerProdDao.insert(createProd);
+        int affectedRow = partnerProdDao.insert(createProd);
 
-        if (count <= 0) {
+        if (affectedRow <= 0) {
             throw new DatabaseOperationException("협력사 상품 DB 저장 실패");
         }
-        return new CreatePartnerProdResponse(ResultCode.SUCCESS, createProd);
+        return new BaseResponse(ResultCode.CREATED);
     }
 
     private void validateNoDuplicate(PartnerProd prod) {
@@ -163,6 +162,13 @@ public class PartnerProdService extends ExcelProcessingHandler<PartnerProd> {
         }
     }
 
+    /**
+     * 협력사 상품을 삭제한 후 기준 상품 갱신이 필요한지 여부를 결정한다.
+     *
+     * @param partnerCode partnerCode the code of the partner. This parameter is used to identify the partner.
+     * @param code        the code of the product. This parameter is used to identify the specific product.
+     * @return if the partner product is not found in the database
+     */
     public boolean requiresRenewalAfterDelete(String partnerCode, String code) {
         PartnerProd deletedProd = find(partnerCode, code);
         int deletedRow = partnerProdDao.delete(partnerCode, code);

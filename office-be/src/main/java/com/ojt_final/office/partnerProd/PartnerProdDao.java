@@ -15,12 +15,18 @@ public interface PartnerProdDao {
     /**
      * 협력사 상품 목록 저장 (링크 여부 = false)
      *
-     * @param partnerProds 협력사 상품 목록
+     * @param prods 협력사 상품 목록
      * @return affected row
      */
-    int insertAll(List<PartnerProd> partnerProds);
+    int insertAll(List<PartnerProd> prods);
 
-    int insert(PartnerProd partnerProd);
+    /**
+     * 협력사 상품 한 건 저장
+     *
+     * @param prod 협력사 상품
+     * @return affected row
+     */
+    int insert(PartnerProd prod);
 
     /**
      * 협력사 상품 옵셔널 조회
@@ -45,10 +51,10 @@ public interface PartnerProdDao {
     /**
      * 협력사 상품 수정
      *
-     * @param partnerProd the partner product domain object containing the update information
+     * @param prod the partner product domain object containing the update information
      * @return affected row
      */
-    int update(PartnerProd partnerProd);
+    int update(PartnerProd prod);
 
     int updateAllIsLinked(@Param("isLinked") boolean isLinked, @Param("codes") List<String> codes);
 

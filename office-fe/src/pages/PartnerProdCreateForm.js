@@ -162,7 +162,7 @@ const PartnerProductCreate = ({ categories, partners }) => {
             </tbody>
           </table>
           <div style={{ textAlign: 'center' }}>
-            <Button type="submit">등록</Button>
+            <Button type="submit">추가</Button>
             <Button type="button" onClick={() => navigate('/link')}>취소</Button>
           </div>
         </div>

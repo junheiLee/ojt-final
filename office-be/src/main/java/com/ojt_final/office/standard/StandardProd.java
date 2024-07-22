@@ -32,11 +32,11 @@ public class StandardProd implements ExcelProcessable {
     private Date manufactureDate;
 
     @ExcelColumn(upload = "출처")
-    private String sOrigin;
+    private String imageOrigin;
     @ExcelColumn(upload = "출처url")
-    private String sOriginUrl;
+    private String imageOriginUrl;
 
-    private String sImageUrl;
+    private String imageUrl;
 
     @ExcelColumn(download = "통합최저가")
     private int minPrice;
@@ -53,7 +53,7 @@ public class StandardProd implements ExcelProcessable {
     public StandardProd(int categoryCode, String categoryName,
                         int code, String name,
                         String description, String bundleCondition, Date manufactureDate,
-                        String sOrigin, String sOriginUrl, String sImageUrl,
+                        String imageOrigin, String imageOriginUrl, String imageUrl,
                         int minPrice, int minPcPrice, int minMobilePrice, int avgPrice,
                         int partnerCount) {
 
@@ -66,9 +66,9 @@ public class StandardProd implements ExcelProcessable {
         this.description = description;
         this.manufactureDate = manufactureDate;
 
-        this.sOrigin = sOrigin;
-        this.sOriginUrl = sOriginUrl;
-        this.sImageUrl = sImageUrl;
+        this.imageOrigin = imageOrigin;
+        this.imageOriginUrl = imageOriginUrl;
+        this.imageUrl = imageUrl;
 
         this.minPrice = minPrice;
         this.minPcPrice = minPcPrice;
@@ -85,8 +85,8 @@ public class StandardProd implements ExcelProcessable {
         this.name = getStringCellValue(row.getCell(3));
         this.bundleCondition = getStringCellValue(row.getCell(4));
         this.description = getStringCellValue(row.getCell(5));
-        this.sOrigin = getStringCellValue(row.getCell(6));
-        this.sOriginUrl = getStringCellValue(row.getCell(7));
+        this.imageOrigin = getStringCellValue(row.getCell(6));
+        this.imageOriginUrl = getStringCellValue(row.getCell(7));
         this.manufactureDate = Date.valueOf(getString((int) row.getCell(8).getNumericCellValue()));
 
     }

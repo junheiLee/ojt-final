@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put(ex.getName(), ex.getValue() + "->" + ex.getRequiredType().getSimpleName());
 
-        log.error("[BAD REQUEST]: 타입 불일치 항목={}", errors);
+        log.error("[BAD REQUEST]: Request Param 타입 불일치 항목={}", errors);
         return buildErrorResponse(TYPE_MISMATCH, errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
             String fieldName = ifex.getPath().get(0).getFieldName();
             errors.put(fieldName, ifex.getValue() + "->" + ifex.getTargetType().getSimpleName());
 
-            log.error("[BAD REQUEST]: 타입 불일치 항목={}", errors);
+            log.error("[BAD REQUEST]: Request Body 타입 불일치 항목={}", errors);
             return buildErrorResponse(TYPE_MISMATCH, errors, HttpStatus.BAD_REQUEST);
 
         } else {

@@ -5,7 +5,10 @@ import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.integrate.IntegratedService;
 import com.ojt_final.office.integrate.dto.IntegratedResponse;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
-import com.ojt_final.office.partnerProd.dto.*;
+import com.ojt_final.office.partnerProd.dto.CreatePartnerProdRequest;
+import com.ojt_final.office.partnerProd.dto.GetPartnerProdResponse;
+import com.ojt_final.office.partnerProd.dto.PartnerProdsResponse;
+import com.ojt_final.office.partnerProd.dto.UpdatePartnerProdRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,19 +70,22 @@ public class PartnerProdController {
      * 한 건의 협력사 상품을 DB에 저장하는 API
      *
      * @param createRequest the request containing the partner product data
-     * @return a response containing the result code and details of the created partner product
+     * @return a response containing the result code
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CreatePartnerProdResponse save(@Valid @RequestBody CreatePartnerProdRequest createRequest) {
+    public BaseResponse save(@Valid @RequestBody CreatePartnerProdRequest createRequest) {
 
         return partnerProdService.save(createRequest);
     }
 
+
     /**
-     * 협력사 코드와 상품 코드로 한 건의 파트너 상품을 조회하는 API
+     * 한 건의 파트너 상품 조회  API
      *
-     * @return a response containing the result code and details of the created partner product
+     * @param partnerCode the code of the partner. This parameter is used to identify the partner.
+     * @param prodCode    the code of the product. This parameter is used to identify the specific product.
+     * @return a response containing the result code and details of the partner product
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{partnerCode}/{prodCode}")
@@ -103,7 +109,7 @@ public class PartnerProdController {
     }
 
     /**
-     * 협력사 상품 업데이트 API
+     * 협력사 상품 수정 API
      * <p>
      * 링크된 상품의 가격이 변동된 경우, 해당 기준 상품의 최저가를 갱신한다.
      * </p>
@@ -127,7 +133,7 @@ public class PartnerProdController {
      * whether it is linked or unlinked, or if it does not exist.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{partnerCode}/{prodCode}")
+    @GetMapping("/check/link/{partnerCode}/{prodCode}")
     public BaseResponse checkBeforeDelete(@PathVariable(value = "partnerCode") String partnerCode,
                                           @PathVariable(value = "prodCode") String prodCode) {
 

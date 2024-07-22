@@ -56,7 +56,7 @@ const StandardProdCreate = ({ categories, partners }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} encType='multipart/form-data'>
       <div style={{ height: '50%', margin: '1rem auto' }}>
         <table width="900px" border="1" cellPadding="10" cellSpacing="0">
           <tbody>
@@ -65,7 +65,7 @@ const StandardProdCreate = ({ categories, partners }) => {
               <td>
                 <input
                   type="text"
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', color: 'red', fontWeight: 'bolder' }}
                   value={'신규 상품 입력'}
                 />
               </td>
@@ -200,7 +200,9 @@ const StandardProdCreate = ({ categories, partners }) => {
                   onChange={handleChange}
                   style={{ outline: 'solid black thin', width: '10%' }}
                 />
-                <span> 예) 2019년 11월 -&gt; 201911</span>
+                <span style={{color: 'gray', fontSize: '0.8rem'}}>
+                    &nbsp; 예&#41; 2019년 11월 -&gt; 201911
+                </span>
               </td>
             </tr>
             <tr>

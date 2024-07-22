@@ -3,9 +3,9 @@ package com.ojt_final.office.standard;
 import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
-import com.ojt_final.office.standard.dto.CreateStandardProdRequest;
-import com.ojt_final.office.standard.dto.StandardProdsResponse;
+import com.ojt_final.office.standard.dto.*;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -62,6 +62,33 @@ public class StandardProdController {
     }
 
     /**
+     * 한 건의 기준 상품을 DB에 저장하는 API
+     *
+     * @param createRequest the request containing the standard product data
+     * @return a response containing the result code
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public BaseResponse save(@Valid @RequestPart(value = "createDto") CreateStandardProdRequest createRequest,
+                             @RequestPart(value = "image") MultipartFile imageFile) {
+
+        return standardProdService.save(createRequest, imageFile);
+    }
+
+    /**
+     * 한 건의 기준 상품 조회 API
+     *
+     * @param code the code of the product. This parameter is used to identify the specific product.
+     * @return a response containing the result code and details of the standard product
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{code}")
+    public GetStandardProdResponse get(@Valid @PathVariable @Positive(message = "NEGATIVE") int code) {
+
+        return standardProdService.get(code);
+    }
+
+    /**
      * 주어진 조건에 해당하는 기준 상품 목록을 가져오는 API
      *
      * @param condParam the conditions to filter the standard products
@@ -69,21 +96,38 @@ public class StandardProdController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public StandardProdsResponse getStandardProds(@ModelAttribute CondParam condParam) {
+    public StandardProdsResponse getList(@ModelAttribute CondParam condParam) {
 
         return standardProdService.searchWithCount(condParam);
     }
 
     /**
-     * 한 건의 기준 상품을 DB에 저장하는 API
+     * 기준 상품 수정 API
+     *
+     * @param code          the code of the product. This parameter is used to identify the specific product.
+     * @param updateRequest the request containing the updatable standard product data
+     * @return a response containing the list of standard products
      */
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping
-    public BaseResponse save(@Valid @RequestPart(value="image") MultipartFile imageFile,
-                             @RequestPart(value = "createDto") CreateStandardProdRequest createRequest) {
-        log.info("image={}, dto={}", imageFile, createRequest);
-        return standardProdService.save(createRequest);
+    @PutMapping("/{code}")
+    public BaseResponse edit(@PathVariable @Positive(message = "NEGATIVE") int code,
+                             @Valid @RequestPart(value = "updateDto") UpdateStandardProdRequest updateRequest,
+                             @RequestPart(value = "image") MultipartFile imageFile) {
+
+        return standardProdService.edit(code, updateRequest, imageFile);
     }
 
+    /**
+     * 기준 상품 삭제
+     *
+     * @param code the code of the product. This parameter is used to identify the specific product.
+     * @return a response containing the list of standard products
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{code}")
+    public DeleteStandardProdResponse remove(@PathVariable Integer code) {
+
+        return standardProdService.delete(code);
+    }
 
 }

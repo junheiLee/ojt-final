@@ -31,6 +31,43 @@
         dtManufactureDate = VALUES(dtManufactureDate)
     </insert>
 
+    <insert id="insert"  parameterType="com.ojt_final.office.standard.StandardProd">
+        INSERT INTO tStandardProduct (
+            nProductCode,
+            sProductName,
+            nCategoryCode,
+            sDescription,
+            dtManufactureDate,
+            sImageUrl,
+            sImageOrigin,
+            sImageOriginUrl
+        )
+        VALUES
+        (
+            #{code},
+            #{name},
+            #{categoryCode},
+            #{description},
+            #{manufactureDate},
+            #{imageUrl},
+            #{imageOrigin},
+            #{imageOriginUrl}
+        )
+    </insert>
+
+    <select id="select" resultType="com.ojt_final.office.standard.StandardProd">
+        SELECT nProductCode AS code,
+               sProductName AS name,
+               nCategoryCode AS categoryCode,
+               sDescription AS description,
+               dtManufactureDate AS manufactureDate,
+               sImageOrigin AS imageOrigin,
+               sImageOriginUrl AS imageOriginUrl,
+               sImageUrl AS imageUrl
+        FROM tStandardProduct
+        WHERE nProductCode = #{code}
+    </select>
+
     <select id="selectByCond" parameterType="com.ojt_final.office.global.search.StandardProdCond"
             resultType="com.ojt_final.office.standard.StandardProd">
         SELECT C.sCategoryName AS categoryName,
@@ -70,6 +107,11 @@
         </trim>
         LIMIT #{limit}
         OFFSET #{offset}
+    </select>
+
+    <select id="selectLastSeq">
+        SELECT MAX(nProductCode)
+        FROM tStandardProduct
     </select>
 
     <select id="countAll">

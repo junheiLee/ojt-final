@@ -7,20 +7,22 @@ import com.ojt_final.office.global.constant.ResultCode;
 import com.ojt_final.office.global.dto.BaseResponse;
 import com.ojt_final.office.global.dto.search.CondParam;
 import com.ojt_final.office.global.excel.ExcelProcessingHandler;
+import com.ojt_final.office.global.exception.DatabaseOperationException;
+import com.ojt_final.office.global.exception.ImageStorageException;
+import com.ojt_final.office.global.exception.ResourceNotFoundException;
 import com.ojt_final.office.global.search.StandardProdCond;
 import com.ojt_final.office.link.dto.UploadExcelResponse;
-import com.ojt_final.office.standard.dto.CreateStandardProdRequest;
-import com.ojt_final.office.standard.dto.StandardProdsResponse;
+import com.ojt_final.office.standard.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 
@@ -29,6 +31,8 @@ import static com.ojt_final.office.global.constant.CommonConst.BATCH_SIZE;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
+
+    private static final String PATH = "C:\\Users\\user\\Desktop\\자료\\OJT\\project\\ojt-final\\office-fe\\public\\assets\\standardImage/";
 
     private final BatchProcessor batchProcessor;
     private final StandardProdDao standardProdDao;
@@ -59,7 +63,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
     public byte[] exportExcel(CondParam condParam) {
 
         StandardProdCond cond = condParam.toStandardProdCond();
-        List<StandardProd> prods = getProds(cond);
+        List<StandardProd> prods = findAllByCond(cond);
 
         return create(prods);
     }
@@ -68,7 +72,7 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
 
         StandardProdCond cond = condParam.toStandardProdCond();
         int count = standardProdDao.countByCond(cond);
-        List<StandardProd> prods = getProds(cond);
+        List<StandardProd> prods = findAllByCond(cond);
 
         return StandardProdsResponse.builder()
                 .resultCode(ResultCode.SUCCESS)
@@ -78,13 +82,65 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
     }
 
     /**
+     * 한 건의 기준 상품 데이터를 저장하고, 이미지를 로컬 서버에 저장한다.
      *
-     * @param createRequest
-     * @return
+     * @param createRequest the request containing the details of the standard product to create.
+     * @param imageFile     the image file to associate with the standard product.
+     * @return a response indicating the result of the operation.
      */
-    public BaseResponse save(CreateStandardProdRequest createRequest) {
+    @Transactional
+    public BaseResponse save(CreateStandardProdRequest createRequest, MultipartFile imageFile) {
 
-        return null;
+        int standardCode = standardProdDao.selectLastSeq() + 1;
+        String imageUrl = saveImageFile(standardCode, imageFile);
+
+        StandardProd createProd = createRequest.toEntity(standardCode, imageUrl);
+        int affectedRow = standardProdDao.insert(createProd);
+
+        if (affectedRow <= 0) {
+            throw new DatabaseOperationException("기준 상품 DB 저장 실패");
+        }
+        return new BaseResponse(ResultCode.CREATED);
+    }
+
+    /**
+     * 한 건의 기준 상품 코드를 조회한다.
+     *
+     * @param code the code of the product.
+     * @return a {@link GetStandardProdResponse} object containing the details of the standard product.
+     * *         If no product is found with the given codes, the returned object may be null.
+     */
+    public GetStandardProdResponse get(int code) {
+
+        return new GetStandardProdResponse(ResultCode.SUCCESS, find(code));
+    }
+
+    /**
+     * 특정 기준 상품을 수정한다.
+     * <p>
+     * 이미지 파일이 있는 경우 해당 파일을 삭제한 후, 새로운 이미지파일을 저장한다.
+     * </p>
+     *
+     * @param code          the code of the product.
+     * @param updateRequest the request containing the details of the standard product to update.
+     * @param imageFile     the image file to associate with the standard product.
+     * @return a response indicating the result of the operation.
+     */
+    @Transactional
+    public BaseResponse edit(int code, UpdateStandardProdRequest updateRequest, MultipartFile imageFile) {
+
+        StandardProd oldProd = find(code);
+        String imageUrl = "";
+
+        if (!imageFile.isEmpty() && !oldProd.getImageUrl().isBlank()) {
+            removeImageFile(oldProd.getImageUrl());
+            imageUrl = saveImageFile(code, imageFile);
+        }
+        int affectedRow = standardProdDao.update(updateRequest.toEntity(code, imageUrl));
+        if (affectedRow <= 0) {
+            throw new DatabaseOperationException("상품 삭제 실패");
+        }
+        return new BaseResponse(ResultCode.SUCCESS);
     }
 
     /**
@@ -100,6 +156,30 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
     }
 
     /**
+     * 협력사 상품을 삭제한다.
+     *
+     * @param code the code of the product.
+     * @return a response indicating the result of the operation.
+     */
+    @Transactional
+    public DeleteStandardProdResponse delete(int code) {
+        StandardProd deletedProd = find(code);
+
+        if (!deletedProd.getImageUrl().isBlank()) {
+            removeImageFile(deletedProd.getImageUrl());
+        }
+        int deletedRow = standardProdDao.delete(code);
+
+        if (deletedRow <= 0) {
+            throw new DatabaseOperationException("상품 삭제 실패");
+        } else if (deletedRow == 1) {
+            return new DeleteStandardProdResponse(ResultCode.SUCCESS, 0);
+        } else {
+            return new DeleteStandardProdResponse(ResultCode.SUCCESS, deletedRow - 1);
+        }
+    }
+
+    /**
      * Saves all StandardProd entities in batch mode.
      *
      * @param standardProds the list of StandardProd entities to be saved
@@ -112,8 +192,58 @@ public class StandardProdService extends ExcelProcessingHandler<StandardProd> {
                 .calInsertAndUnchangedCount(previousCount, standardProdDao.countAll());
     }
 
-    private List<StandardProd> getProds(StandardProdCond cond) {
+    private List<StandardProd> findAllByCond(StandardProdCond cond) {
 
         return standardProdDao.selectByCond(cond);
+    }
+
+    private StandardProd find(int code) {
+
+        Optional<StandardProd> standardProdOpt = findOpt(code);
+
+        if (standardProdOpt.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        return standardProdOpt.get();
+    }
+
+    private Optional<StandardProd> findOpt(int code) {
+
+        return standardProdDao.select(code);
+    }
+
+    private String saveImageFile(int standardCode, MultipartFile imageFile) {
+
+        if (imageFile.isEmpty()) {
+            throw new MultipartException("빈 이미지 파일 저장 시도");
+        }
+        String extension = Objects.requireNonNull(imageFile.getContentType()).split("/")[1];
+        String imageName = standardCode + "." + extension;
+        String fileName = PATH + imageName;
+
+        saveFile(imageFile, fileName);
+        return fileName;
+    }
+
+    private static void saveFile(MultipartFile imageFile, String fileName) {
+        try {
+            File file = new File(fileName);
+            imageFile.transferTo(file);
+
+        } catch (Exception e) {
+            throw new ImageStorageException(e);
+        }
+    }
+
+    private boolean removeImageFile(String fileName) {
+        boolean isRemoved = false;
+        try {
+            File file = new File(fileName);
+            isRemoved = file.delete();
+
+        } catch (Exception e) {
+            throw new ImageStorageException(e);
+        }
+        return isRemoved;
     }
 }
